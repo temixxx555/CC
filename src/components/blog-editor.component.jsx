@@ -1,14 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import logo from "../imgs/logo.png";
+import lightlogo from "../imgs/logo-light.png";
+import darklogo from "../imgs/logo-dark.png";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import defaultBanner from "../imgs/blog banner.png";
+import lightdefaultBanner from "../imgs/blog banner light.png";
+import darkdefaultBanner from "../imgs/blog banner dark.png";
 import AnimationWrapper from "../common/page-animation";
 import { toast } from "react-hot-toast";
 import { EditorContext } from "../pages/editor.pages";
 import EditorJs from "@editorjs/editorjs";
 import { tools } from "./tools.component";
-import { userContext } from "../App";
+import { ThemeContext, userContext } from "../App";
 const BlogEditor = () => {
   let {
     blog,
@@ -21,13 +24,12 @@ const BlogEditor = () => {
   let {
     userAuth: { access_token },
   } = useContext(userContext);
+  let { theme } = useContext(ThemeContext);
+  let { blog_id } = useParams();
 
-let {blog_id}= useParams();
-
-
-let navigate = useNavigate();
+  let navigate = useNavigate();
   useEffect(() => {
-    if(!textEditorState.isReady){
+    if (!textEditorState.isReady) {
       setTextEditorState(
         new EditorJs({
           holder: "textEditor",
@@ -107,42 +109,53 @@ let navigate = useNavigate();
     let loadingToast = toast.loading("Saving Draft...");
     e.target.classList.add("disable");
 
+    // Ensure tags is an array
+    const processedTags = Array.isArray(tags) ? tags : [];
+
     let blogObj = {
       title,
-      banner,
-      content,
-      tags,
-      des,
+      banner: banner || "", // Provide default for optional fields
+      content: content || { blocks: [] }, // Ensure content is an object with blocks
+      tags: processedTags,
+      des: des || "", // Provide default for optional description
       draft: true,
     };
 
     axios
-      .post(import.meta.env.VITE_SERVER_DOMAIN + "/create-blog", {...blogObj,id:blog_id}, {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      })
+      .post(
+        import.meta.env.VITE_SERVER_DOMAIN + "/create-blog",
+        { ...blogObj, id: blog_id },
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      )
       .then(() => {
         e.target.classList.remove("disable");
         toast.dismiss(loadingToast);
         toast.success("Saved");
 
         setTimeout(() => {
-          navigate("/");
+          navigate("/dashboard/blogs?tab=draft");
         }, 500);
       })
-      .catch(({ response }) => {
+      .catch(({ response, message }) => {
         e.target.classList.remove("disable");
         toast.dismiss(loadingToast);
-
-        return toast.error(response.data.error);
+        console.error("Error saving draft:", response?.data || message);
+        return toast.error(response?.data?.error || "Failed to save draft");
       });
   };
   return (
     <>
       <nav className='navbar'>
         <Link to='/'>
-          <img src={logo} alt='logo' className='flex-none w-10' />
+          <img
+            src={theme == "light" ? darklogo : lightlogo}
+            alt='logo'
+            className='flex-none w-10'
+          />
         </Link>
         <p className='max-md:hidden text-black line-clamp-1 w-full '>
           {title.length ? title : "New Blog"}
@@ -162,7 +175,13 @@ let navigate = useNavigate();
             <div className='relative aspect-ratio bg-white border-4 border-grey hover:opacity-80'>
               <label htmlFor='uploadBanner'>
                 <img
-                  src={!banner ? defaultBanner : banner}
+                  src={
+                    !banner
+                      ? theme == "light"
+                        ? lightdefaultBanner
+                        : darkdefaultBanner
+                      : banner
+                  }
                   alt='banner'
                   className='z-20'
                 />
@@ -181,7 +200,7 @@ let navigate = useNavigate();
             placeholder='Blog Title'
             name=''
             id=''
-            className='text-4xl font-medium w-full h-20 outline-none resize-none mt-10 leading-tight placeholder:opacity-40 '
+            className='text-4xl font-medium w-full h-20 border-none resize-none mt-10 leading-tight placeholder:opacity-40  bg-white'
             onKeyDown={handleTitleKeyDown}
             onChange={handleTitleChange}
           ></textarea>
