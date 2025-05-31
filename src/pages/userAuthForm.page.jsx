@@ -63,7 +63,6 @@ const UserAuthForm = ({ type }) => {
     }
     userAuthThroughServer(serverRoute, formData);
     console.log(import.meta.env.VITE_SERVER_DOMAIN + serverRoute);
-    toast.success("very good");
   };
   if (access_token) {
     return <Navigate to='/' />;
