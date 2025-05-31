@@ -12,6 +12,7 @@ import LoadMoreData from "../components/load-more.component";
 const Home = () => {
   let [blogs, setBlogs] = useState(null);
   let [trendingBlogs, setTrendingBlogs] = useState(null);
+  let [users, setUsers] = useState(null);
   let [pageState, setPageState] = useState("home");
   let categories = [
     "entertainment",
@@ -22,7 +23,7 @@ const Home = () => {
     "celeb",
     "wrestle",
     "travel",
-    "football"
+    "football",
   ];
   const fetchLatestBlogs = ({ page = 1 }) => {
     axios
@@ -42,6 +43,18 @@ const Home = () => {
         console.log(err);
       });
   };
+  const getallUsers = () => {
+     axios
+      .get(import.meta.env.VITE_SERVER_DOMAIN + "/all-users")
+      .then(({ data }) => {
+        setUsers(data.count);
+        console.log(data.count);
+        
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
   const fetchTrendingBlogs = () => {
     axios
       .get(import.meta.env.VITE_SERVER_DOMAIN + "/trending-blogs")
@@ -94,33 +107,41 @@ const Home = () => {
       fetchTrendingBlogs();
     }
   }, [pageState]);
+  useEffect(()=>{
+    getallUsers()
+    console.log("i am getting called");
+    
+  },[])
   return (
     <AnimationWrapper>
+      
       <section className='h-cover flex justify-center gap-10 '>
         {/* latest blogs  */}
         <div className='w-full'>
+         <p className="font-bold text-3xl ml-9 ">{users} <span className="text-xl">Bloggers</span></p>
+
           {/* Show on small screens only */}
-<div className='md:hidden px-4 pt-4'>
-  <h1 className='font-medium text-xl mb-6'>
-    Stories from all interest
-  </h1>
-  <div className='flex gap-3 flex-wrap'>
-    {categories.map((category, i) => {
-      return (
-        <button
-          onClick={loadBlogByCategory}
-          className={
-            "tag " +
-            (pageState == category ? "bg-black text-white" : "")
-          }
-          key={i}
-        >
-          {category}
-        </button>
-      );
-    })}
-  </div>
-</div>
+          <div className='md:hidden px-4 pt-4'>
+            <h1 className='font-medium text-xl mb-6'>
+              Stories from all interest
+            </h1>
+            <div className='flex gap-3 flex-wrap'>
+              {categories.map((category, i) => {
+                return (
+                  <button
+                    onClick={loadBlogByCategory}
+                    className={
+                      "tag " +
+                      (pageState == category ? "bg-black text-white" : "")
+                    }
+                    key={i}
+                  >
+                    {category}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
           <InPageNavigation
             routes={[pageState, "trending blogs"]}
@@ -146,7 +167,12 @@ const Home = () => {
               ) : (
                 <NoDataMessage message={"No blogs Published"} />
               )}
-              <LoadMoreData state={blogs} fetchData={(pageState == "home" ? fetchLatestBlogs : fetchBlogByCategories)} />
+              <LoadMoreData
+                state={blogs}
+                fetchData={
+                  pageState == "home" ? fetchLatestBlogs : fetchBlogByCategories
+                }
+              />
             </>
             <>
               {trendingBlogs == null ? (
@@ -167,7 +193,6 @@ const Home = () => {
                 <NoDataMessage message={"No trending blogs "} />
               )}
             </>
-            
           </InPageNavigation>
         </div>
 
