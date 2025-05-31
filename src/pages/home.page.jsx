@@ -14,13 +14,13 @@ const Home = () => {
   let [trendingBlogs, setTrendingBlogs] = useState(null);
   let [pageState, setPageState] = useState("home");
   let categories = [
-    "code",
-    "girls",
-    "love",
+    "entertainment",
+    "art/design",
+    "fashion",
     "technology",
-    "tech",
-    "cars",
-    "cooking",
+    "skills",
+    "celeb",
+    "wrestle",
     "travel",
     "football"
   ];
