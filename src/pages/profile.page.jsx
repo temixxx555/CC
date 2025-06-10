@@ -209,11 +209,11 @@ const ProfilePage = () => {
               {total_posts.toLocaleString()} Blogs -{" "}
               {total_reads.toLocaleString()} - Reads
             </p>
-            <div className='flex gap-4 text-sm text-gray-600 font-medium'>
+            <div className='flex gap-4 text-sm text-dark-grey font-medium'>
               <span className='hover:text-black transition'>
                 {followers.length} Followers
               </span>
-              <span className='text-gray-400'>•</span>
+              <span className='text-dark-grey'>•</span>
               <span className='hover:text-black transition'>
                 {following.length} Following
               </span>
@@ -242,7 +242,7 @@ const ProfilePage = () => {
           </div>
           <div className='max-md:mt-12 w-full'>
             <InPageNavigation
-              routes={["Blogs published", "About", "Followers", "Following"]}
+              routes={["Blogs", "About", "Followers", "Following"]}
               defaultHidden={["About"]}
               onTabChange={setActiveTab}
             >
