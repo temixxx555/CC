@@ -7,7 +7,7 @@ const FollowList = ({ data, title = "Users" }) => {
     <div className="space-y-4 p-4 border rounded-md shadow-md bg-white">
       <h2 className="text-xl font-semibold">{title}</h2>
       {data.length === 0 ? (
-        <p className="text-gray-500">No users to show.</p>
+        <p className="text-dark-grey">No users to show.</p>
       ) : (
         <ul className="space-y-3">
           {data.map(({ personal_info }, index) => (
@@ -23,11 +23,11 @@ const FollowList = ({ data, title = "Users" }) => {
               <div>
                 <Link
                   to={`/user/${personal_info.username}`}
-                  className="text-blue-600 hover:underline font-medium"
+                  className=" hover:underline font-medium"
                 >
                   @{personal_info.username}
                 </Link>
-                <p className="text-gray-700 text-sm">{personal_info.fullname}</p>
+                <p className="text-dark-grey text-sm">{personal_info.fullname}</p>
               </div>
             </li>
           ))}
@@ -38,3 +38,4 @@ const FollowList = ({ data, title = "Users" }) => {
 };
 
 export default FollowList;
+//
