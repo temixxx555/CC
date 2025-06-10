@@ -6,6 +6,7 @@ const InPageNavigation = ({
   routes,
   defaultActiveIndex = 0,
   children,
+  onTabChange
 }) => {
   let [InPageNavIndex, setInPageNavIndex] = useState(defaultActiveIndex);
   ActiveTabButons = useRef();
@@ -17,6 +18,9 @@ const InPageNavigation = ({
     activeTabLineRef.current.style.width = offsetWidth + "px";
     activeTabLineRef.current.style.left = offsetLeft + "px";
     setInPageNavIndex(i);
+     if (onTabChange) {
+      onTabChange(i); // Call the callback with the new tab index
+    }
   };
   useEffect(() => {
     if (width > 766 && InPageNavIndex != defaultActiveIndex) {

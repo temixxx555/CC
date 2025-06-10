@@ -5,42 +5,51 @@ import NotificationCommentField from "./notification-comment-field.component";
 import { userContext } from "../App";
 import axios from "axios";
 import toast from "react-hot-toast";
+
 const NotificationCard = ({ data, index, notificationState }) => {
-  let [isReplying, setIsReplying] = useState(false);
-  let {
+  const [isReplying, setIsReplying] = useState(false);
+
+  const {
     seen,
-    comment,
-    reply,
     createdAt,
-    blog: { _id, blog_id, title },
-    replied_on_comment,
     type,
     user,
-    user: {
-      personal_info: { fullname, username, profile_img },
-    },
+    blog = {},
+    comment = {},
+    reply,
+    replied_on_comment = {},
     _id: notification_id,
   } = data;
-  let {
+
+ const {
+  _id: blogId,
+  blog_id = "",
+  title = "",
+} = blog || {};
+
+  const {
+    personal_info: { fullname, username, profile_img } = {},
+  } = user || {};
+
+  const {
     userAuth: {
       username: author_username,
       profile_img: author_profile_img,
       access_token,
     },
   } = useContext(userContext);
-  console.log(access_token);
 
-  let {
+  const {
     notifications,
     notifications: { results, totalDocs },
     setNotifications,
   } = notificationState;
-  const handleReply = () => {
-    setIsReplying((preval) => !preval);
-  };
+
+  const handleReply = () => setIsReplying((prev) => !prev);
+
   const handleDelete = (comment_id, type, target) => {
     target.disabled = true;
-    const idToDelete = type === "reply" ? data.reply._id : comment_id;
+    const idToDelete = type === "reply" ? reply?._id : comment_id;
 
     axios
       .post(
@@ -57,12 +66,14 @@ const NotificationCard = ({ data, index, notificationState }) => {
             : results.map((item, i) =>
                 i === index ? { ...item, reply: undefined } : item
               );
+
         setNotifications({
           ...notifications,
           results: updatedResults,
           totalDocs: totalDocs - 1,
           deletedDocCount: notifications.deletedDocCount + 1,
         });
+
         toast.success("Deleted successfully");
       })
       .catch((err) => {
@@ -72,86 +83,87 @@ const NotificationCard = ({ data, index, notificationState }) => {
         console.error("Delete error:", err.response);
       });
   };
+
   return (
     <div
       className={
         "p-6 border-grey border-l-black " + (!seen ? " border-l-2 " : "")
       }
     >
-      <div className='flex gap-5 mb-3 '>
+      <div className="flex gap-5 mb-3 ">
         <img
           src={profile_img}
-          className='w-14 h-14 flex-none rounded-full'
-          alt='pic'
+          className="w-14 h-14 flex-none rounded-full"
+          alt="pic"
         />
-        <div className='w-full'>
-          <h1 className='font-medium text-dark-grey text-xl'>
-            <span className='lg:inline-block hidden capitalize'>
-              {fullname}
-            </span>
-            <Link
-              className='mx-1 text-black underline'
-              to={`/user/${username}`}
-            >
+        <div className="w-full">
+          <h1 className="font-medium text-dark-grey text-xl">
+            <span className="lg:inline-block hidden capitalize">{fullname}</span>
+            <Link className="mx-1 text-black underline" to={`/user/${username}`}>
               @{username}
             </Link>
-            <span className='font-normal'>
-              {type == "like"
+            <span className="font-normal">
+              {type === "like"
                 ? "liked your blog"
-                : type == "comment"
+                : type === "comment"
                 ? "commented on"
-                : "replied on"}
+                : type === "reply"
+                ? "replied on"
+                : type === "followed"
+                ? "followed you"
+                : ""}
             </span>
           </h1>
-          {type == "reply" ? (
-            <div className='p-4 mt-4 rounded-md bg-grey'>
+
+          {type === "reply" && replied_on_comment?.comment && (
+            <div className="p-4 mt-4 rounded-md bg-grey">
               <p>{replied_on_comment.comment}</p>
             </div>
-          ) : (
+          )}
+          {type === "followed" && (
+            <div className="p-4 mt-4 rounded-md bg-grey">
+             <p className="font-medium text-dark-grey">You have a new follower!</p>
+            </div>
+          )}
+
+          {type !== "followed" && (
             <Link
-              className='font-medium hover:underline line-clamp-1'
+              className="font-medium hover:underline line-clamp-1"
               to={`/blog/${blog_id}`}
-            >{`"${title}"`}</Link>
+            >
+              "{title}"
+            </Link>
           )}
         </div>
       </div>
-      {type != "like" ? (
-        <p className='ml-14 pl-5 font-gelasio text-xl my-5 '>
-          {comment.comment}
-        </p>
-      ) : (
-        ""
+
+      {type === "comment" && comment?.comment && (
+        <p className="ml-14 pl-5 font-gelasio text-xl my-5">{comment.comment}</p>
       )}
-      <div className='ml-14 pl-5 mt-3 text-dark-grey flex gap-8'>
+
+      <div className="ml-14 pl-5 mt-3 text-dark-grey flex gap-8">
         <p>{getDay(createdAt)}</p>
 
-        {type != "like" ? (
-          <>
-            {!reply ? (
-              <button
-                onClick={handleReply}
-                className='underline hover:text-black'
-              >
-                Reply
-              </button>
-            ) : (
-              ""
-            )}
-            <button
-              onClick={(e) => handleDelete(comment._id, "comment", e.target)}
-              className='underline hover:text-black'
-            >
-              Delete
-            </button>
-          </>
-        ) : (
-          ""
+        {(type === "comment" || type === "reply") && !reply && (
+          <button onClick={handleReply} className="underline hover:text-black">
+            Reply
+          </button>
+        )}
+
+        {(type === "comment" || type === "reply") && (
+          <button
+            onClick={(e) => handleDelete(comment._id, type, e.target)}
+            className="underline hover:text-black"
+          >
+            Delete
+          </button>
         )}
       </div>
-      {isReplying ? (
-        <div className='mt-8 '>
+
+      {isReplying && (
+        <div className="mt-8">
           <NotificationCommentField
-            _id={_id}
+            _id={blogId}
             blog_author={user}
             index={index}
             replyingTo={comment._id}
@@ -160,30 +172,27 @@ const NotificationCard = ({ data, index, notificationState }) => {
             notificationData={notificationState}
           />
         </div>
-      ) : (
-        ""
       )}
-      {reply ? (
-        <div className='ml-20 p-5 bg-grey mt-5 rounded-md '>
-          <div className='flex gap-3 mb-3'>
+
+      {reply && (
+        <div className="ml-20 p-5 bg-grey mt-5 rounded-md">
+          <div className="flex gap-3 mb-3">
             <img
               src={author_profile_img}
-              alt='pic'
-              className='w-8 h-8 rounded-full'
+              alt="pic"
+              className="w-8 h-8 rounded-full"
             />
             <div>
-              <h1 className='fonnt-medium text-xl text-dark-grey'>
+              <h1 className="font-medium text-xl text-dark-grey">
                 <Link
-                  className='mx-1 text-black underline '
+                  className="mx-1 text-black underline"
                   to={`/user/${author_username}`}
                 >
                   @{author_username}
                 </Link>
-
-                <span className='font-normal'>replied to</span>
-
+                <span className="font-normal"> replied to </span>
                 <Link
-                  className='mx-1 text-black underline '
+                  className="mx-1 text-black underline"
                   to={`/user/${username}`}
                 >
                   @{username}
@@ -195,13 +204,11 @@ const NotificationCard = ({ data, index, notificationState }) => {
 
           <button
             onClick={(e) => handleDelete(comment._id, "reply", e.target)}
-            className='underline hover:text-black ml-14 mt-2'
+            className="underline hover:text-black ml-14 mt-2"
           >
             Delete
           </button>
         </div>
-      ) : (
-        ""
       )}
     </div>
   );
