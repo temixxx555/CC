@@ -21,6 +21,8 @@ const NotificationCard = ({ data, index, notificationState }) => {
     _id: notification_id,
   } = data;
 
+  console.log("Notification data:", data);
+  
  const {
   _id: blogId,
   blog_id = "",
@@ -49,7 +51,7 @@ const NotificationCard = ({ data, index, notificationState }) => {
 
   const handleDelete = (comment_id, type, target) => {
     target.disabled = true;
-    const idToDelete = type === "reply" ? reply?._id : comment_id;
+    const idToDelete = type === "reply" ? replied_on_comment?._id : comment_id;
 
     axios
       .post(
@@ -108,7 +110,7 @@ const NotificationCard = ({ data, index, notificationState }) => {
                 : type === "comment"
                 ? "commented on"
                 : type === "reply"
-                ? "replied on"
+                ? "replied you"
                 : type === "followed"
                 ? "followed you"
                 : ""}
@@ -117,7 +119,7 @@ const NotificationCard = ({ data, index, notificationState }) => {
 
           {type === "reply" && replied_on_comment?.comment && (
             <div className="p-4 mt-4 rounded-md bg-grey">
-              <p>{replied_on_comment.comment}</p>
+              <p>{comment?.comment}</p>
             </div>
           )}
           {type === "followed" && (

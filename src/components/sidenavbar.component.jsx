@@ -32,7 +32,7 @@ const SideNav = () => {
     <Navigate to='/signin' />
   ) : (
     <>
-      <section className='relative flex gap-10 py-0 m-0 max-md:flex-col'>
+      <section className='relative flex gap-7 py-0 m-0 max-md:flex-col'>
         <div className='sticky top-[80px] '>
           <div className='md:hidden bg-white py-1 border-b border-grey flex flex-nowrap overflow-x-auto'>
             <button
@@ -56,7 +56,7 @@ const SideNav = () => {
           </div>
           <div
             className={
-              "min-w-[200px] h-[calc(100vh-80px-60px)] md:h-screen md:sticky top-24 overflow-y-auto p-6 md:pr-0 md:border-grey md:border-r absolute max-md:top-[64px] bg-white max-md:w-[calc(100%+ 80px)] max-md:px-16 max-md:-ml-7 duration-500 " +
+              "min-w-[200px] md:w-[250px] h-[calc(100vh-80px)] md:h-[calc(100vh-96px)] md:sticky top-[96px] overflow-y-auto p-6 md:pr-0 md:border-grey md:border-r absolute max-md:top-[64px] bg-white max-md:w-[calc(100%+ 80px)] max-md:px-16 max-md:-ml-7 duration-500 " +
               (!showSideNav
                 ? "max-md:opacity-0 max-md:pointer-events-none"
                 : "opacity-100 ponter-events-auto")
@@ -90,11 +90,27 @@ const SideNav = () => {
               </div>
               Notifications
             </NavLink>
+            <NavLink
+              to='/dashboard/leaderboard'
+              onClick={(e) => setPageState(e.target.innerText)}
+              className='sidebar-link'
+            >
+              <div className="relative">
+              <i className='fi fi-rr-bell'></i>
+
+                {new_notification_available ? (
+                  <span className='bg-red w-2 h-2 rounded-full -mt-3 absolute z-10 top-0 right-0'></span>
+                ) : (
+                  ""
+                )}
+              </div>
+              Leaderboards
+            </NavLink>
 
             <NavLink
               to='/editor'
               onClick={(e) => setPageState(e.target.innerText)}
-              className='sidebar-link'
+              className='sidebar-link -mt-3'
             >
               <i className='fi fi-rr-file-edit'></i>
               Write

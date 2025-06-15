@@ -28,6 +28,7 @@ export default {
       light: {
         white: "#FFFFFF",
         black: "#242424",
+        oranges: "#FFB800",
         grey: "#F3F3F3",
         "dark-grey": "#6B6B6B",
         red: "#FF4E4E",
@@ -36,6 +37,7 @@ export default {
         purple: "#8B46FF",
       },
       dark: {
+        oranges: "#FF8C00",
         white: "#242424",
         black: "#F3F3F3",
         grey: "#2A2A2A",

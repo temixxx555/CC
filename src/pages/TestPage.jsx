@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import FooterNav from '../components/Footer';
 
 const TestPage = () => {
   // Tour state: tracks current step and whether to show tour
@@ -206,11 +207,7 @@ const TestPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p>© 2025 CampusConnect. All rights reserved.</p>
-        </div>
-      </footer>
+    <FooterNav />
 
       {/* Tour Overlay */}
       {showTour && (

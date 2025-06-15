@@ -16,6 +16,7 @@ import EditProfile from "./pages/edit-profile.page";
 import Notifications from "./pages/notifications.page";
 import ManageBlogs from "./pages/manage-blogs.page";
 import TestPage from "./pages/TestPage";
+import Leaderboard from "./pages/Leaderboard";
 
 export const userContext = createContext({});
 export const ThemeContext = createContext({});
@@ -61,6 +62,7 @@ const App = () => {
               <Route path='/dashboard' element={<SideNav />}>
                 <Route path='blogs' element={<ManageBlogs />} />
                 <Route path='notifications' element={<Notifications />} />
+                <Route path='leaderboard' element={<Leaderboard />} />
               </Route>
               <Route path='/settings' element={<SideNav />}>
                 <Route path='edit-profile' element={<EditProfile />} />
