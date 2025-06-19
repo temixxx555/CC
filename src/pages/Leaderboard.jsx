@@ -93,7 +93,7 @@ const Leaderboard = () => {
         <div className='max-w-6xl mx-auto py-8 px-4'>
           {/* Header */}
           <div className='text-center mb-8'>
-            <h1 className='text-4xl font-bold text-dark-grey mb-4'>Leaders</h1>
+            <h1 className='text-4xl font-bold text-dark-grey underline mb-4'>School  Leaders</h1>
             <p className='text-dark-grey max-w-4xl mx-auto leading-relaxed'>
               Rankings are based on{" "}
               {query === "followers" ? "follower count" : "activity streak"}.
@@ -139,7 +139,8 @@ const Leaderboard = () => {
 
           {/* Leaderboard Table */}
           <div className='bg-white rounded-lg border border-gray-200 overflow-hidden'>
-            <table className='w-full'>
+             <div className="overflow-x-auto">
+            <table className='w-full min-w-[600px]'>
               <thead className='bg-white border-b border-gray-200'>
                 <tr>
                   <th className='text-left py-4 px-6 text-sm font-semibold text-black w-20'>
@@ -204,6 +205,7 @@ const Leaderboard = () => {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
 
           {/* Footer Info */}

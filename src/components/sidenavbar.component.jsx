@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Navigate, NavLink, Outlet } from "react-router-dom";
 import { userContext } from "../App";
+import { Trophy } from "lucide-react";
 
 const SideNav = () => {
   const {
@@ -96,13 +97,7 @@ const SideNav = () => {
               className='sidebar-link'
             >
               <div className="relative">
-              <i className='fi fi-rr-bell'></i>
-
-                {new_notification_available ? (
-                  <span className='bg-red w-2 h-2 rounded-full -mt-3 absolute z-10 top-0 right-0'></span>
-                ) : (
-                  ""
-                )}
+              <Trophy className='w-4 h-5 ' />
               </div>
               Leaderboards
             </NavLink>

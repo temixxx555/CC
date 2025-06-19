@@ -9,6 +9,7 @@ import { ActiveTabButons } from "../components/inpage-navigation.component";
 import NoDataMessage from "../components/nodata.component";
 import { filterPaginationData } from "../common/filter-pagination-data";
 import LoadMoreData from "../components/load-more.component";
+import { Link } from "react-router-dom";
 const Home = () => {
   let [blogs, setBlogs] = useState(null);
   let [trendingBlogs, setTrendingBlogs] = useState(null);
@@ -248,7 +249,14 @@ const Home = () => {
             </div>
           </div>
         </div>
+        <Link
+          to='/editor'
+          className='fixed bottom-24 right-5 z-40 bg-grey   w-14 h-14 rounded-full shadow-lg flex items-center justify-center md:hidden'
+        >
+          <i className='fi fi-rr-file-edit text-2xl'></i>
+        </Link>
       </section>
+      
     </AnimationWrapper>
   );
 };

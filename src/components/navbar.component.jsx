@@ -182,7 +182,7 @@ const Navbar = () => {
                 </span>
               </button>
               <Link to='/dashboard/notifications'>
-                <button className='w-12 h-12 rounded-full bg-grey relative hover:bg-black/10'>
+                <button className='w-12 h-12 rounded-full bg-grey relative hover:bg-black/10 hidden md:block'>
                   <i className='fi fi-rr-bell text-2xl block mt-1'></i>
                   {new_notification_available ? (
                     <span className='bg-red w-3 h-3 rounded-full absolute z-10 top-2 right-2'></span>
@@ -199,7 +199,7 @@ const Navbar = () => {
                 <button className='w-12 h-12 mt-1'>
                   <img
                     src={profile_img}
-                    className='w-full h-full object-cover rounded-full'
+                    className='w-full  h-full object-cover rounded-full'
                   />
                 </button>
                 {userNavPanel ? <UserNavigationPanel /> : ""}
@@ -290,6 +290,9 @@ const Navbar = () => {
       )}
 
       <Outlet />
+
+<div className="h-20 md:hidden"></div>
+
 
       <FooterNav />
     </>
