@@ -66,7 +66,7 @@ const EditProfile = () => {
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      console.log("Upload image response:", data);
+      // console.log("Upload image response:", data);
       if (!data.imageUrl) {
         throw new Error("No imageUrl in response");
       }
@@ -97,7 +97,7 @@ const EditProfile = () => {
       const imageUrl = await UploadImage(updatedProfileImage);
 
       if (imageUrl) {
-        console.log("Sending imageUrl to /update-profile-img:", imageUrl);
+        // console.log("Sending imageUrl to /update-profile-img:", imageUrl);
         try {
           const { data } = await axios.post(
             `${import.meta.env.VITE_SERVER_DOMAIN}/update-profile-img`,
@@ -107,7 +107,7 @@ const EditProfile = () => {
             }
           );
 
-          console.log("Update profile image response:", data);
+          // console.log("Update profile image response:", data);
           const newUserAuth = { ...userAuth, profile_img: data.profile_img };
           storeInSession("user", JSON.stringify(newUserAuth));
           setUserAuth(newUserAuth);

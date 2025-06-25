@@ -36,7 +36,7 @@ const Home = () => {
           page,
           counteRoute: "/all-latest-blogs-count",
         });
-        console.log(formateData);
+        // console.log(formateData);
 
         setBlogs(formateData);
       })
@@ -49,7 +49,7 @@ const Home = () => {
       .get(import.meta.env.VITE_SERVER_DOMAIN + "/all-users")
       .then(({ data }) => {
         setUsers(data.count);
-        console.log(data.count);
+        // console.log(data.count);
         
       })
       .catch((err) => {
@@ -110,7 +110,7 @@ const Home = () => {
   }, [pageState]);
   useEffect(()=>{
     getallUsers()
-    console.log("i am getting called");
+    // console.log("i am getting called");
     
   },[])
   return (

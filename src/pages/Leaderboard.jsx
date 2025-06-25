@@ -30,7 +30,7 @@ const Leaderboard = () => {
         const user = lookInSession("user");
         const parsedUser = user ? JSON.parse(user) : null;
         setUserInLeaderboard(parsedUser?.username || null);
-        console.log("User in session:", parsedUser?.username);
+        // console.log("User in session:", parsedUser?.username);
 
         const { data } = await axios.get(
           `${import.meta.env.VITE_SERVER_DOMAIN}/leaderboard?type=${query}`

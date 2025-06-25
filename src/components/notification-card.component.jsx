@@ -21,7 +21,7 @@ const NotificationCard = ({ data, index, notificationState }) => {
     _id: notification_id,
   } = data;
 
-  console.log("Notification data:", data);
+  // console.log("Notification data:", data);
   
  const {
   _id: blogId,

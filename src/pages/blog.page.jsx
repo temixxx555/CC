@@ -44,7 +44,7 @@ const [totalParentCommentsLoaded,setTotalParentsCommentsLoaaded] = useState(0);
       })
       .then( async ({ data: { blog } }) => {
         blog.comments = await fetchComments({blog_id:blog._id,setParentCommentFunc:setTotalParentsCommentsLoaaded})
-        console.log(blog);
+        // console.log(blog);
 
         setBlog(blog);
         

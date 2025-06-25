@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Navigate, NavLink, Outlet } from "react-router-dom";
 import { userContext } from "../App";
-import { Trophy } from "lucide-react";
+import { Trophy,UserCircle,Users } from "lucide-react";
 
 const SideNav = () => {
   const {
@@ -102,6 +102,14 @@ const SideNav = () => {
               Leaderboards
             </NavLink>
 
+            <NavLink
+              to='/dashboard/social-circle'
+              onClick={(e) => setPageState(e.target.innerText)}
+              className='sidebar-link -mt-3'
+            >
+           <Users className='w-4 h-5' />
+              Social Circle
+            </NavLink>
             <NavLink
               to='/editor'
               onClick={(e) => setPageState(e.target.innerText)}

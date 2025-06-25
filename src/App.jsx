@@ -17,6 +17,9 @@ import Notifications from "./pages/notifications.page";
 import ManageBlogs from "./pages/manage-blogs.page";
 import TestPage from "./pages/TestPage";
 import Leaderboard from "./pages/Leaderboard";
+import SocialCircle from "./pages/SocialCircle";
+import Ranking from "./pages/Ranking";
+import AssignRank from "./pages/AssignRank";
 
 export const userContext = createContext({});
 export const ThemeContext = createContext({});
@@ -59,10 +62,13 @@ const App = () => {
             <Route path='/' element={<Navbar />}>
               {/* index means render the parent path which is / */}
               <Route index element={<Home />} />
+              <Route path="/ranking" element={<Ranking />} />
+              <Route path="/admin" element={<AssignRank />} />
               <Route path='/dashboard' element={<SideNav />}>
                 <Route path='blogs' element={<ManageBlogs />} />
                 <Route path='notifications' element={<Notifications />} />
                 <Route path='leaderboard' element={<Leaderboard />} />
+                <Route path='social-circle' element={<SocialCircle />} />
               </Route>
               <Route path='/settings' element={<SideNav />}>
                 <Route path='edit-profile' element={<EditProfile />} />

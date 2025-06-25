@@ -75,7 +75,7 @@ const BlogEditor = () => {
 
     setBlog({ ...blog, title: input.value });
   };
-  console.log(blog);
+ 
 
   const handlePublishEvent = () => {
     if (!banner.length) {

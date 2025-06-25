@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import AnimationWrapper from "../common/page-animation";
@@ -29,6 +29,7 @@ export const profileDataStructure = {
 };
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState(0);
+  const navigate = useNavigate();
   let { id: profileId } = useParams();
   let [profile, setProfile] = useState(profileDataStructure);
   let [loading, setLoading] = useState(true);
@@ -43,6 +44,12 @@ const ProfilePage = () => {
     userAuth,
     userAuth: { username, access_token },
   } = useContext(userContext);
+
+  useEffect(() => {
+    if(!access_token) {
+      navigate("/signin");
+    } 
+  }, [access_token]);
   useEffect(() => {
     if (profile?._id && userAuth?.following) {
       const isFollowing = userAuth.following.includes(profile._id);
@@ -77,7 +84,7 @@ const ProfilePage = () => {
         setLoading(false);
       });
   };
-  console.log(profile);
+  // console.log(profile);
   //get the following and followers
 
   useEffect(() => {
@@ -98,7 +105,7 @@ const ProfilePage = () => {
     if (profile_username) fetchFollowData();
   }, [profile_username, followingType,userAuth]);
 
-  console.log("followData", followData);
+  // console.log("followData", followData);
 
   const getBlogs = ({ page = 1, user_id }) => {
     user_id = user_id == undefined && blogs ? blogs.user_id : user_id;
@@ -117,7 +124,7 @@ const ProfilePage = () => {
           data_to_send: { author: user_id },
         });
         formattedData.user_id = user_id;
-        console.log(formattedData);
+        // console.log(formattedData);
 
         setBlogs(formattedData);
       })

@@ -111,16 +111,52 @@ const Navbar = () => {
     storeInSession("theme", newTheme);
   };
 
+  //pwa
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    };
+  }, []);
+  const handleLogoClick = async () => {
+    console.log("clicked logo");
+    
+  navigate('/'); // navigate home
+
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+
+    const choiceResult = await deferredPrompt.userChoice;
+    if (choiceResult.outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    } else {
+      console.log('User dismissed the install prompt');
+    }
+    setDeferredPrompt(null); // only once
+  }
+};
+
+
   return (
     <>
       <nav className='navbar z-50'>
-        <Link to='/'>
+        <div >
           {/* link tag dosent reload the page like the <A> tag</A> */}
           <img
             src={theme == "light" ? darklogo : lightlogo}
             className='flex-none w-10'
+            onClick={handleLogoClick} // Handle PWA install prompt
+            alt='logo'
           />
-        </Link>
+        </div>
         <div
           className={
             "absolute bg-white w-full left-0 top-full mt-0.5 border-b border-grey py-4 px-[5vw] md:border-0 md:block md:relative md:inset-0 md:p-0 md:w-auto md:show " +
@@ -237,10 +273,10 @@ const Navbar = () => {
             <div className='flex justify-between items-center mb-6'>
               <div>
                 <h2 className='text-xl font-bold mb-1'>
-                  🔥 {streaks?.streak?.count || 0} Streaks On Fire!
+                  🔥 {streaks?.streak?.count || 0} Streak Counted
                 </h2>
                 <p className='text-sm text-gray-500 dark:text-gray-400'>
-                  You're building a winning habit, one day at a time.
+                  You're building a winning habit, one day at a time,and become the highest ranker in the School.
                 </p>
               </div>
               <button
@@ -263,13 +299,13 @@ const Navbar = () => {
               </p>
 
               <p className='text-gray-700 dark:text-gray-300'>
-                Maintaining a streak helps you stay consistent and achieve more.
-                Every day counts!
+                Remember your streaks are your daily achievements. Each day
+                counts, and every effort matters. Keep pushing forward to crush your goals
               </p>
 
               <div className='space-y-2'>
                 <Link
-                  to='/leaderboard'
+                  to='/dashboard/leaderboard'
                   onClick={() => setShowOverlay(false)}
                   className='inline-block underline hover:text-blue-600 transition-colors'
                 >
@@ -281,8 +317,7 @@ const Navbar = () => {
             {/* Optional Footer CTA */}
             <div className='mt-6'>
               <p className='text-xs text-gray-400 text-center'>
-                Want to climb the leaderboard faster? Stay consistent and
-                complete your daily goals.
+                Note  : streaks are updated based on your last post , miss a day and it restarts.,sucks right?🥲
               </p>
             </div>
           </div>

@@ -48,7 +48,7 @@ const ManageBlogs = () => {
           counteRoute: "/user-written-blogs-count",
           data_to_send: { draft, query },
         });
-        console.log("draft =>", draft, formatedData);
+        // console.log("draft =>", draft, formatedData);
         if (draft) {
           setDrafts(formatedData);
         } else {
@@ -114,7 +114,7 @@ const ManageBlogs = () => {
           <>
             {blogs.results.map((blog, i) => {
               return (
-                <AnimationWrapper keyValue={i} transition={{ delay: i * 0.04 }}>
+                <AnimationWrapper key={i} transition={{ delay: i * 0.04 }}>
                   <ManagePublishedBlogCard
                     blog={{ ...blog, index: i, setateFunc: setBlogs }}
                   />
@@ -140,7 +140,7 @@ const ManageBlogs = () => {
           <>
             {drafts.results.map((blog, i) => {
               return (
-                <AnimationWrapper keyValue={i} transition={{ delay: i * 0.04 }}>
+                <AnimationWrapper key={i} transition={{ delay: i * 0.04 }}>
                   <ManageDraftBlog
                     blog={{ ...blog, index: i, setateFunc: setDrafts }}
                   />
