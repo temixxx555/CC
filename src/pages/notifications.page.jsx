@@ -69,7 +69,7 @@ const Notifications = () => {
     <div>
       <h1 className='max-md:hidden'>Recent Notifications</h1>
 
-      <div className='my-8 flex gap-6'>
+      <div className='my-8 flex-wrap gap-3 sm:gap-6'>
         {filters.map((filtername, i) => {
           return (
             <button

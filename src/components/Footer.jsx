@@ -14,7 +14,7 @@ export default function FooterNav() {
 
   const navItems = [
     { to: "/", icon: <Home className='w-6 h-6' />, label: "Home" },
-    { to: "/streak", icon: <Flame className='w-6 h-6' />, label: "Streak" },
+    { to: "/dashboard/social-circle", icon: <Flame className='w-6 h-6' />, label: "Streak" },
     {
       to: "/dashboard/leaderboard",
       icon: <Trophy className='w-6 h-6' />,
