@@ -9,9 +9,13 @@ import axios from "axios";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { storeInSession } from "../common/session";
 import FooterNav from "./Footer";
+
+// hook to provide search bar visibility
+import useSearchContext from "../hooks/useSearchContext";
+
 const Navbar = () => {
   let { theme, setTheme } = useContext(ThemeContext);
-  const [searchBoxVisibility, setSarchBoxVisibility] = useState(false);
+  const {searchBoxVisibility, setSearchBoxVisibility} = useSearchContext();
   const [userNavPanel, setuserNavPanel] = useState(false);
   const { userAuth, setUserAuth } = useContext(userContext);
   const overlayRef = useRef(null);
@@ -32,8 +36,9 @@ const Navbar = () => {
   const HandleSearchFunction = (e) => {
     let query = e.target.value;
 
-    if (e.keyCode == 13 && query.length) {
+    if (e.key == 'Enter' && query.length) {
       navigate(`/search/${query}`);
+      setSearchBoxVisibility(false);
     }
   };
   useEffect(() => {
@@ -144,7 +149,6 @@ const Navbar = () => {
   }
 };
 
-
   return (
     <>
       <nav className='navbar z-50'>
@@ -170,6 +174,7 @@ const Navbar = () => {
           md:pl-12
           '
             onKeyDown={HandleSearchFunction}
+            
           />
           <i className='fi fi-rr-search absolute right-[10%] md:pointer-events-none md:left-5 top-1/2 -translate-y-1/2 text-xl text-dark-grey '></i>
         </div>
@@ -177,7 +182,7 @@ const Navbar = () => {
         <div className='flex items-center gap-3 md:gap-6 ml-auto  '>
           <button
             className='md:hidden bg-grey w-12 h-12 rounded-full flex items-center justify-center '
-            onClick={() => setSarchBoxVisibility((currentval) => !currentval)}
+            onClick={() => setSearchBoxVisibility((currentval) => !currentval)}
           >
             <i className='fi fi-rr-search text-xl '></i>
           </button>

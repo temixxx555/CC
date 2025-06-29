@@ -20,6 +20,8 @@ import Leaderboard from "./pages/Leaderboard";
 import SocialCircle from "./pages/SocialCircle";
 import Ranking from "./pages/Ranking";
 import AssignRank from "./pages/AssignRank";
+import { SearchContextProvider } from "./contexts/searchcontext";
+import RouteChangeHandler from "./common/routechangehandler";
 
 export const userContext = createContext({});
 export const ThemeContext = createContext({});
@@ -31,6 +33,9 @@ const App = () => {
   const [theme, setTheme] = useState(() =>
     darkThemePreference() ? "dark" : "light"
   );
+  const entryLoader = document.getElementById('entry-loader');
+  if(entryLoader) entryLoader.remove();
+  
   useEffect(() => {
     try {
       let userInSession = lookInSession("user");
@@ -55,34 +60,37 @@ const App = () => {
       <Toaster position='top-right' reverseOrder={false} />
       <ThemeContext.Provider value={{ theme, setTheme }}>
         <userContext.Provider value={{ userAuth, setUserAuth }}>
-          {/* because i think it is the parent provider */}
-          <Routes>
-            <Route path='/editor' element={<Editor />} />
-            <Route path='/editor/:blog_id' element={<Editor />} />
-            <Route path='/' element={<Navbar />}>
-              {/* index means render the parent path which is / */}
-              <Route index element={<Home />} />
-              <Route path="/ranking" element={<Ranking />} />
-              <Route path="/admin" element={<AssignRank />} />
-              <Route path='/dashboard' element={<SideNav />}>
-                <Route path='blogs' element={<ManageBlogs />} />
-                <Route path='notifications' element={<Notifications />} />
-                <Route path='leaderboard' element={<Leaderboard />} />
-                <Route path='social-circle' element={<SocialCircle />} />
+          <SearchContextProvider>
+            <RouteChangeHandler />
+            {/* because i think it is the parent provider */}
+            <Routes>
+              <Route path='/editor' element={<Editor />} />
+              <Route path='/editor/:blog_id' element={<Editor />} />
+              <Route path='/' element={<Navbar />}>
+                {/* index means render the parent path which is / */}
+                <Route index element={<Home />} />
+                <Route path="/ranking" element={<Ranking />} />
+                <Route path="/admin" element={<AssignRank />} />
+                <Route path='/dashboard' element={<SideNav />}>
+                  <Route path='blogs' element={<ManageBlogs />} />
+                  <Route path='notifications' element={<Notifications />} />
+                  <Route path='leaderboard' element={<Leaderboard />} />
+                  <Route path='social-circle' element={<SocialCircle />} />
+                </Route>
+                <Route path='/settings' element={<SideNav />}>
+                  <Route path='edit-profile' element={<EditProfile />} />
+                  <Route path='change-password' element={<ChangePassword />} />
+                </Route>
+                <Route path='signin' element={<UserAuthForm type='sign-in' />} />
+                <Route path='signup' element={<UserAuthForm type='sign-up' />} />
+                <Route path='search/:query' element={<SearchPage />} />
+                <Route path='user/:id' element={<ProfilePage />} />
+                <Route path='blog/:blog_id' element={<BlogPage />} />
+                <Route path='test' element={<TestPage />} />
+                <Route path='*' element={<PageNotFound />} />
               </Route>
-              <Route path='/settings' element={<SideNav />}>
-                <Route path='edit-profile' element={<EditProfile />} />
-                <Route path='change-password' element={<ChangePassword />} />
-              </Route>
-              <Route path='signin' element={<UserAuthForm type='sign-in' />} />
-              <Route path='signup' element={<UserAuthForm type='sign-up' />} />
-              <Route path='search/:query' element={<SearchPage />} />
-              <Route path='user/:id' element={<ProfilePage />} />
-              <Route path='blog/:blog_id' element={<BlogPage />} />
-              <Route path='test' element={<TestPage />} />
-              <Route path='*' element={<PageNotFound />} />
-            </Route>
-          </Routes>
+            </Routes>
+          </SearchContextProvider>
         </userContext.Provider>
       </ThemeContext.Provider>
     </>
