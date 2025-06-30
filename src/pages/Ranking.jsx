@@ -57,55 +57,6 @@ const Ranking = () => {
     getTopRanked();
   }, []);
 
-  // Mock data for rankings
-  const topRanked = [
-    {
-      id: 1,
-      name: "Sarah M.",
-      votes: 1247,
-      image:
-        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.8KMKyFfNAwyrVf3OXuD2qgHaLH%26pid%3DApi&f=1&ipt=0c16a61d96e9a918ea09219d1246b08cd0064f0a9f6bbb70e80cec9ea6852cdd&ipo=images",
-    },
-    {
-      id: 2,
-      name: "Alex K.",
-      votes: 1156,
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
-    },
-    {
-      id: 3,
-      name: "Jamie L.",
-      votes: 987,
-      image:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
-    },
-  ];
-
-  const recentSubmissions = [
-    {
-      id: 4,
-      name: "Mike R.",
-      votes: 156,
-      image:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face",
-    },
-    {
-      id: 5,
-      name: "Emma T.",
-      votes: 89,
-      image:
-        "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=300&h=300&fit=crop&crop=face",
-    },
-    {
-      id: 6,
-      name: "David H.",
-      votes: 67,
-      image:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop&crop=face",
-    },
-  ];
-
   const handleFileSelect = (file) => {
     if (file && file.type.startsWith("image/")) {
       setSelectedFile(file);

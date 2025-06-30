@@ -26,7 +26,7 @@ export default function FooterNav() {
       label: "Messages",
     },
     {
-      to: "/dashboard/notifications",
+      to: user ? "/dashboard/notifications" : "/signup",
       icon: (
         <div className='relative'>
           <Bell className='w-6 h-6' />
@@ -53,9 +53,9 @@ export default function FooterNav() {
   return (
     <footer className='fixed bottom-0  inset-x-0 z-50 bg-white  shadow-md md:hidden'>
       <nav className='flex justify-between items-center h-16 px-2'>
-        {navItems.map((item) => (
+        {navItems.map((item,i) => (
           <Link
-            key={item.to}
+            key={i}
             to={item.to}
             className={`flex flex-col items-center justify-center transition-colors duration-150 ${
               location.pathname === item.to ? "text-purple" : "text-dark-grey"

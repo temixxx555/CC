@@ -103,6 +103,7 @@ const AssignRank = () => {
             className='mt-2 p-2 border rounded'
           >
             <option value=''>Select Rank</option>
+            <option value={0}>No Rank</option>
             <option value={1}>1st</option>
             <option value={2}>2nd</option>
             <option value={3}>3rd</option>

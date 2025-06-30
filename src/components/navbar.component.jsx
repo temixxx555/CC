@@ -32,8 +32,10 @@ const Navbar = () => {
   const HandleSearchFunction = (e) => {
     let query = e.target.value;
 
+
     if (e.keyCode == 13 && query.length) {
       navigate(`/search/${query}`);
+      setSarchBoxVisibility(false);
     }
   };
   useEffect(() => {
