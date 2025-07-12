@@ -134,3 +134,8 @@
 .ce-toolbar__plus:hover {
   color: #1d4ed8 !important; /* Tailwind 'blue-700' on hover */
 }
+@media screen and (max-width: 768px) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}
