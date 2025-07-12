@@ -124,3 +124,13 @@
 .cdx-settings-button[data-tune='stretched'] {
   display: none;
 }
+.ce-toolbar__plus,
+.ce-toolbar__settings-btn {
+  color: black !important; /* Tailwind 'blue-500' */
+  background-color: white;   /* optional: force white background */
+  border-radius: 4px;
+}
+
+.ce-toolbar__plus:hover {
+  color: #1d4ed8 !important; /* Tailwind 'blue-700' on hover */
+}

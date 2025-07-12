@@ -20,6 +20,8 @@ import Leaderboard from "./pages/Leaderboard";
 import SocialCircle from "./pages/SocialCircle";
 import Ranking from "./pages/Ranking";
 import AssignRank from "./pages/AssignRank";
+import ChatPage from "./pages/ChatPage";
+import { SocketProvider } from "./contexts/SocketContexts";
 
 export const userContext = createContext({});
 export const ThemeContext = createContext({});
@@ -56,19 +58,22 @@ const App = () => {
       <ThemeContext.Provider value={{ theme, setTheme }}>
         <userContext.Provider value={{ userAuth, setUserAuth }}>
           {/* because i think it is the parent provider */}
+          {/* socketProvider to connect with the socket io in the backend */}
+          <SocketProvider>
           <Routes>
             <Route path='/editor' element={<Editor />} />
             <Route path='/editor/:blog_id' element={<Editor />} />
             <Route path='/' element={<Navbar />}>
               {/* index means render the parent path which is / */}
               <Route index element={<Home />} />
-              <Route path="/ranking" element={<Ranking />} />
-              <Route path="/admin" element={<AssignRank />} />
+              <Route path='/ranking' element={<Ranking />} />
+              <Route path='/admin' element={<AssignRank />} />
               <Route path='/dashboard' element={<SideNav />}>
                 <Route path='blogs' element={<ManageBlogs />} />
                 <Route path='notifications' element={<Notifications />} />
                 <Route path='leaderboard' element={<Leaderboard />} />
                 <Route path='social-circle' element={<SocialCircle />} />
+                <Route path='messages' element={<ChatPage />} />
               </Route>
               <Route path='/settings' element={<SideNav />}>
                 <Route path='edit-profile' element={<EditProfile />} />
@@ -77,12 +82,14 @@ const App = () => {
               <Route path='signin' element={<UserAuthForm type='sign-in' />} />
               <Route path='signup' element={<UserAuthForm type='sign-up' />} />
               <Route path='search/:query' element={<SearchPage />} />
+              <Route path='messages' element={<ChatPage />} />
               <Route path='user/:id' element={<ProfilePage />} />
               <Route path='blog/:blog_id' element={<BlogPage />} />
               <Route path='test' element={<TestPage />} />
               <Route path='*' element={<PageNotFound />} />
             </Route>
           </Routes>
+          </SocketProvider>
         </userContext.Provider>
       </ThemeContext.Provider>
     </>

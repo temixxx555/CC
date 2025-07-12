@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Navigate, NavLink, Outlet } from "react-router-dom";
 import { userContext } from "../App";
-import { Trophy,UserCircle,Users } from "lucide-react";
+import { MessageCircle, Trophy,UserCircle,Users } from "lucide-react";
 
 const SideNav = () => {
   const {
@@ -109,6 +109,14 @@ const SideNav = () => {
             >
            <Users className='w-4 h-5' />
               Social Circle
+            </NavLink>
+            <NavLink
+              to='/messages'
+              onClick={(e) => setPageState(e.target.innerText)}
+              className='sidebar-link -mt-3'
+            >
+           <MessageCircle className='w-4 h-5' />
+              Chats
             </NavLink>
             <NavLink
               to='/editor'

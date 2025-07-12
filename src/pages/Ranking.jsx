@@ -119,13 +119,17 @@ const Ranking = () => {
     }
     if (selectedFile) {
       // Handle submission logic here
+      const toastId = toast.loading("Submitting your photo...");
       const imageUrl = await UploadImage(selectedFile);
-      console.log("Image URL is gotten here:", imageUrl);
+      // console.log("Image URL is gotten here:", imageUrl);
 
       if (!imageUrl) {
+        toast.dismiss(toastId);
         return;
       }
-      toast.success("Photo submitted successfully!");
+      
+      toast.dismiss(toastId);
+     toast.success("Photo submitted successfully!");
       // Reset the form
       setSelectedFile(null);
       setPreviewUrl(null);

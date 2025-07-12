@@ -47,7 +47,7 @@ const BlogEditor = () => {
         console.log("No file selected");
         return;
       }
-
+      const toastId = toast.loading("Submitting your photo...");
       const formData = new FormData();
       formData.append("image", img);
 
@@ -57,9 +57,12 @@ const BlogEditor = () => {
         { headers: { "Content-Type": "multipart/form-data" } }
       );
       setBlog({ ...blog, banner: data.imageUrl });
+      toast.dismiss(toastId);
       toast.success("Uploaded");
     } catch (error) {
       console.error("Image upload failed:", error);
+      toast.dismiss(toastId);
+
       toast.error("Image upload failed:");
     }
   };
@@ -75,7 +78,6 @@ const BlogEditor = () => {
 
     setBlog({ ...blog, title: input.value });
   };
- 
 
   const handlePublishEvent = () => {
     if (!banner.length) {
