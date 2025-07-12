@@ -16,7 +16,7 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (access_token) {
-      socket.current = io("http://localhost:3000" ,{
+      socket.current = io(import.meta.env.VITE_SERVER_DOMAIN ,{
         withCredentials: true,
         query: {userId},
       });
