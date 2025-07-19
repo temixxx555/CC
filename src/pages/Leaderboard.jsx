@@ -93,7 +93,9 @@ const Leaderboard = () => {
         <div className='max-w-6xl mx-auto py-8 px-4'>
           {/* Header */}
           <div className='text-center mb-8'>
-            <h1 className='text-4xl font-bold text-dark-grey underline mb-4'>School  Leaders</h1>
+            <h1 className='text-4xl font-bold text-dark-grey underline mb-4'>
+              School Leaders
+            </h1>
             <p className='text-dark-grey max-w-4xl mx-auto leading-relaxed'>
               Rankings are based on{" "}
               {query === "followers" ? "follower count" : "activity streak"}.
@@ -139,72 +141,74 @@ const Leaderboard = () => {
 
           {/* Leaderboard Table */}
           <div className='bg-white rounded-lg border border-gray-200 overflow-hidden'>
-             <div className="overflow-x-auto">
-            <table className='w-full min-w-[600px]'>
-              <thead className='bg-white border-b border-gray-200'>
-                <tr>
-                  <th className='text-left py-4 px-6 text-sm font-semibold text-black w-20'>
-                    Position
-                  </th>
-                  <th className='text-left py-4 px-6 text-sm font-semibold text-black'>
-                    Full Name
-                  </th>
-                  <th className='text-left py-4 px-6 text-sm font-semibold text-black'>
-                    Username
-                  </th>
-                  <th className='text-right py-4 px-6 text-sm font-semibold text-black w-32'>
-                    {query === "followers" ? "Followers" : "Streak"}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className='divide-y divide-gray-100'>
-                {sortedUsers.map((user, idx) => (
-                  <tr
-                    key={user._id}
-                    className={`transition-colors 
-    ${idx < 3 ? "bg-orange-400" : ""} 
-    ${
-      user.username === userInLeaderboard ? "bg-blue-100" : ""
-    }`}
-                  >
-                    <td className='py-4 px-6'>
-                      <span className='text-lg font-bold text-dark-grey'>
-                        {getMedal(user.position)}
-                      </span>
-                    </td>
-                    <td className='py-4 px-6'>
-                      <div className='flex items-center gap-4'>
-                        <img
-                          src={user.profile_img}
-                          alt={user.username}
-                          className='w-10 h-10 rounded-full border-2 border-gray-200'
-                        />
-                        <span className='font-semibold text-dark-grey text-base'>
-                          {user.fullname}
-                        </span>
-                      </div>
-                    </td>
-                    <td className='py-4 px-6'>
-                      <Link
-                        to={`/user/${user.username}`}
-                        className='text-dark-grey hover:underline'
-                      >
-                        {user.username}
-                      </Link>
-                    </td>
-                    <td className='py-4 px-6 text-right'>
-                      <span className='text-lg font-bold text-dark-grey font-mono'>
-                        {formatNumber(
-                          query === "followers"
-                            ? user.followersCount
-                            : user.streak.count
-                        )}
-                      </span>
-                    </td>
+            <div className='overflow-x-auto'>
+              <table className='w-full min-w-[600px]'>
+                <thead className='bg-white border-b border-gray-200'>
+                  <tr>
+                    <th className='text-left py-4 px-6 text-sm font-semibold text-black w-20'>
+                      Position
+                    </th>
+                    <th className='text-left py-4 px-6 text-sm font-semibold text-black'>
+                      Full Name
+                    </th>
+                    <th className='text-left py-4 px-6 text-sm font-semibold text-black'>
+                      Username
+                    </th>
+                    <th className='text-right py-4 px-6 text-sm font-semibold text-black w-32'>
+                      {query === "followers" ? "Followers" : "Streak"}
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className='divide-y divide-gray-100'>
+                  {sortedUsers.map((user, idx) => (
+                    <tr
+                      key={user._id}
+                      className={`transition-colors 
+    ${idx < 3 ? "bg-orange-400" : ""} 
+    ${user.username === userInLeaderboard ? "bg-gray-800" : ""}`}
+                    >
+                      <td className='py-4 px-6'>
+                        <span className='text-lg font-bold text-dark-grey'>
+                          {getMedal(user.position)}
+                        </span>
+                      </td>
+                      <Link to={`/user/${user.username}`}>
+                        <td className='py-4 px-6'>
+                          <div className='flex items-center gap-4'>
+                            <img
+                              src={user.profile_img}
+                              alt={user.username}
+                              className='w-10 h-10 rounded-full border-2 border-gray-200'
+                            />
+
+                            <span className='font-semibold text-dark-grey text-base'>
+                              {user.fullname}
+                            </span>
+                          </div>
+                        </td>
+                      </Link>
+
+                      <td className='py-4 px-6'>
+                        <Link
+                          to={`/user/${user.username}`}
+                          className='text-dark-grey hover:underline'
+                        >
+                          {user.username}
+                        </Link>
+                      </td>
+                      <td className='py-4 px-6 text-right'>
+                        <span className='text-lg font-bold text-dark-grey font-mono'>
+                          {formatNumber(
+                            query === "followers"
+                              ? user.followersCount
+                              : user.streak.count
+                          )}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
 

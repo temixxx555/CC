@@ -47,30 +47,44 @@ if(access_token){
 }
 },[])
 
-  const handleLiking = () => {
-    if (access_token) {
-      setLikedByUser((prevVal) => !prevVal);
-      !isLikedByUser ? total_likes++ : total_likes--;
-      setBlog({ ...blog, activity: { ...activity, total_likes } });
+const handleLiking = () => {
+  if (!access_token) {
+    return toast.error("Please Login to like the blog");
+  }
 
-      axios
-        .post(
-          import.meta.env.VITE_SERVER_DOMAIN + "/like-blog",
-          { _id, islikedByUser:isLikedByUser },
-          {
-            headers: {
-              Authorization: `Bearer ${access_token}`,
-            },
-          }
-        )
-        .then(({ data }) => {
-          // console.log(data);
-        })
-        .catch((err) => console.log(err));
-    } else {
-      toast.error("Please Login to like the blog");
-    }
-  };
+  const optimisticLiked = !isLikedByUser;
+  const newTotalLikes = optimisticLiked ? total_likes + 1 : total_likes - 1;
+
+  setLikedByUser(optimisticLiked);
+  setBlog({ ...blog, activity: { ...activity, total_likes: newTotalLikes } });
+
+  axios
+    .post(
+      import.meta.env.VITE_SERVER_DOMAIN + "/like-blog",
+      { _id, islikedByUser:isLikedByUser },
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    )
+    .then(({ data: { liked_by_user } }) => {
+      if (liked_by_user !== optimisticLiked) {
+        // Revert if backend disagrees
+        setLikedByUser(liked_by_user);
+        const correctedLikes = liked_by_user ? total_likes + 1 : total_likes - 1;
+        setBlog({ ...blog, activity: { ...activity, total_likes: correctedLikes } });
+      }
+    })
+    .catch((err) => {
+      // Revert on failure
+      toast.error("Failed to like blog. Try again.");
+      setLikedByUser(isLikedByUser);
+      setBlog({ ...blog, activity: { ...activity, total_likes } });
+      console.error(err);
+    });
+};
+
   return (
     <>
       <hr className='border-grey my-2' />

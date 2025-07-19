@@ -28,7 +28,7 @@ const ChatPage = () => {
     userAuth: { access_token, userId },
   } = useContext(userContext);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showSidebar, setShowSidebar] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(true);
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [showmodal, setShowModal] = useState(false);
   const [users, SetshowUsers] = useState([]); //so i can add contacts
@@ -36,6 +36,8 @@ const ChatPage = () => {
   const fileInputRef = useRef(null);
   const [testMessage, setTestMessage] = useState([]);
   const [chats, setChat] = useState([]);
+
+
 
   //scroll to bottom when new message arrives
   const messagesEndRef = useRef(null);
@@ -97,6 +99,26 @@ const ChatPage = () => {
   fetchMessages();
 }, [currentChat?.id, access_token, userId]);
 
+
+let [allusers, setallusers] = useState(0);
+
+  const getallUsers = () => {
+     axios
+      .get(import.meta.env.VITE_SERVER_DOMAIN + "/all-users")
+      .then(({ data }) => {
+        setallusers(data?.count);
+        // console.log(data.count);
+        
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+   useEffect(()=>{
+      getallUsers()
+      // console.log("i am getting called");
+      
+    },[])
   //fetch contacts
   useEffect(() => {
     const fetchContacts = async () => {
@@ -127,7 +149,6 @@ const ChatPage = () => {
             minute: "2-digit",
           }),
         }));
-        console.log("contacts fetched:", formatedMessages);
         // Add static group manually
         const staticGroup = {
           id: "global", // or some unique string you’ll use in group message logic
@@ -180,7 +201,6 @@ const ChatPage = () => {
           avatar: msg.sender.personal_info.fullname?.charAt(0).toUpperCase(),
         };
         setTestMessage((prev) => [...prev, formattedMessage]);
-        console.log("New message received:", msg);
       }
     };
 
@@ -257,7 +277,6 @@ useEffect(() => {
         }
         setMessage("");
       }
-      console.log("Message sent successfully");
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -318,12 +337,9 @@ useEffect(() => {
           }
         );
         if (data?.users.length > 0) {
-          console.log("Search gotten:", data);
           SetshowUsers(data?.users);
-          console.log("Users:", users);
         } else {
           SetshowUsers([]);
-          console.log("Search results:", { data });
         }
       }
     } catch (error) {
@@ -455,12 +471,12 @@ const formatLastSeen = (timestamp) => {
 
 
   return (
-    <div className='w-full h-[calc(100vh-10rem)]  md:h-[calc(100vh-6rem)] max-w-screen-2xl mx-auto overflow-hidden flex'>
+    <div className='w-full h-[calc(100vh-10rem)]   md:h-[calc(100vh-6rem)] max-w-screen-2xl mx-auto overflow-hidden flex'>
       {/* Sidebar */}
       <div
         className={`${
           showSidebar ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 w-80 bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out lg:w-80`}
+        } lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 w-full bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out lg:w-80`}
       >
         {/* Header */}
         <div className='p-4 border-b border-gray-200'>
@@ -501,7 +517,7 @@ const formatLastSeen = (timestamp) => {
 
         {/* Chat List */}
         {!showmodal ? (
-          <div className='flex-1 overflow-y-auto'>
+          <div className='flex-1 overflow-y-auto scrollbar-hide'>
             {filteredChats?.map((chat) => (
               <div
                 key={chat.id}
@@ -666,7 +682,7 @@ const formatLastSeen = (timestamp) => {
                     </p>
                     <p className='text-sm text-gray-500 truncate'>
                       {currentChat.type === "group"
-                        ? `${currentChat.members} members`
+                        ? `${allusers} members`
                         : currentChat.online
                         ? "Online"
                         : formatLastSeen(currentChat.lastSeen)}
@@ -681,7 +697,7 @@ const formatLastSeen = (timestamp) => {
             </div>
 
             {/* Messages */}
-            <div className='flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4'>
+            <div className='flex-1  scrollbar-hide overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4'>
               {Object.entries(groupedMessages).map(([date, messages]) => (
                 <div key={date}>
                   <div className='text-center text-xs text-gray-500 my-4'>
@@ -690,7 +706,7 @@ const formatLastSeen = (timestamp) => {
                   {messages.map((msg) => (
                     <div
                       key={msg.id}
-                      className={`flex ${
+                      className={`flex mb-4 ${
                         msg.isOwn ? "justify-end" : "justify-start"
                       }`}
                     >
@@ -706,7 +722,11 @@ const formatLastSeen = (timestamp) => {
                         )}
 
                         <div
-                          className={`px-3 sm:px-4 py-2 rounded-2xl ${
+                          className={`px-3  ${
+                            msg.messageType === "file" && msg.fileUrl
+                              ? "bg-transparent"
+                              : " "
+                          } sm:px-4 py-2 rounded-2xl ${
                             msg.isOwn
                               ? "bg-black text-white"
                               : "bg-white text-black"

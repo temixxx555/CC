@@ -1,236 +1,188 @@
-import React, { useState, useEffect } from 'react';
-import FooterNav from '../components/Footer';
+import React, { useState } from 'react';
+import { Send, MessageCircle, Eye, Heart, Share2 } from 'lucide-react';
 
-const TestPage = () => {
-  // Tour state: tracks current step and whether to show tour
-  const [tourStep, setTourStep] = useState(0);
-  const [showTour, setShowTour] = useState(false);
-
-  // Check if user has seen tour using localStorage
-  useEffect(() => {
-    const hasSeenTour = localStorage.getItem('hasSeenTour');
-    if (!hasSeenTour) {
-      setShowTour(true);
-      localStorage.setItem('hasSeenTour', 'true');
+const AnonymousPage = () => {
+  const [messages, setMessages] = useState([
+    {
+      id: 1,
+      text: "Anyone else feeling like they're just going through the motions lately? Like life is on autopilot?",
+      timestamp: "2h ago",
+      likes: 23,
+      views: 156,
+      color: "bg-purple-500"
+    },
+    {
+      id: 2,
+      text: "I finally told my crush how I feel... they said they felt the same way! Sometimes taking risks pays off 💜",
+      timestamp: "4h ago",
+      likes: 89,
+      views: 234,
+      color: "bg-pink-500"
+    },
+    {
+      id: 3,
+      text: "Does anyone else lie awake at 3am thinking about that embarrassing thing you did 5 years ago?",
+      timestamp: "6h ago",
+      likes: 156,
+      views: 412,
+      color: "bg-blue-500"
+    },
+    {
+      id: 4,
+      text: "I've been pretending to understand my job for 3 months now. Imposter syndrome is real.",
+      timestamp: "8h ago",
+      likes: 67,
+      views: 298,
+      color: "bg-green-500"
+    },
+    {
+      id: 5,
+      text: "Just wanted to say: you're doing better than you think you are. Keep going.",
+      timestamp: "10h ago",
+      likes: 234,
+      views: 567,
+      color: "bg-yellow-500"
+    },
+    {
+      id: 6,
+      text: "Sometimes I wonder if my pets judge me for talking to them like they're humans... but then I remember they probably do the same thing.",
+      timestamp: "12h ago",
+      likes: 45,
+      views: 189,
+      color: "bg-indigo-500"
     }
-  }, []);
+  ]);
 
-  // Tour steps configuration
-  const tourSteps = [
-    {
-      target: 'events-link',
-      title: 'Discover Events',
-      description: 'Find campus events like hackathons and workshops.',
-    },
-    {
-      target: 'projects-link',
-      title: 'Collaborate on Projects',
-      description: 'Team up with peers to build projects.',
-    },
-    {
-      target: 'resources-link',
-      title: 'Access Resources',
-      description: 'Download study materials and tutorials.',
-    },
-    {
-      target: 'get-started-btn',
-      title: 'Get Started',
-      description: 'Sign up to unlock all features.',
-    },
-  ];
+  const [newMessage, setNewMessage] = useState('');
 
-  // Handle tour navigation
-  const nextTourStep = () => {
-    if (tourStep < tourSteps.length - 1) {
-      setTourStep(tourStep + 1);
-    } else {
-      setShowTour(false);
-      setTourStep(0);
+  const handleSendMessage = () => {
+    if (newMessage.trim()) {
+      const colors = ["bg-purple-500", "bg-pink-500", "bg-blue-500", "bg-green-500", "bg-yellow-500", "bg-indigo-500", "bg-red-500"];
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      
+      const message = {
+        id: messages.length + 1,
+        text: newMessage,
+        timestamp: "now",
+        likes: 0,
+        views: 1,
+        color: randomColor
+      };
+      
+      setMessages([message, ...messages]);
+      setNewMessage('');
     }
   };
 
-  // Toggle hamburger menu for mobile
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  // Reusable tooltip component
-  const TooltipLink = ({ id, label, tooltipText, href }) => {
-    const [isTooltipVisible, setIsTooltipVisible] = useState(false);
-
-    return (
-      <div className="relative inline-block">
-        <a
-          id={id}
-          href={href}
-          className={`px-3 py-2 text-gray-700 hover:text-indigo-600 ${tourStep && tourSteps[tourStep].target === id ? 'ring-2 ring-indigo-600' : ''}`}
-          onClick={() => setIsTooltipVisible(!isTooltipVisible)}
-          onMouseEnter={() => setIsTooltipVisible(true)}
-          onMouseLeave={() => setIsTooltipVisible(false)}
-        >
-          {label}
-        </a>
-        {isTooltipVisible && (
-          <span className="absolute z-20 top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-800 text-white text-xs rounded shadow-lg max-w-xs">
-            {tooltipText}
-          </span>
-        )}
-      </div>
-    );
+  const handleLike = (id) => {
+    setMessages(messages.map(msg => 
+      msg.id === id ? { ...msg, likes: msg.likes + 1 } : msg
+    ));
   };
 
-  const TooltipButton = ({ id, label, tooltipText }) => {
-    const [isTooltipVisible, setIsTooltipVisible] = useState(false);
-
-    return (
-      <div className="relative inline-block">
-        <button
-          id={id}
-          className={`px-6 py-3 bg-white text-indigo-600 font-semibold rounded-md hover:bg-gray-100 ${tourStep && tourSteps[tourStep].target === id ? 'ring-2 ring-indigo-600' : ''}`}
-          onClick={() => setIsTooltipVisible(!isTooltipVisible)}
-          onMouseEnter={() => setIsTooltipVisible(true)}
-          onMouseLeave={() => setIsTooltipVisible(false)}
-        >
-          {label}
-        </button>
-        {isTooltipVisible && (
-          <span className="absolute z-20 top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-800 text-white text-xs rounded shadow-lg max-w-xs">
-            {tooltipText}
-          </span>
-        )}
-      </div>
-    );
-  };
-
-  const TooltipCard = ({ title, description, tooltipText }) => {
-    const [isTooltipVisible, setIsTooltipVisible] = useState(false);
-
-    return (
-      <div
-        className="relative bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition"
-        onClick={() => setIsTooltipVisible(!isTooltipVisible)}
-        onMouseEnter={() => setIsTooltipVisible(true)}
-        onMouseLeave={() => setIsTooltipVisible(false)}
-      >
-        <h4 className="text-xl font-semibold text-gray-900">{title}</h4>
-        <p className="mt-2 text-gray-600">{description}</p>
-        {isTooltipVisible && (
-          <span className="absolute z-20 top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-800 text-white text-xs rounded shadow-lg max-w-xs">
-            {tooltipText}
-          </span>
-        )}
-      </div>
-    );
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Navbar */}
-      <nav className="bg-white shadow-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-indigo-600">CampusConnect</h1>
+    <div className="min-h-screen bg-gray-900 text-white">
+      {/* Header */}
+      <div className="bg-gray-800 border-b border-gray-700 px-4 py-4 sticky top-0 z-10">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+              <MessageCircle className="w-5 h-5 text-white" />
             </div>
-            <div className="hidden sm:flex space-x-4">
-              <TooltipLink id="events-link" href="/events" label="Events" tooltipText="Discover campus events" />
-              <TooltipLink id="projects-link" href="/projects" label="Projects" tooltipText="Collaborate on projects" />
-              <TooltipLink id="resources-link" href="/resources" label="Resources" tooltipText="Access study materials" />
-              <a href="/login" className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-                Login
-              </a>
-            </div>
-            {/* Hamburger Menu for Mobile */}
-            <button
-              className="sm:hidden text-gray-700 focus:outline-none"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            <h1 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Anonymous
+            </h1>
+          </div>
+          <div className="text-sm text-gray-400">
+            {messages.length} messages
+          </div>
+        </div>
+      </div>
+
+      {/* Messages Container */}
+      <div className="max-w-2xl mx-auto px-4 py-6 pb-32">
+        <div className="space-y-4">
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className="bg-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-gray-600 transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d={isMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
-                />
-              </svg>
+              {/* Message Header */}
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <div className={`w-3 h-3 rounded-full ${message.color}`}></div>
+                  <span className="text-sm text-gray-400">Anonymous</span>
+                </div>
+                <span className="text-xs text-gray-500">{message.timestamp}</span>
+              </div>
+
+              {/* Message Content */}
+              <p className="text-gray-100 leading-relaxed mb-4 text-base">
+                {message.text}
+              </p>
+
+              {/* Message Actions */}
+              <div className="flex items-center justify-between pt-3 border-t border-gray-700">
+                <div className="flex items-center space-x-6">
+                  <button
+                    onClick={() => handleLike(message.id)}
+                    className="flex items-center space-x-2 text-gray-400 hover:text-pink-400 transition-colors duration-200 group"
+                  >
+                    <Heart className="w-4 h-4 group-hover:fill-current" />
+                    <span className="text-sm">{message.likes}</span>
+                  </button>
+                  
+                  <div className="flex items-center space-x-2 text-gray-400">
+                    <Eye className="w-4 h-4" />
+                    <span className="text-sm">{message.views}</span>
+                  </div>
+                </div>
+
+                <button className="text-gray-400 hover:text-blue-400 transition-colors duration-200">
+                  <Share2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Input Area - Fixed at bottom */}
+      <div className="fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 px-4 py-4">
+        <div className="max-w-2xl mx-auto">
+          <div className="flex items-end space-x-3">
+            <div className="flex-1">
+              <textarea
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Share your thoughts anonymously..."
+                className="w-full bg-gray-700 text-white placeholder-gray-400 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none border border-gray-600 min-h-[50px] max-h-32"
+                rows="1"
+              />
+            </div>
+            <button
+              onClick={handleSendMessage}
+              disabled={!newMessage.trim()}
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-gray-600 disabled:to-gray-600 text-white p-3 rounded-xl transition-all duration-200 disabled:cursor-not-allowed flex items-center justify-center min-w-[50px]"
+            >
+              <Send className="w-5 h-5" />
             </button>
           </div>
-          {/* Mobile Menu */}
-          {isMenuOpen && (
-            <div className="sm:hidden flex flex-col space-y-2 pb-4">
-              <TooltipLink id="events-link" href="/events" label="Events" tooltipText="Discover campus events" />
-              <TooltipLink id="projects-link" href="/projects" label="Projects" tooltipText="Collaborate on projects" />
-              <TooltipLink id="resources-link" href="/resources" label="Resources" tooltipText="Access study materials" />
-              <a href="/login" className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-                Login
-              </a>
-            </div>
-          )}
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <section className="bg-indigo-600 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-extrabold sm:text-5xl">
-            Connect, Collaborate, Succeed
-          </h2>
-          <p className="mt-4 text-lg">
-            Join CampusConnect to discover events, collaborate on projects, and access resources.
-          </p>
-          <TooltipButton id="get-started-btn" label="Get Started" tooltipText="Sign up to explore all features" />
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            Why CampusConnect?
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            <TooltipCard
-              title="Event Discovery"
-              description="Find and join campus events like hackathons and workshops."
-              tooltipText="Browse events by category"
-            />
-            <TooltipCard
-              title="Project Collaboration"
-              description="Team up with peers to build projects and contribute to open source."
-              tooltipText="Create or join project teams"
-            />
-            <TooltipCard
-              title="Resource Sharing"
-              description="Access study materials, question papers, and tutorials."
-              tooltipText="Download or upload resources"
-            />
+          <div className="text-xs text-gray-500 mt-2 text-center">
+            Your message will be posted anonymously
           </div>
         </div>
-      </section>
-
-      {/* Footer */}
-    <FooterNav />
-
-      {/* Tour Overlay */}
-      {showTour && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg max-w-sm w-full mx-4">
-            <h3 className="text-xl font-semibold text-gray-900">{tourSteps[tourStep].title}</h3>
-            <p className="mt-2 text-gray-600">{tourSteps[tourStep].description}</p>
-            <div className="mt-4 flex justify-between items-center">
-              <span className="text-sm text-gray-500">
-                {tourStep + 1} of {tourSteps.length}
-              </span>
-              <button
-                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-                onClick={nextTourStep}
-              >
-                {tourStep === tourSteps.length - 1 ? 'Finish' : 'Next'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 };
 
-export default TestPage;
+export default AnonymousPage;

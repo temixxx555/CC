@@ -27,6 +27,7 @@
     "@lottiefiles/dotlottie-react": "^0.14.1",
     "@weekwood/editorjs-video": "^1.0.2",
     "axios": "^1.4.0",
+    "dayjs": "^1.11.13",
     "editorjs-video": "^1.1.0",
     "firebase": "^10.1.0",
     "framer-motion": "^10.13.0",

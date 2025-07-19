@@ -21,7 +21,7 @@ export default function FooterNav() {
       label: "Ranks",
     },
     {
-      to: "/messages",
+      to: user ? "/messages" : "",
       icon: <MessageCircle className='w-6 h-6' />,
       label: "Messages",
     },

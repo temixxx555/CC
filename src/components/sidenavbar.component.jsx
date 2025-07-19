@@ -34,8 +34,8 @@ const SideNav = () => {
   ) : (
     <>
       <section className='relative flex gap-7 py-0 m-0 max-md:flex-col'>
-        <div className='sticky top-[80px] '>
-          <div className='md:hidden bg-white py-1 border-b border-grey flex flex-nowrap overflow-x-auto'>
+        <div className='sticky top-[80px] scrollbar-hide'>
+          <div className='md:hidden scrollbar-hide bg-white py-1 border-b border-grey flex flex-nowrap overflow-x-auto'>
             <button
               ref={sideBarIcon}
               className='p-5 capitalize'
@@ -57,7 +57,7 @@ const SideNav = () => {
           </div>
           <div
             className={
-              "min-w-[200px] md:w-[250px] h-[calc(100vh-80px)] md:h-[calc(100vh-96px)] md:sticky top-[96px] overflow-y-auto p-6 md:pr-0 md:border-grey md:border-r absolute max-md:top-[64px] bg-white max-md:w-[calc(100%+ 80px)] max-md:px-16 max-md:-ml-7 duration-500 " +
+              "min-w-[200px] md:w-[250px] scrollbar-hide h-[calc(100vh-80px)] md:h-[calc(100vh-96px)] md:sticky top-[96px] overflow-y-auto p-6 md:pr-0 md:border-grey md:border-r absolute max-md:top-[64px] bg-white max-md:w-[calc(100%+ 80px)] max-md:px-16 max-md:-ml-7 duration-500 " +
               (!showSideNav
                 ? "max-md:opacity-0 max-md:pointer-events-none"
                 : "opacity-100 ponter-events-auto")
@@ -149,7 +149,7 @@ const SideNav = () => {
             </NavLink>
           </div>
         </div>
-        <div className='max-md:-mt-8 mt-5 w-full md:hidden'>
+        <div className='max-md:-mt-8 mt-5 w-full md:hidden '>
           {!showSideNav ? <Outlet /> : ""}
         </div>
         <div className='max-md:-mt-8 mt-5 w-full hidden md:block'>

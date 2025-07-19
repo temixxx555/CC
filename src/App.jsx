@@ -22,6 +22,10 @@ import Ranking from "./pages/Ranking";
 import AssignRank from "./pages/AssignRank";
 import ChatPage from "./pages/ChatPage";
 import { SocketProvider } from "./contexts/SocketContexts";
+import AnnonymousPage from "./pages/AnnonymousPage";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import ViewMessage from "./pages/viewMessage";
 
 export const userContext = createContext({});
 export const ThemeContext = createContext({});
@@ -74,6 +78,7 @@ const App = () => {
                 <Route path='leaderboard' element={<Leaderboard />} />
                 <Route path='social-circle' element={<SocialCircle />} />
                 <Route path='messages' element={<ChatPage />} />
+                <Route path='anonymous-message' element={<AnnonymousPage />} />
               </Route>
               <Route path='/settings' element={<SideNav />}>
                 <Route path='edit-profile' element={<EditProfile />} />
@@ -81,8 +86,11 @@ const App = () => {
               </Route>
               <Route path='signin' element={<UserAuthForm type='sign-in' />} />
               <Route path='signup' element={<UserAuthForm type='sign-up' />} />
+              <Route path='forgot-password' element={<ForgotPassword />} />
+              <Route path='reset-password/:token' element={<ResetPassword />} />
               <Route path='search/:query' element={<SearchPage />} />
               <Route path='messages' element={<ChatPage />} />
+              <Route path='/anonymous/:id' element={<ViewMessage />} />
               <Route path='user/:id' element={<ProfilePage />} />
               <Route path='blog/:blog_id' element={<BlogPage />} />
               <Route path='test' element={<TestPage />} />

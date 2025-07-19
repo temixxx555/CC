@@ -21,7 +21,6 @@ const Editor = () => {
   let {
     userAuth: { access_token },
   } = useContext(userContext);
-  console.log(access_token);
 
   useEffect(() => {
     if (!blog_id) {

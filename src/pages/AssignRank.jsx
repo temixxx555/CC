@@ -53,7 +53,6 @@ const AssignRank = () => {
   const handleSubmit = async () => {
     try {
       // FIXED: Added full URL
-      console.log("Submitting ranks:", ranks);
 
       if (Object.keys(ranks).length === 0) {
         toast.error("Please assign ranks before submitting");

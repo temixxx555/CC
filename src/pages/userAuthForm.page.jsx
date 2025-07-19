@@ -9,7 +9,6 @@ import { storeInSession } from "../common/session";
 import { userContext } from "../App";
 import { authWithGoogle } from "../common/firebase";
 
-
 const UserAuthForm = ({ type }) => {
   const [loading, setLoading] = useState(false);
   let {
@@ -117,8 +116,20 @@ const UserAuthForm = ({ type }) => {
               icon='fi-rr-key'
             />
 
+            {type === "sign-in" && (
+              <p>
+                {" "}
+                <Link
+                  className='underline text-black text-xl ml-1'
+                  to='/forgot-password'
+                >
+                  Forgot Your Password?
+                </Link>
+              </p>
+            )}
+
             <button
-              className='btn-dark mt-14 '
+              className='btn-dark mt-10 '
               type='submit'
               onClick={handleSubmitFunction}
             >
