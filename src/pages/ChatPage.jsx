@@ -690,7 +690,7 @@ const formatLastSeen = (timestamp) => {
                   </div>
                 </div>
 
-                <div className='flex items-center space-x-1 sm:space-x-2'>
+                <div className=' hidden md:block  items-center space-x-1 sm:space-x-2'>
                   <p>Block</p>
                 </div>
               </div>
@@ -711,7 +711,7 @@ const formatLastSeen = (timestamp) => {
                       }`}
                     >
                       <div
-                        className={`flex max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg ${
+                        className={`flex max-w-full sm:max-w-sm md:max-w-md p-2 lg:max-w-lg ${
                           msg.isOwn ? "flex-row-reverse" : "flex-row"
                         }`}
                       >

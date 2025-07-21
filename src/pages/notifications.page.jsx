@@ -75,7 +75,7 @@ const Notifications = () => {
             <button
               onClick={handleFilterFunction}
               className={
-                "py-2 text-[12px] md:text-[15px] " + (filter == filtername ? "btn-dark" : "btn-light ")
+                "py-2 text-[13px] md:text-[15px] " + (filter == filtername ? "btn-dark" : "btn-light ")
               }
               key={i}
             >
