@@ -90,6 +90,7 @@ const App = () => {
               <Route path='reset-password/:token' element={<ResetPassword />} />
               <Route path='search/:query' element={<SearchPage />} />
               <Route path='messages' element={<ChatPage />} />
+              <Route path='messages/:id' element={<ChatPage />} />
               <Route path='/anonymous/:id' element={<ViewMessage />} />
               <Route path='user/:id' element={<ProfilePage />} />
               <Route path='blog/:blog_id' element={<BlogPage />} />

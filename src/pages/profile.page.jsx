@@ -42,13 +42,13 @@ const ProfilePage = () => {
   let {
     setUserAuth,
     userAuth,
-    userAuth: { username, access_token },
+    userAuth: { username, access_token, userId },
   } = useContext(userContext);
 
   useEffect(() => {
-    if(!access_token) {
+    if (!access_token) {
       navigate("/signin");
-    } 
+    }
   }, [access_token]);
   useEffect(() => {
     if (profile?._id && userAuth?.following) {
@@ -103,7 +103,7 @@ const ProfilePage = () => {
     };
 
     if (profile_username) fetchFollowData();
-  }, [profile_username, followingType,userAuth]);
+  }, [profile_username, followingType, userAuth]);
 
   // console.log("followData", followData);
 
@@ -235,9 +235,15 @@ const ProfilePage = () => {
                   Edit Profile
                 </Link>
               ) : (
-                <button className='btn-dark py-2' onClick={FollowAndUnfollow}>
-                  {Following ? "Unfollow" : "follow"}
-                </button>
+                <>
+                  <button className='btn-dark py-2' onClick={FollowAndUnfollow}>
+                    {Following ? "Unfollow" : "follow"}
+                  </button>
+                  <span className='ml-1 btn-grey flex items-center gap-2 text-dark-grey'>
+                    <i className='fi fi-rr-comment-dots text-xl'></i>
+                    <Link to={`/messages/${profile?._id}`}>Message</Link>
+                  </span>
+                </>
               )}
             </div>
             <AboutUser

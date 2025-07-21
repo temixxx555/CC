@@ -19,12 +19,14 @@ import { userContext } from "../App";
 import axios from "axios";
 import LoadMoreAnonymous from "../components/loadMoreAnonymous";
 import toast from "react-hot-toast";
+import Loader from "../components/loader.component";
 
 const AnnonymousPage = () => {
   const socket = useSocket();
   const emojiRef = useRef();
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [messageCount, setmessageCount] = useState(0);
+  const [loading, setloading] = useState(false);
   const [viewers, setViewers] = useState(0);
   const [page, setPage] = useState(1);
 
@@ -62,6 +64,7 @@ const AnnonymousPage = () => {
 
   //get anonymous message
   const fetchMessages = async ({ page = 1 }) => {
+    setloading(true);
     try {
       const { data } = await axios.post(
         import.meta.env.VITE_SERVER_DOMAIN + `/get-anonymous`,
@@ -93,8 +96,10 @@ const AnnonymousPage = () => {
       }
 
       setPage(page); // update current page
+      setloading(false);
     } catch (error) {
       console.error("Error fetching messages:", error);
+      setloading(false);
     }
   };
 
@@ -261,65 +266,69 @@ const AnnonymousPage = () => {
         </div>
       </div>
 
-      {/* Messages Container */}
-      <div className=' w-full md:w-[628px] mx-auto px-4 py-6'>
-        <div className='space-y-4'>
-          {messages.map((message, i) => (
-            <div
-              key={i}
-              className='bg-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-gray-600 transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-xl'
-            >
-              {/* Message Header */}
-              <div className='flex items-center justify-between mb-3'>
-                <div className='flex items-center space-x-2'>
-                  <div
-                    className={`w-3 h-3 rounded-full ${message.color}`}
-                  ></div>
-                  <span className='text-sm text-gray-400'>Anonymous</span>
+      {loading ? (
+       <Loader />
+      ) : (
+        <div className=' w-full md:w-[628px] mx-auto px-4 py-6'>
+          <div className='space-y-4'>
+            {messages.map((message, i) => (
+              <div
+                key={i}
+                className='bg-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-gray-600 transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-xl'
+              >
+                {/* Message Header */}
+                <div className='flex items-center justify-between mb-3'>
+                  <div className='flex items-center space-x-2'>
+                    <div
+                      className={`w-3 h-3 rounded-full ${message.color}`}
+                    ></div>
+                    <span className='text-sm text-gray-400'>Anonymous</span>
+                  </div>
+                  <span className='text-xs text-gray-500'>
+                    {message.timestamp}
+                  </span>
                 </div>
-                <span className='text-xs text-gray-500'>
-                  {message.timestamp}
-                </span>
-              </div>
 
-              {/* Message Content */}
-              <p className='text-gray-100 leading-relaxed mb-4 text-base'>
-                {message.text}
-              </p>
-              {/* Message Actions */}
-              <div className='flex items-center justify-between pt-3 border-t border-gray-700'>
-                <div className='flex items-center space-x-6'>
+                {/* Message Content */}
+                <p className='text-gray-100 leading-relaxed mb-4 text-base'>
+                  {message.text}
+                </p>
+                {/* Message Actions */}
+                <div className='flex items-center justify-between pt-3 border-t border-gray-700'>
+                  <div className='flex items-center space-x-6'>
+                    <button
+                      onClick={() => handleLike(message.id)}
+                      className='flex items-center space-x-2 text-gray-400 hover:text-pink-400 transition-colors duration-200 group'
+                    >
+                      <Heart
+                        className={`w-4 h-4 transition-colors duration-200 ${
+                          message.likedByMe
+                            ? "fill-pink-500 text-pink-500"
+                            : "group-hover:fill-current"
+                        }`}
+                      />
+                      <span className='text-sm'>{message.likes}</span>
+                    </button>
+                  </div>
+                  <div ref={messagesEndRef} className='h-0'></div>
+
                   <button
-                    onClick={() => handleLike(message.id)}
-                    className='flex items-center space-x-2 text-gray-400 hover:text-pink-400 transition-colors duration-200 group'
+                    onClick={() => handleShare(message)}
+                    className='text-gray-400 hover:text-blue-400 transition-colors duration-200'
                   >
-                    <Heart
-                      className={`w-4 h-4 transition-colors duration-200 ${
-                        message.likedByMe
-                          ? "fill-pink-500 text-pink-500"
-                          : "group-hover:fill-current"
-                      }`}
-                    />
-                    <span className='text-sm'>{message.likes}</span>
+                    <Share2 className='w-4 h-4' />
                   </button>
                 </div>
-                <div ref={messagesEndRef} className='h-0'></div>
-
-                <button
-                  onClick={() => handleShare(message)}
-                  className='text-gray-400 hover:text-blue-400 transition-colors duration-200'
-                >
-                  <Share2 className='w-4 h-4' />
-                </button>
               </div>
-            </div>
-          ))}
-          <LoadMoreAnonymous
-            state={{ results: messages, page, totalDocs: messageCount }}
-            fetchData={fetchMessages}
-          />
+            ))}
+            <LoadMoreAnonymous
+              state={{ results: messages, page, totalDocs: messageCount }}
+              fetchData={fetchMessages}
+            />
+          </div>
         </div>
-      </div>
+      )}
+      {/* Messages Container */}
 
       {/* Message Input */}
       <div className='bg-white border-t border-gray-200  sm:p-4 sticky bottom-0'>

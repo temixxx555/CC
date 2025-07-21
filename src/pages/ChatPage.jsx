@@ -1,6 +1,8 @@
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Search,
   Plus,
@@ -21,6 +23,8 @@ import { useSocket } from "../contexts/SocketContexts";
 import toast from "react-hot-toast";
 
 const ChatPage = () => {
+  const navigate = useNavigate();
+  const { id: chatIdFromUrl } = useParams();
   const [currentChat, setCurrentChat] = useState(null);
   const [groupMessages, setGroupMessages] = useState([]);
   const [message, setMessage] = useState("");
@@ -37,7 +41,47 @@ const ChatPage = () => {
   const [testMessage, setTestMessage] = useState([]);
   const [chats, setChat] = useState([]);
 
+  
+  //link to chats
+  useEffect(() => {
+    if (!chatIdFromUrl || chats.length === 0) return;
 
+    const foundChat = chats.find((chat) => chat.id === chatIdFromUrl);
+
+    if (foundChat) {
+      setCurrentChat(foundChat);
+      setShowSidebar(false);
+    } else {
+      // If chat not found, assume it's a direct chat and create a temp one
+      const fetchUserInfo = async () => {
+        try {
+          const { data } = await axios.post(
+            import.meta.env.VITE_SERVER_DOMAIN + "/get-user-info",
+            { chatIdFromUrl },
+            { headers: { Authorization: `Bearer ${access_token}` } }
+          );
+          const { fullname, profile_img ,username} = data.user.personal_info;
+
+          const tempChat = {
+            id: chatIdFromUrl,
+            name: fullname, // fallback name, can fetch later
+            type: "direct",
+            avatar: fullname.charAt(0).toUpperCase(),
+            online: false,
+            username: username,
+            profile_img: profile_img,
+          };
+          setCurrentChat(tempChat);
+          setShowSidebar(false);
+          return;
+        } catch (error) {
+          console.error("Failed to fetch user info", error);
+          return null;
+        }
+      };
+      fetchUserInfo();
+    }
+  }, [chatIdFromUrl, chats]);
 
   //scroll to bottom when new message arrives
   const messagesEndRef = useRef(null);
@@ -61,64 +105,62 @@ const ChatPage = () => {
     };
   }, [emojiRef]);
 
- useEffect(() => {
-  const fetchMessages = async () => {
-    if (!currentChat?.id || !access_token) return; // Ensure id and token exist
-    try {
-      const { data } = await axios.post(
-        import.meta.env.VITE_SERVER_DOMAIN + `/get-messages`,
-        {
-          id: currentChat.id,
-          isGroup: currentChat.type === "group", // Add isGroup flag
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (!currentChat?.id || !access_token) return; // Ensure id and token exist
+      try {
+        const { data } = await axios.post(
+          import.meta.env.VITE_SERVER_DOMAIN + `/get-messages`,
+          {
+            id: currentChat.id,
+            isGroup: currentChat.type === "group", // Add isGroup flag
           },
-        }
-      );
-      const formattedMessages = data.messages.map((msg) => ({
-        id: msg._id,
-        sender: msg.sender?.personal_info?.fullname || "Them",
-        content: msg.content,
-        isOwn: msg.sender?._id === userId,
-        datetime: msg.createdAt,
-        messageType: msg.messageType,
-        fileUrl: msg.fileUrl,
-        avatar: msg.sender?.personal_info?.fullname?.charAt(0).toUpperCase() || "T",
-        timestamp: new Date(msg.createdAt).toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      }));
-      setTestMessage(formattedMessages);
-    } catch (error) {
-      console.error("Error fetching messages:", error);
-    }
-  };
-  fetchMessages();
-}, [currentChat?.id, access_token, userId]);
+          {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+            },
+          }
+        );
+        const formattedMessages = data.messages.map((msg) => ({
+          id: msg._id,
+          sender: msg.sender?.personal_info?.fullname || "Them",
+          content: msg.content,
+          isOwn: msg.sender?._id === userId,
+          datetime: msg.createdAt,
+          messageType: msg.messageType,
+          fileUrl: msg.fileUrl,
+          avatar:
+            msg.sender?.personal_info?.fullname?.charAt(0).toUpperCase() || "T",
+          timestamp: new Date(msg.createdAt).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        }));
+        setTestMessage(formattedMessages);
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      }
+    };
+    fetchMessages();
+  }, [currentChat?.id, access_token, userId]);
 
-
-let [allusers, setallusers] = useState(0);
+  let [allusers, setallusers] = useState(0);
 
   const getallUsers = () => {
-     axios
+    axios
       .get(import.meta.env.VITE_SERVER_DOMAIN + "/all-users")
       .then(({ data }) => {
         setallusers(data?.count);
         // console.log(data.count);
-        
       })
       .catch((err) => {
         console.log(err);
       });
-  }
-   useEffect(()=>{
-      getallUsers()
-      // console.log("i am getting called");
-      
-    },[])
+  };
+  useEffect(() => {
+    getallUsers();
+    // console.log("i am getting called");
+  }, []);
   //fetch contacts
   useEffect(() => {
     const fetchContacts = async () => {
@@ -159,7 +201,8 @@ let [allusers, setallusers] = useState(0);
           online: true,
           members: 10,
           avatar: "CG",
-          profile_img: "https://res.cloudinary.com/dvaksrrgl/image/upload/v1752340675/user_images/user_r8hnv5Pbi3ydydK9SqnxD.jpg", // optional avatar image
+          profile_img:
+            "https://res.cloudinary.com/dvaksrrgl/image/upload/v1752340675/user_images/user_r8hnv5Pbi3ydydK9SqnxD.jpg", // optional avatar image
           timestamp: new Date().toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
@@ -212,34 +255,33 @@ let [allusers, setallusers] = useState(0);
   }, [socket, currentChat]);
 
   //for group messages
-useEffect(() => {
-  if (!socket?.current) return;
+  useEffect(() => {
+    if (!socket?.current) return;
 
-  socket.current.on("receiveGroupMessage", (msg) => {
-    if (currentChat?.id === msg.room) {
-      const formattedMessage = {
-        id: msg._id || Date.now(),
-        sender: msg.sender.personal_info.fullname || "Them",
-        content: msg.content,
-        messageType: msg.messageType,
-        fileUrl: msg.fileUrl,
-        datetime: msg.createdAt,
-        timestamp: new Date(msg.createdAt).toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        isOwn: msg.sender._id === userId,
-        avatar: msg.sender.personal_info.fullname?.charAt(0).toUpperCase(),
-      };
-      setTestMessage((prev) => [...prev, formattedMessage]);
-    }
-  });
+    socket.current.on("receiveGroupMessage", (msg) => {
+      if (currentChat?.id === msg.room) {
+        const formattedMessage = {
+          id: msg._id || Date.now(),
+          sender: msg.sender.personal_info.fullname || "Them",
+          content: msg.content,
+          messageType: msg.messageType,
+          fileUrl: msg.fileUrl,
+          datetime: msg.createdAt,
+          timestamp: new Date(msg.createdAt).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          isOwn: msg.sender._id === userId,
+          avatar: msg.sender.personal_info.fullname?.charAt(0).toUpperCase(),
+        };
+        setTestMessage((prev) => [...prev, formattedMessage]);
+      }
+    });
 
-  return () => {
-    socket.current.off("receiveGroupMessage");
-  };
-}, [socket, currentChat, userId]);
-
+    return () => {
+      socket.current.off("receiveGroupMessage");
+    };
+  }, [socket, currentChat, userId]);
 
   const handleSendMessage = () => {
     try {
@@ -273,7 +315,7 @@ useEffect(() => {
             messageType: "text",
             fileUrl: undefined,
           });
-        setTestMessage((prev) => [...prev, newMessage]);
+          setTestMessage((prev) => [...prev, newMessage]);
         }
         setMessage("");
       }
@@ -353,6 +395,7 @@ useEffect(() => {
     setTestMessage([]);
     setSearchQuery("");
     SetshowUsers([]);
+    navigate(`/messages/${chat.id}`);
   };
   const handleAddContact = (chat) => {
     setCurrentChat(chat);
@@ -361,6 +404,7 @@ useEffect(() => {
     setShowModal(false);
     setSearchQuery("");
     SetshowUsers([]);
+    navigate(`/messages`);
   };
 
   const handleBackToList = () => {
@@ -374,101 +418,101 @@ useEffect(() => {
     }
   };
 
- const handleAttachmentChange = async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  if (file.size > 5 * 1024 * 1024) {
-    alert("File size exceeds 5MB limit");
-    return;
-  }
-        const toastId = toast.loading("Submitting your photo...");
+  const handleAttachmentChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert("File size exceeds 5MB limit");
+      return;
+    }
+    const toastId = toast.loading("Submitting your photo...");
 
-  try {
-    const formData = new FormData();
-    formData.append("image", file);
-    const { data } = await axios.post(
-      import.meta.env.VITE_SERVER_DOMAIN + "/upload-image",
-      formData
-    );
-    if (data?.imageUrl) {
-      const newMessage = {
-        id: Date.now(),
-        sender: userId,
-        content: undefined,
-        datetime: new Date().toISOString(),
-        timestamp: new Date().toLocaleTimeString([], {
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+      const { data } = await axios.post(
+        import.meta.env.VITE_SERVER_DOMAIN + "/upload-image",
+        formData
+      );
+      if (data?.imageUrl) {
+        const newMessage = {
+          id: Date.now(),
+          sender: userId,
+          content: undefined,
+          datetime: new Date().toISOString(),
+          timestamp: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          isOwn: true,
+          messageType: "file",
+          fileUrl: data.imageUrl,
+          avatar: "Y", // Placeholder for current user's avatar
+        };
+
+        if (currentChat.type === "group") {
+          socket?.current?.emit("sendGroupMessage", {
+            content: undefined,
+            senderId: userId,
+            messageType: "file",
+            fileUrl: data.imageUrl,
+            room: currentChat.id,
+          });
+        } else {
+          socket?.current?.emit("sendMessage", {
+            content: undefined,
+            sender: userId,
+            recipient: currentChat.id,
+            messageType: "file",
+            fileUrl: data.imageUrl,
+          });
+
+          setTestMessage((prev) => [...prev, newMessage]);
+        }
+        toast.dismiss(toastId);
+        toast.success("Uploaded");
+        setMessage("");
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      toast.dismiss(toastId);
+      toast.error("File upload failed");
+    }
+  };
+
+  //format last seen time
+  // Format last seen
+  const formatLastSeen = (timestamp) => {
+    if (!timestamp) return "last seen recently";
+    const lastSeen = new Date(timestamp);
+    const now = new Date();
+
+    const isToday = lastSeen.toDateString() === now.toDateString();
+
+    const yesterday = new Date();
+    yesterday.setDate(now.getDate() - 1);
+    const isYesterday = lastSeen.toDateString() === yesterday.toDateString();
+
+    if (isToday) {
+      return `Last seen today at ${lastSeen.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })}`;
+    } else if (isYesterday) {
+      return `Last seen yesterday at ${lastSeen.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })}`;
+    } else {
+      return `Last seen on ${lastSeen.toLocaleDateString()} at ${lastSeen.toLocaleTimeString(
+        [],
+        {
           hour: "2-digit",
           minute: "2-digit",
-        }),
-        isOwn: true,
-        messageType: "file",
-        fileUrl: data.imageUrl,
-        avatar: "Y", // Placeholder for current user's avatar
-      };
-
-
-      if (currentChat.type === "group") {
-        socket?.current?.emit("sendGroupMessage", {
-          content: undefined,
-          senderId: userId,
-          messageType: "file",
-          fileUrl: data.imageUrl,
-          room: currentChat.id,
-        });
-      } else {
-        socket?.current?.emit("sendMessage", {
-          content: undefined,
-          sender: userId,
-          recipient: currentChat.id,
-          messageType: "file",
-          fileUrl: data.imageUrl,
-        });
-
-      setTestMessage((prev) => [...prev, newMessage]);
-
-      }
-       toast.dismiss(toastId);
-      toast.success("Uploaded");
-      setMessage("");
+        }
+      )}`;
     }
-  } catch (error) {
-    console.error("Error uploading file:", error);
-    toast.dismiss(toastId);
-    toast.error("File upload failed");
-  }
-};
-
-//format last seen time
-// Format last seen
-const formatLastSeen = (timestamp) => {
-  if (!timestamp) return "last seen recently";
-  const lastSeen = new Date(timestamp);
-  const now = new Date();
-
-  const isToday = lastSeen.toDateString() === now.toDateString();
-
-  const yesterday = new Date();
-  yesterday.setDate(now.getDate() - 1);
-  const isYesterday = lastSeen.toDateString() === yesterday.toDateString();
-
-  if (isToday) {
-    return `Last seen today at ${lastSeen.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    })}`;
-  } else if (isYesterday) {
-    return `Last seen yesterday at ${lastSeen.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    })}`;
-  } else {
-    return `Last seen on ${lastSeen.toLocaleDateString()} at ${lastSeen.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    })}`;
-  }
-};
-
+  };
 
   return (
     <div className='w-full h-[calc(100vh-10rem)]   md:h-[calc(100vh-6rem)] max-w-screen-2xl mx-auto overflow-hidden flex'>
@@ -591,7 +635,7 @@ const formatLastSeen = (timestamp) => {
                         avatar: chat.personal_info.fullname
                           .charAt(0)
                           .toUpperCase(),
-                        online: true,
+                        online: false,
                         username: chat.personal_info.username,
                         profile_img: chat.personal_info.profile_img,
                       })
@@ -684,8 +728,8 @@ const formatLastSeen = (timestamp) => {
                       {currentChat.type === "group"
                         ? `${allusers} members`
                         : currentChat.online
-                        ? "Online"
-                        : formatLastSeen(currentChat.lastSeen)}
+                          ? "Online"
+                          : formatLastSeen(currentChat.lastSeen)}
                     </p>
                   </div>
                 </div>
