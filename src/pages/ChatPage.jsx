@@ -407,10 +407,11 @@ const ChatPage = () => {
     navigate(`/messages`);
   };
 
-  const handleBackToList = () => {
-    setCurrentChat(null);
-    setShowSidebar(true);
-  };
+  // const handleBackToList = () => {
+  // navigate("/messages")
+  //   setCurrentChat(null);
+  //   setShowSidebar(true);
+  // };
 
   const handleFileUpload = async (e) => {
     if (fileInputRef.current) {
@@ -513,7 +514,9 @@ const ChatPage = () => {
       )}`;
     }
   };
-
+const handleSidebarClose = ()=> {
+  navigate("/messages")
+}
   return (
     <div className='w-full h-[calc(100vh-10rem)]   md:h-[calc(100vh-6rem)] max-w-screen-2xl mx-auto overflow-hidden flex'>
       {/* Sidebar */}
@@ -675,7 +678,7 @@ const ChatPage = () => {
       {showSidebar && (
         <div
           className='fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden'
-          onClick={() => setShowSidebar(false)}
+          onClick={handleSidebarClose}
         />
       )}
 
@@ -689,7 +692,7 @@ const ChatPage = () => {
                 <div className='flex items-center space-x-3'>
                   {/* Back button for mobile */}
                   <button
-                    onClick={handleBackToList}
+                    onClick={() => setShowSidebar(true)}
                     className='p-2 hover:bg-gray-100 rounded-full transition-colors lg:hidden'
                   >
                     <ArrowLeft className='w-5 h-5 text-gray-600' />
