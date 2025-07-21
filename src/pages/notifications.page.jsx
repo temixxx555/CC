@@ -69,13 +69,13 @@ const Notifications = () => {
     <div>
       <h1 className='max-md:hidden'>Recent Notifications</h1>
 
-      <div className='my-8 gap-1 sm:gap-6'>
+      <div className='my-8 gap-1 sm:gap-6 '>
         {filters.map((filtername, i) => {
           return (
             <button
               onClick={handleFilterFunction}
               className={
-                "py-2 " + (filter == filtername ? "btn-dark" : "btn-light ")
+                "py-2 text-[12px] md:text-[15px] " + (filter == filtername ? "btn-dark" : "btn-light ")
               }
               key={i}
             >
