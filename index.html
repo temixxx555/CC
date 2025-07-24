@@ -8,8 +8,51 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Campus Connect</title>
+    <style>
+      body
+      {
+        background: #1F1F1F;
+      }
+      .entry-loader
+      {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .loading-icon
+      {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .loading-icon img
+      {
+        height: 100px;
+        animation: logoAnimation 3s linear infinite;
+
+
+      }
+      @keyframes logoAnimation
+      {
+        0%
+        {
+          opacity: 0%;
+        }
+        100%
+        {
+          opacity: 100%;
+        }
+      }
+    </style>
   </head>
   <body>
+    <div class="entry-loader" id="entry-loader">
+      <div class="loading-icon">
+        <img src="/src/imgs/logo-light.png" alt="loading icon">
+      </div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

@@ -93,14 +93,11 @@ const Leaderboard = () => {
         <div className='max-w-6xl mx-auto py-8 px-4'>
           {/* Header */}
           <div className='text-center mb-8'>
-            <h1 className='text-4xl font-bold text-dark-grey underline mb-4'>
-              School Leaders
+            <h1 className='text-4xl font-bold text-dark-grey mb-4'>
+              Campus MVPs 🔥
             </h1>
             <p className='text-dark-grey max-w-4xl mx-auto leading-relaxed'>
-              Rankings are based on{" "}
-              {query === "followers" ? "follower count" : "activity streak"}.
-              Switch between tabs to view different time periods and use the
-              query selector to toggle between followers and streak.
+              Wanna know who's running this uni? Check out the leaderboard by followers or streaks — new champs every week!
             </p>
           </div>
 

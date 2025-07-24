@@ -37,6 +37,8 @@ const App = () => {
   const [theme, setTheme] = useState(() =>
     darkThemePreference() ? "dark" : "light"
   );
+  const entryLoader = document.getElementById('entry-loader');
+  if (entryLoader) entryLoader.remove();
   useEffect(() => {
     try {
       let userInSession = lookInSession("user");
