@@ -111,8 +111,8 @@ const SocialCircle = () => {
   const features = [
     {
       icon: <i className='fi fi-rr-camera text-2xl text-pink-500' />,
-      title: "Weekly Image Ranking",
-      description: "Drop your photo weekly and see how you rank on campus!",
+      title: "Face of the Week 👑",
+      description: "Are you the main character or just background noise? Post and find out.",
       link: "/ranking",
     },
     {
@@ -122,7 +122,7 @@ const SocialCircle = () => {
         ? "/dashboard/anonymous-message"
         : null,
       description: isAnonymousMessageAvailable()
-        ? "Chat freely with other students without revealing your identity."
+        ? "Campus Tea, No IDs. Spill, share, or stir — it's all anonymous."
         : "Available Friday 6 PM - Sunday 11:59 PM",
       isAvailable: isAnonymousMessageAvailable(),
     },
