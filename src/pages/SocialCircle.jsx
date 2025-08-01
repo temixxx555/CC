@@ -144,7 +144,7 @@ const SocialCircle = () => {
             >
               <div className='mt-1'>{feature.icon}</div>
               <div className='flex-1'>
-                <h2 className='text-lg font-semibold'>{feature.title}</h2>
+                <p className='text-xl md:text-4xl font-semibold'>{feature.title}</p>
                 <p className='text-sm text-dark-grey'>{feature.description}</p>
                 {feature.title === "Anonymous Message" &&
                   !feature.isAvailable && <CountdownDisplay />}

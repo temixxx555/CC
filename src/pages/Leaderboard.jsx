@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Loader from "../components/loader.component";
 import { Link } from "react-router-dom";
 import { lookInSession } from "../common/session";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const getMedal = (pos) => {
   if (pos === 1) return "🥇";
@@ -93,11 +94,18 @@ const Leaderboard = () => {
         <div className='max-w-6xl mx-auto py-8 px-4'>
           {/* Header */}
           <div className='text-center mb-8'>
-            <h1 className='text-4xl font-bold text-dark-grey mb-4'>
-              Campus MVPs 🔥
-            </h1>
+            <div className='text-4xl mx-auto flex justify-center font-bold text-dark-grey mb-4'>
+              Campus MVPs    {/* Flame Animation */}
+                <DotLottieReact
+                  src='https://lottie.host/02271725-b11e-42f9-b1a5-f6b8a94cd6c1/Oq8GFbPfmB.lottie'
+                  loop
+                  autoplay
+                  className='w-[50px] h-[50px] object-contain'
+                />
+            </div>
             <p className='text-dark-grey max-w-4xl mx-auto leading-relaxed'>
-              Wanna know who's running this uni? Check out the leaderboard by followers or streaks — new champs every week!
+              Wanna know who's running this uni? Check out the leaderboard by
+              followers or streaks — new champs every week!
             </p>
           </div>
 
@@ -114,7 +122,7 @@ const Leaderboard = () => {
           </div>
 
           {/* Navigation Tabs */}
-          <div className='flex justify-center mb-8'>
+          {/* <div className='flex justify-center mb-8'>
             <div className='flex bg-white rounded-lg border border-gray-200 overflow-hidden'>
               {[
                 { key: "allTime", label: "All Time" },
@@ -134,7 +142,7 @@ const Leaderboard = () => {
                 </button>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Leaderboard Table */}
           <div className='bg-white rounded-lg border border-gray-200 overflow-hidden'>
@@ -161,8 +169,8 @@ const Leaderboard = () => {
                     <tr
                       key={user._id}
                       className={`transition-colors 
-    ${idx < 3 ? "bg-orange-400" : ""} 
-    ${user.username === userInLeaderboard ? "bg-gray-800" : ""}`}
+   
+   `}
                     >
                       <td className='py-4 px-6'>
                         <span className='text-lg font-bold text-dark-grey'>
@@ -175,10 +183,10 @@ const Leaderboard = () => {
                             <img
                               src={user.profile_img}
                               alt={user.username}
-                              className='w-10 h-10 rounded-full border-2 border-gray-200'
+                              className={'w-10 h-10 rounded-full border-2 border-gray-200 ' +  (idx < 3 ? "border-orange-400" : "") }
                             />
 
-                            <span className='font-semibold text-dark-grey text-base'>
+                            <span className={'font-semibold text-dark-grey text-base ' + (idx < 3 ? "text-orange-400" : "")  }>
                               {user.fullname}
                             </span>
                           </div>
@@ -188,13 +196,13 @@ const Leaderboard = () => {
                       <td className='py-4 px-6'>
                         <Link
                           to={`/user/${user.username}`}
-                          className='text-dark-grey hover:underline'
+                          className={'text-dark-grey hover:underline '  +  (idx < 3 ? "text-orange-400" : "")}
                         >
                           {user.username}
                         </Link>
                       </td>
                       <td className='py-4 px-6 text-right'>
-                        <span className='text-lg font-bold text-dark-grey font-mono'>
+                        <span className={'text-lg font-bold text-dark-grey font-mono '   +  (idx < 3 ? "text-orange-400" : "")}>
                           {formatNumber(
                             query === "followers"
                               ? user.followersCount

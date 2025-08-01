@@ -20,10 +20,14 @@ const UserNavigationPanel = () => {
           <p>Write</p>
         </Link>
         <Link className="link pl-8 py-4 " to={`/user/${username}`}>
-        profile
+        Profile
         </Link>
+      
         <Link className="link pl-8 py-4 " to="/dashboard/blogs">
         Dashboard
+        </Link>
+          <Link className="link pl-8 py-4 " to={`/messages`}>
+        Chats
         </Link>
         <Link className="link pl-8 py-4 " to="/settings/edit-profile">
         Settings

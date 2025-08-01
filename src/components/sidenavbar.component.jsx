@@ -142,7 +142,7 @@ const SideNav = () => {
             <NavLink
               to='/settings/change-password'
               onClick={(e) => setPageState(e.target.innerText)}
-              className='sidebar-link'
+              className='sidebar-link mb-8'
             >
               <i className='fi fi-rr-lock'></i>
               change Password

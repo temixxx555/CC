@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AnimationWrapper from "../common/page-animation";
 import InPageNavigation from "../components/inpage-navigation.component";
 import Loader from "../components/loader.component";
@@ -9,22 +9,30 @@ import { ActiveTabButons } from "../components/inpage-navigation.component";
 import NoDataMessage from "../components/nodata.component";
 import { filterPaginationData } from "../common/filter-pagination-data";
 import LoadMoreData from "../components/load-more.component";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { userContext } from "../App";
+
 const Home = () => {
+  const {
+    userAuth: { access_token },
+  } = useContext(userContext);
   let [blogs, setBlogs] = useState(null);
+  let [feed, setFeed] = useState(null);
   let [trendingBlogs, setTrendingBlogs] = useState(null);
   let [users, setUsers] = useState(null);
   let [pageState, setPageState] = useState("home");
+  let navigate = useNavigate();
   let categories = [
-    "drips",
-    "art/design",
-    "evevnts",
-    "tech",
-    "skills",
+    "football",
+    "fun",
+    "gist",
     "banter",
+    "cohes",
+    "colbs",
     "coccs",
     "cosms",
-    "football",
+    "coaes",
+    "hostel",
   ];
   const fetchLatestBlogs = ({ page = 1 }) => {
     axios
@@ -44,18 +52,47 @@ const Home = () => {
         console.log(err);
       });
   };
-  const getallUsers = () => {
-     axios
-      .get(import.meta.env.VITE_SERVER_DOMAIN + "/all-users")
-      .then(({ data }) => {
-        setUsers(data.count);
-        // console.log(data.count);
-        
+  const fetchForYou = ({ page = 1 }) => {
+    if (!access_token) {
+      return console.log("not valid");
+    }
+    axios
+      .post(
+        import.meta.env.VITE_SERVER_DOMAIN + "/for-you",
+        { page },
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      )
+      .then(async ({ data }) => {
+        let formateData = await filterPaginationData({
+          state: feed,
+          data: data.blogs,
+          page,
+          user:access_token,
+          counteRoute: "/all-latest-feed",
+        });
+        console.log(data.blogs);
+
+        setFeed(formateData);
       })
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
+  const getallUsers = () => {
+    axios
+      .get(import.meta.env.VITE_SERVER_DOMAIN + "/all-users")
+      .then(({ data }) => {
+        setUsers(data.count);
+        // console.log(data.count);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   const fetchTrendingBlogs = () => {
     axios
       .get(import.meta.env.VITE_SERVER_DOMAIN + "/trending-blogs")
@@ -104,22 +141,27 @@ const Home = () => {
     } else {
       fetchBlogByCategories({ page: 1 });
     }
+    if (!feed) {
+      console.log("yes");
+
+      fetchForYou({ page: 1 });
+    }
     if (!trendingBlogs) {
       fetchTrendingBlogs();
     }
-  }, [pageState]);
-  useEffect(()=>{
-    getallUsers()
+  }, [pageState, access_token]);
+  useEffect(() => {
+    getallUsers();
     // console.log("i am getting called");
-    
-  },[])
+  }, []);
   return (
     <AnimationWrapper>
-      
       <section className='h-cover flex justify-center gap-10 '>
         {/* latest blogs  */}
         <div className='w-full'>
-         <p className="font-bold text-3xl ml-9 ">{users} <span className="text-xl">Bloggers</span></p>
+          <p className='font-bold text-3xl ml-9 '>
+            {users} <span className='text-xl'>Bloggers</span>
+          </p>
 
           {/* Show on small screens only */}
           <div className='md:hidden px-4 pt-4'>
@@ -145,7 +187,7 @@ const Home = () => {
           </div>
 
           <InPageNavigation
-            routes={[pageState, "trending blogs"]}
+            routes={[pageState, "trending blogs", "foryou"]}
             defaultHidden={["trending blogs"]}
           >
             <>
@@ -193,6 +235,30 @@ const Home = () => {
               ) : (
                 <NoDataMessage message={"No trending blogs "} />
               )}
+            </>
+            <>
+              {!access_token ? (
+                <NoDataMessage message={"Please login to see your feed"} />
+              ) : feed == null ? (
+                <Loader />
+              ) : feed.results.length ? (
+                feed.results.map((blog, i) => {
+                  return (
+                    <AnimationWrapper
+                      key={i}
+                      transition={{ duration: 1, delay: i * 0.1 }}
+                    >
+                      <BlogPostCard
+                        content={blog}
+                        author={blog.author.personal_info}
+                      />
+                    </AnimationWrapper>
+                  );
+                })
+              ) : (
+                <NoDataMessage message={"No blogs Published"} />
+              )}
+              <LoadMoreData state={feed} fetchData={fetchForYou} />
             </>
           </InPageNavigation>
         </div>
@@ -256,7 +322,6 @@ const Home = () => {
           <i className='fi fi-rr-file-edit text-2xl'></i>
         </Link>
       </section>
-      
     </AnimationWrapper>
   );
 };

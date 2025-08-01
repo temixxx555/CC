@@ -1,7 +1,7 @@
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import {
   Search,
@@ -41,7 +41,6 @@ const ChatPage = () => {
   const [testMessage, setTestMessage] = useState([]);
   const [chats, setChat] = useState([]);
 
-  
   //link to chats
   useEffect(() => {
     if (!chatIdFromUrl || chats.length === 0) return;
@@ -60,7 +59,7 @@ const ChatPage = () => {
             { chatIdFromUrl },
             { headers: { Authorization: `Bearer ${access_token}` } }
           );
-          const { fullname, profile_img ,username} = data.user.personal_info;
+          const { fullname, profile_img, username } = data.user.personal_info;
 
           const tempChat = {
             id: chatIdFromUrl,
@@ -185,6 +184,7 @@ const ChatPage = () => {
           online: msg.online,
           lastSeen: msg.lastSeen,
           profile_img: msg.profileImage,
+          username: msg.username,
           avatar: msg.firstName?.charAt(0).toUpperCase(),
           timestamp: new Date(msg.lastMessageTime).toLocaleTimeString([], {
             hour: "2-digit",
@@ -514,9 +514,9 @@ const ChatPage = () => {
       )}`;
     }
   };
-const handleSidebarClose = ()=> {
-  navigate("/messages")
-}
+  const handleSidebarClose = () => {
+    navigate("/messages");
+  };
   return (
     <div className='w-full h-[calc(100vh-10rem)]   md:h-[calc(100vh-6rem)] max-w-screen-2xl mx-auto overflow-hidden flex'>
       {/* Sidebar */}
@@ -690,7 +690,6 @@ const handleSidebarClose = ()=> {
             <div className='bg-white border-b border-gray-200 p-4'>
               <div className='flex items-center justify-between'>
                 <div className='flex items-center space-x-3'>
-
                   {/* Menu button for mobile when no chat selected */}
                   <button
                     onClick={() => setShowSidebar(true)}
@@ -698,24 +697,25 @@ const handleSidebarClose = ()=> {
                   >
                     <Menu className='w-5 h-5 text-gray-600' />
                   </button>
-
-                  <div className='relative'>
-                    <div className='w-12 h-12 rounded-full overflow-hidden bg-gray-300 flex items-center justify-center text-white font-semibold'>
-                      {currentChat?.avatar ? (
-                        <img
-                          src={currentChat?.profile_img}
-                          alt={currentChat?.name}
-                          className='w-full h-full object-cover'
-                        />
-                      ) : (
-                        currentChat.name.charAt(0).toUpperCase()
+                  <Link to={`/user/${currentChat?.username}`}>
+                    <div className='relative'>
+                      <div className='w-12 h-12 rounded-full overflow-hidden bg-gray-300 flex items-center justify-center text-white font-semibold'>
+                        {currentChat?.avatar ? (
+                          <img
+                            src={currentChat?.profile_img}
+                            alt={currentChat?.name}
+                            className='w-full h-full object-cover'
+                          />
+                        ) : (
+                          currentChat.name.charAt(0).toUpperCase()
+                        )}
+                      </div>
+                      {currentChat.online && (
+                        <div className='absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full'></div>
                       )}
                     </div>
-                    {currentChat.online && (
-                      <div className='absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full'></div>
-                    )}
-                  </div>
-
+                  </Link>
+                    <Link to={`/user/${currentChat?.username}`}>
                   <div className='flex-1 min-w-0'>
                     <p className='font-semibold text-black text-xl md:text-3xl truncate'>
                       {currentChat.name}
@@ -728,9 +728,10 @@ const handleSidebarClose = ()=> {
                           : formatLastSeen(currentChat.lastSeen)}
                     </p>
                   </div>
+                  </Link>
                 </div>
 
-                <div className=' hidden md:block  items-center space-x-1 sm:space-x-2'>
+                <div className=' hidden   items-center space-x-1 sm:space-x-2'>
                   <p>Block</p>
                 </div>
               </div>
