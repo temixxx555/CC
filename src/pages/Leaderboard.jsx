@@ -94,7 +94,7 @@ const Leaderboard = () => {
         <div className='max-w-6xl mx-auto py-8 px-4'>
           {/* Header */}
           <div className='text-center mb-8'>
-            <div className='text-lg md:text-4xl mx-auto flex justify-center font-bold text-dark-grey mb-4'>
+            <div className='text-[14px] md:text-4xl mx-auto flex justify-center items-center font-bold text-dark-grey mb-4'>
               Campus MVPs    {/* Flame Animation */}
                 <DotLottieReact
                   src='https://lottie.host/02271725-b11e-42f9-b1a5-f6b8a94cd6c1/Oq8GFbPfmB.lottie'
