@@ -160,10 +160,10 @@ const Ranking = () => {
         {/* Header */}
       <div className="text-center mb-16">
           <div className="inline-flex items-center gap-3 mb-6">
-            <div className="p-3 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-2xl shadow-lg">
+            <div className="p-3 bg-dark-grey rounded-2xl shadow-lg">
               <Camera className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-[20px] md:text-[50px]  font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <h1 className="text-[20px] md:text-[50px]  font-black bg-dark-grey bg-clip-text text-transparent">
               Face of the Week
             </h1>
             <Sparkles className="w-8 h-8 text-yellow-500 animate-pulse" />
@@ -175,11 +175,11 @@ const Ranking = () => {
           </p>
 
           <div className="flex flex-wrap justify-center items-center gap-8 text-slate-600">
-            <div className="flex items-center gap-3 bg-white/70 backdrop-blur-sm px-4 py-2 rounded-full shadow-md">
+            <div className="hidden md:flex items-center gap-3 bg-white/70 backdrop-blur-sm px-4 py-2 rounded-full shadow-md">
               <div className="p-2 bg-indigo-100 rounded-full">
                 <Users className="w-5 h-5 text-indigo-600" />
               </div>
-              <span className="font-semibold">20+ participants</span>
+              <span className=" font-semibold">20+ participants</span>
             </div>
             <div className="flex items-center gap-3 bg-white/70 backdrop-blur-sm px-4 py-2 rounded-full shadow-md">
               <div className="p-2 bg-orange-100 rounded-full">
@@ -188,8 +188,8 @@ const Ranking = () => {
               <span className="font-semibold">{GetCountDownToMonday()} days left</span>
             </div>
             <div className="flex items-center gap-3 bg-white/70 backdrop-blur-sm px-4 py-2 rounded-full shadow-md">
-              <div className="p-2 bg-green-100 rounded-full">
-                <TrendingUp className="w-5 h-5 text-green-600" />
+              <div className="p-2 bg-pink-100 rounded-full">
+                <TrendingUp className="w-5 h-5 text-pink-600" />
               </div>
               <span className="font-semibold">Hot competition</span>
             </div>
@@ -302,7 +302,7 @@ const Ranking = () => {
 
         {/* Past Winners */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-center mb-8 text-dark-grey">
+          <h2 className="text-2xl font-bold text-center mb-8 text-black">
             Past Winners
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-6xl mx-auto">
