@@ -85,6 +85,17 @@ const Leaderboard = () => {
 
   const sortedUsers = getSortedUsers();
 
+  const getLeaderLeaf = (idx) => {
+    switch (idx) {
+      case 0:
+        return "/gold.png";
+      case 1:
+        return "/silver.png";
+      default:
+        return "/bronze.png";
+    }
+  }
+
   return (
     <div className='min-h-screen'>
       {loading ? (
@@ -161,7 +172,7 @@ const Leaderboard = () => {
                     <tr
                       key={user._id}
                       className={`transition-colors 
-    ${idx < 3 ? "bg-orange-400" : ""} 
+    ${idx < 3 ? "" : ""} 
     ${user.username === userInLeaderboard ? "bg-gray-800" : ""}`}
                     >
                       <td className='py-4 px-6'>
@@ -170,14 +181,26 @@ const Leaderboard = () => {
                         </span>
                       </td>
                       <Link to={`/user/${user.username}`}>
-                        <td className='py-4 px-6'>
+                        <td className={`${idx < 3 ? 'py-4' : 'py-7' } px-6`}>
                           <div className='flex items-center gap-4'>
-                            <img
-                              src={user.profile_img}
-                              alt={user.username}
-                              className='w-10 h-10 rounded-full border-2 border-gray-200'
-                            />
-
+                            {
+                              idx < 3 ? (
+                                <div className="relative">
+                                  <img src={`${getLeaderLeaf(idx)}`} alt="" className="w-full h-[70px] object-cover" />
+                                  <img
+                                    src={user.profile_img}
+                                    alt={user.username}
+                                    className="w-10 h-10 rounded-full border-2 border-gray-200 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                                  />
+                                </div>
+                              ) : (
+                              <img
+                                src={user.profile_img}
+                                alt={user.username}
+                                className='w-10 h-10 ml-5 rounded-full border-2 border-gray-200'
+                              />
+                              )
+                            }
                             <span className='font-semibold text-dark-grey text-base'>
                               {user.fullname}
                             </span>
