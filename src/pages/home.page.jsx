@@ -24,14 +24,14 @@ const Home = () => {
   let navigate = useNavigate();
   let categories = [
     "football",
-    "fun",
+    "CampusConnect",
     "gist",
     "banter",
-    "cohes",
-    "colbs",
     "coccs",
-    "cosms",
-    "coaes",
+    "colbs",
+    "DayInTheLife",
+    "BowenVibes",
+    "CampusGist",
     "hostel",
   ];
   const fetchLatestBlogs = ({ page = 1 }) => {
@@ -168,7 +168,7 @@ const Home = () => {
             <h1 className='font-medium text-xl mb-6'>
               Stories from all interest
             </h1>
-            <div className='flex gap-3 flex-wrap'>
+            <div className='flex text-[11px] gap-3 flex-wrap'>
               {categories.map((category, i) => {
                 return (
                   <button
