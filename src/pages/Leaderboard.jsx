@@ -94,8 +94,8 @@ const Leaderboard = () => {
         <div className='max-w-6xl mx-auto py-8 px-4'>
           {/* Header */}
           <div className='text-center mb-8'>
-            <div className='text-[14px] md:text-4xl mx-auto flex justify-center items-center font-bold text-dark-grey mb-4'>
-              Campus MVPs    {/* Flame Animation */}
+            <div className='text-[20px] md:text-4xl mx-auto flex justify-center items-center font-bold text-dark-grey mb-4'>
+              Popularity Contest   {/* Flame Animation */}
                 <DotLottieReact
                   src='https://lottie.host/02271725-b11e-42f9-b1a5-f6b8a94cd6c1/Oq8GFbPfmB.lottie'
                   loop
@@ -104,8 +104,8 @@ const Leaderboard = () => {
                 />
             </div>
             <p className='text-dark-grey max-w-4xl mx-auto leading-relaxed'>
-              Wanna know who's running this uni? Check out the leaderboard by
-              followers or streaks — new champs every week!
+              Wanna know who's the most popular in  Bowen? Check out the leaderboard by
+              followers or streaks — new Faves every week!
             </p>
           </div>
 

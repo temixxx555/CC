@@ -123,7 +123,7 @@ const SocialCircle = () => {
         : null,
       description: isAnonymousMessageAvailable()
         ? "Campus Tea, No IDs. Spill, share, or stir — it's all anonymous."
-        : "Available Friday 6 PM - Sunday 11:59 PM",
+        : "",
       isAvailable: isAnonymousMessageAvailable(),
     },
   ];
