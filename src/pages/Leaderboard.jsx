@@ -85,7 +85,16 @@ const Leaderboard = () => {
   };
 
   const sortedUsers = getSortedUsers();
-
+  const getLeaderLeaf = (idx) => {
+    switch (idx) {
+      case 0:
+        return "/gold.png";
+      case 1:
+        return "/silver.png";
+      default:
+        return "/bronze.png";
+    }
+  }
   return (
     <div className='min-h-screen'>
       {loading ? (
@@ -178,15 +187,29 @@ const Leaderboard = () => {
                         </span>
                       </td>
                       <Link to={`/user/${user.username}`}>
-                        <td className='py-4 px-6'>
+                       <td className={`${idx < 3 ? 'py-4' : 'py-7' } px-6`}>
                           <div className='flex items-center gap-4'>
-                            <img
-                              src={user.profile_img}
-                              alt={user.username}
-                              className={'w-10 h-10 rounded-full border-2 border-gray-200 ' +  (idx < 3 ? "border-orange-400" : "") }
-                            />
+                        
+                            {
+                              idx < 3 ? (
+                                <div className="relative">
+                                  <img src={`${getLeaderLeaf(idx)}`} alt="" className="w-full h-[70px] object-cover" />
+                                  <img
+                                    src={user.profile_img}
+                                    alt={user.username}
+                                    className="w-10 h-10 rounded-full border-2 border-gray-200 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                                  />
+                                </div>
+                              ) : (
+                              <img
+                                src={user.profile_img}
+                                alt={user.username}
+                                className='w-10 h-10 ml-5 rounded-full border-2 border-gray-200'
+                              />
+                              )
+                            }
 
-                            <span className={'font-semibold text-dark-grey text-base ' + (idx < 3 ? "text-orange-400" : "")  }>
+                            <span className={'font-semibold text-dark-grey text-base '  }>
                               {user.fullname}
                             </span>
                           </div>
@@ -196,13 +219,13 @@ const Leaderboard = () => {
                       <td className='py-4 px-6'>
                         <Link
                           to={`/user/${user.username}`}
-                          className={'text-dark-grey hover:underline '  +  (idx < 3 ? "text-orange-400" : "")}
+                          className={'text-dark-grey hover:underline ' }
                         >
                           {user.username}
                         </Link>
                       </td>
                       <td className='py-4 px-6 text-right'>
-                        <span className={'text-lg font-bold text-dark-grey font-mono '   +  (idx < 3 ? "text-orange-400" : "")}>
+                        <span className={'text-lg font-bold text-dark-grey font-mono ' }>
                           {formatNumber(
                             query === "followers"
                               ? user.followersCount
