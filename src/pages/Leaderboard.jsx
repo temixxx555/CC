@@ -154,7 +154,8 @@ const Leaderboard = () => {
           </div> */}
 
           {/* Leaderboard Table */}
-          <div className='bg-white rounded-lg border border-gray-200 overflow-hidden'>
+         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden relative z-0">
+
             <div className='overflow-x-auto'>
               <table className='w-full min-w-[600px]'>
                 <thead className='bg-white border-b border-gray-200'>
@@ -192,14 +193,19 @@ const Leaderboard = () => {
                         
                             {
                               idx < 3 ? (
-                                <div className="relative">
-                                  <img src={`${getLeaderLeaf(idx)}`} alt="" className="w-full h-[70px] object-cover" />
-                                  <img
-                                    src={user.profile_img}
-                                    alt={user.username}
-                                    className="w-10 h-10 rounded-full border-2 border-gray-200 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                                  />
-                                </div>
+                             <div className="relative w-16 h-16 shrink-0">
+  <img
+    src={getLeaderLeaf(idx)}
+    alt=""
+    className="w-full h-full object-contain"
+  />
+  <img
+    src={user.profile_img}
+    alt={user.username}
+    className="w-10 h-10 rounded-full border-2 border-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
+  />
+</div>
+
                               ) : (
                               <img
                                 src={user.profile_img}
