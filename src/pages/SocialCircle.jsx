@@ -76,7 +76,7 @@ const SocialCircle = () => {
 
   const CountdownDisplay = () => (
     <div className='text-center py-2'>
-      <p className='text-sm text-gray-600 mb-2'>
+      <p className='text-sm text-dark-grey mb-2'>
         Available every Friday 6 PM - Sunday 11:59 PM
       </p>
       <div className='flex justify-center gap-2 text-sm font-mono'>

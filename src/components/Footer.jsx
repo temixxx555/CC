@@ -10,7 +10,8 @@ export default function FooterNav() {
   const location = useLocation();
   const [user, setUser] = useState(null);
   const { userAuth, setUserAuth } = useContext(userContext);
-  const { new_notification_available } = userAuth || {};
+  const { new_notification_available,hasUnread } = userAuth || {};
+
 
   const navItems = [
     { to: "/", icon: <Home className='w-6 h-6' />, label: "Home" },
@@ -22,7 +23,14 @@ export default function FooterNav() {
     },
     {
       to: user ? "/messages" : "",
-      icon: <MessageCircle className='w-6 h-6' />,
+      icon:(
+        <div className='relative'>
+          <MessageCircle className='w-6 h-6' />
+          {hasUnread && (
+            <span className='bg-red w-3 h-3 rounded-full absolute z-10 top-0 left-3'></span>
+          )}
+        </div>
+      ),
       label: "Messages",
     },
     {
@@ -31,7 +39,7 @@ export default function FooterNav() {
         <div className='relative'>
           <Bell className='w-6 h-6' />
           {new_notification_available && (
-            <span className='bg-red w-3 h-3 rounded-full absolute z-10 top-0 right-0'></span>
+            <span className='bg-red w-3 h-3 rounded-full absolute z-10 top-0 left-3'></span>
           )}
         </div>
       ),

@@ -120,9 +120,10 @@ const ChatPage = () => {
             },
           }
         );
+      
         const formattedMessages = data.messages.map((msg) => ({
           id: msg._id,
-          sender: msg.sender?.personal_info?.fullname || "Them",
+          sender: msg.sender?.personal_info?.username || "Them",
           content: msg.content,
           isOwn: msg.sender?._id === userId,
           datetime: msg.createdAt,
@@ -174,6 +175,7 @@ const ChatPage = () => {
             },
           }
         );
+  console.log("message",data);
 
         const formatedMessages = data.contacts.map((msg) => ({
           id: msg._id,
@@ -196,6 +198,7 @@ const ChatPage = () => {
           id: "global", // or some unique string you’ll use in group message logic
           name: "Campus Group",
           type: "group",
+          username:"temiq33",
           lastMessage: "Welcome to the group!",
           unread: 0,
           online: true,
@@ -262,7 +265,7 @@ const ChatPage = () => {
       if (currentChat?.id === msg.room) {
         const formattedMessage = {
           id: msg._id || Date.now(),
-          sender: msg.sender.personal_info.fullname || "Them",
+          sender: msg.sender.personal_info.username || "Them",
           content: msg.content,
           messageType: msg.messageType,
           fileUrl: msg.fileUrl,
@@ -757,9 +760,11 @@ const ChatPage = () => {
                         }`}
                       >
                         {!msg.isOwn && (
+                           <Link to={`/user/${msg?.sender}`}>
                           <div className='w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-grey flex items-center justify-center text-black text-xs sm:text-sm font-semibold mr-2 sm:mr-3 flex-shrink-0'>
                             {msg.avatar}
                           </div>
+                          </Link>
                         )}
 
                         <div

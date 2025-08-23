@@ -1,5 +1,5 @@
 import { useContext, useState, useRef } from "react";
-import lightlogo from "../imgs/logo-light.png";
+import lightlogo from "/logo1.png";
 import darklogo from "../imgs/logo-dark.png";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { ThemeContext, userContext } from "../App";
@@ -32,7 +32,6 @@ const Navbar = () => {
   const HandleSearchFunction = (e) => {
     let query = e.target.value;
 
-
     if (e.keyCode == 13 && query.length) {
       navigate(`/search/${query}`);
       setSarchBoxVisibility(false);
@@ -48,6 +47,23 @@ const Navbar = () => {
         })
         .then(({ data }) => {
           setUserAuth({ ...userAuth, ...data });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    if (access_token) {
+      axios
+        .get(import.meta.env.VITE_SERVER_DOMAIN + "/has-unread", {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        })
+        .then(({ data }) => {
+          setUserAuth((prev) => {
+            const newState = { ...prev, ...data };
+            return newState;
+          });
         })
         .catch((err) => {
           console.log(err);
@@ -125,32 +141,34 @@ const Navbar = () => {
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
     return () => {
-      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt
+      );
     };
   }, []);
   const handleLogoClick = async () => {
     console.log("clicked logo");
-    
-  navigate('/'); // navigate home
 
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
+    navigate("/"); // navigate home
 
-    const choiceResult = await deferredPrompt.userChoice;
-    if (choiceResult.outcome === 'accepted') {
-      console.log('User accepted the install prompt');
-    } else {
-      console.log('User dismissed the install prompt');
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+
+      const choiceResult = await deferredPrompt.userChoice;
+      if (choiceResult.outcome === "accepted") {
+        console.log("User accepted the install prompt");
+      } else {
+        console.log("User dismissed the install prompt");
+      }
+      setDeferredPrompt(null); // only once
     }
-    setDeferredPrompt(null); // only once
-  }
-};
-
+  };
 
   return (
     <>
       <nav className='navbar z-50'>
-        <div >
+        <div>
           {/* link tag dosent reload the page like the <A> tag</A> */}
           <img
             src={theme == "light" ? darklogo : lightlogo}
@@ -259,67 +277,73 @@ const Navbar = () => {
       {/* Overlay */}
       {showOverlay && (
         <div
-          className='fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50'
+          className='fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50'
           onClick={handleCloseOverlay}
+          role='dialog'
+          aria-labelledby='streak-overlay-title'
+          aria-modal='true'
         >
           <div
             ref={overlayRef}
-            className={`w-full max-w-xl mx-4 p-6 md:p-8 rounded-2xl shadow-2xl transition-all duration-300 ${
+            className={`w-full max-w-md mx-4 p-6 sm:p-8 rounded-2xl shadow-xl transition-transform duration-300 ease-out transform ${
               theme === "light"
-                ? "bg-white text-black"
-                : "bg-dark-grey text-white"
-            } border border-gray-300`}
+                ? "bg-white text-gray-900 border-gray-200"
+                : "bg-gray-800 text-white border-gray-700"
+            } border`}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className='flex justify-between items-center mb-6'>
-              <div>
-                <h2 className='text-xl font-bold mb-1'>
-                  🔥 {streaks?.streak?.count || 0} Streak Counted
-                </h2>
-                <p className='text-sm text-gray-500 dark:text-gray-400'>
-                  You're building a winning habit, one day at a time,and become the highest ranker in the School.
+            <div className='flex justify-between items-start gap-4 mb-6'>
+              <div className='space-y-1'>
+                <p
+                  id='streak-overlay-title'
+                  className='text-3xl text-black font-semibold tracking-tight'
+                >
+                  🔥 {streaks?.streak?.count ?? 0} Day Streak! 
+                </p>
+                <p className='text-sm text-black'>
+                  You're forging a winning habit! Aim to top the school
+                  leaderboard.
                 </p>
               </div>
               <button
-                className='w-14 h-14 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors'
+                className='p-2 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors duration-200'
                 onClick={handleFlameClick}
+                aria-label='Interact with streak animation'
               >
                 <DotLottieReact
                   src='https://lottie.host/02271725-b11e-42f9-b1a5-f6b8a94cd6c1/Oq8GFbPfmB.lottie'
                   loop
                   autoplay
-                  className='w-full h-full object-contain'
+                  className='w-10 h-10'
                 />
               </button>
             </div>
 
             {/* Body Content */}
-            <div className='space-y-5 text-sm md:text-base'>
-              <p className='font-semibold text-lg text-green-600 dark:text-green-400'>
-                {streaks?.message || "Keep it going!"}
+            <div className='space-y-4'>
+              <p className='text-lg font-medium text-green-600 dark:text-green-400'>
+                {streaks?.message ?? "Keep the momentum going!"}
               </p>
-
-              <p className='text-gray-700 dark:text-gray-300'>
-                Remember your streaks are your daily achievements. Each day
-                counts, and every effort matters. Keep pushing forward to crush your goals
+              <p className='text-sm text-black  leading-relaxed'>
+                Each day you post, your streak grows stronger. Stay consistent
+                to crush your goals and climb the ranks!
               </p>
-
-              <div className='space-y-2'>
-                <Link
-                  to='/dashboard/leaderboard'
-                  onClick={() => setShowOverlay(false)}
-                  className='inline-block underline hover:text-blue-600 transition-colors'
-                >
-                  🏆 Check your rank on the leaderboard
-                </Link>
-              </div>
+              <Link
+                to='/dashboard/leaderboard'
+                onClick={() => setShowOverlay(false)}
+                className='inline-block text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline transition-colors duration-200'
+                aria-label='View leaderboard'
+              >
+                🏆 Check your leaderboard rank
+              </Link>
             </div>
 
-            {/* Optional Footer CTA */}
-            <div className='mt-6'>
-              <p className='text-xs text-gray-400 text-center'>
-                Note  : streaks are updated based on your last post , miss a day and it restarts.,sucks right?🥲
+            {/* Footer Note */}
+            <div className='mt-6 text-center'>
+              <p className='text-xs text-black dark:text-gray-500'>
+                Streak updates with your last post. Miss a day, and it resets.
+                Stay strong! 🥲
               </p>
             </div>
           </div>
@@ -328,8 +352,7 @@ const Navbar = () => {
 
       <Outlet />
 
-<div className="h-20 md:hidden"></div>
-
+      <div className='h-20 md:hidden'></div>
 
       <FooterNav />
     </>

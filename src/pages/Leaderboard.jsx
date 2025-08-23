@@ -210,7 +210,7 @@ const Leaderboard = () => {
                               <img
                                 src={user.profile_img}
                                 alt={user.username}
-                                className='w-10 h-10 ml-5 rounded-full border-2 border-gray-200'
+                                className='w-10 h-10 ml-4 rounded-full border-2 border-gray-200'
                               />
                               )
                             }
