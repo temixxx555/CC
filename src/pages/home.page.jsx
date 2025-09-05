@@ -23,16 +23,17 @@ const Home = () => {
   let [pageState, setPageState] = useState("home");
   let navigate = useNavigate();
   let categories = [
-    "football",
+    "fresher",
     "CampusConnect",
-    "gist",
+    "pastQuestions",
     "banter",
-    "coccs",
-    "colbs",
+    "chapel",
+    "marketPlace",
     "DayInTheLife",
-    "BowenVibes",
+    "BowenNews",
     "CampusGist",
     "hostel",
+    "blogs",
   ];
   const fetchLatestBlogs = ({ page = 1 }) => {
     axios
@@ -160,7 +161,7 @@ const Home = () => {
         {/* latest blogs  */}
         <div className='w-full'>
           <p className='font-bold text-3xl ml-9 '>
-            {users} <span className='text-xl'>Bloggers</span>
+            {users} <span className='text-xl'>Students</span>
           </p>
 
           {/* Show on small screens only */}

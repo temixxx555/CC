@@ -1,6 +1,6 @@
 import { useContext, useState, useRef } from "react";
-import lightlogo from "../imgs/logo-dark.png";
-import darklogo from "../imgs/logo-light.png";
+import darklogo from "../imgs/logo-dark.png";
+import lightlogo from "../imgs/logo-light.png";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { ThemeContext, userContext } from "../App";
 import UserNavigationPanel from "./user-navigation.component";

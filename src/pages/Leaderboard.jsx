@@ -4,6 +4,7 @@ import Loader from "../components/loader.component";
 import { Link } from "react-router-dom";
 import { lookInSession } from "../common/session";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import verfiedBadge from ".././imgs/verified.png";
 
 const getMedal = (pos) => {
   if (pos === 1) return "🥇";
@@ -45,9 +46,12 @@ const Leaderboard = () => {
           profile_img: user.profile_img || user.personal_info?.profile_img,
           followersCount: user.followersCount ?? 0,
           streak: user.streak ?? { count: 0 },
+          isVerified: user.isVerified || user.personal_info?.isVerified,
         }));
 
         setData(transformedData);
+        console.log(transformedData);
+        
         setLoading(false);
       } catch (error) {
         console.error("Error fetching leaderboard data:", error);
@@ -94,7 +98,7 @@ const Leaderboard = () => {
       default:
         return "/bronze.png";
     }
-  }
+  };
   return (
     <div className='min-h-screen'>
       {loading ? (
@@ -104,17 +108,17 @@ const Leaderboard = () => {
           {/* Header */}
           <div className='text-center mb-8'>
             <div className='text-[20px] md:text-4xl mx-auto flex justify-center items-center font-bold text-dark-grey mb-4'>
-              Popularity Contest   {/* Flame Animation */}
-                <DotLottieReact
-                  src='https://lottie.host/02271725-b11e-42f9-b1a5-f6b8a94cd6c1/Oq8GFbPfmB.lottie'
-                  loop
-                  autoplay
-                  className='w-[50px] h-[50px] object-contain'
-                />
+              Popularity Contest {/* Flame Animation */}
+              <DotLottieReact
+                src='https://lottie.host/02271725-b11e-42f9-b1a5-f6b8a94cd6c1/Oq8GFbPfmB.lottie'
+                loop
+                autoplay
+                className='w-[50px] h-[50px] object-contain'
+              />
             </div>
             <p className='text-dark-grey max-w-4xl mx-auto leading-relaxed'>
-              Wanna know who's the most popular in  Bowen? Check out the leaderboard by
-              followers or streaks — new Faves every week!
+              Wanna know who's the most popular in Bowen? Check out the
+              leaderboard by followers or streaks — new Faves every week!
             </p>
           </div>
 
@@ -154,8 +158,7 @@ const Leaderboard = () => {
           </div> */}
 
           {/* Leaderboard Table */}
-         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden relative z-0">
-
+          <div className='bg-white rounded-lg border border-gray-200 overflow-hidden relative z-0'>
             <div className='overflow-x-auto'>
               <table className='w-full min-w-[600px]'>
                 <thead className='bg-white border-b border-gray-200'>
@@ -188,36 +191,43 @@ const Leaderboard = () => {
                         </span>
                       </td>
                       <Link to={`/user/${user.username}`}>
-                       <td className={`${idx < 3 ? 'py-4' : 'py-7' } px-6`}>
+                        <td className={`${idx < 3 ? "py-4" : "py-7"} px-6`}>
                           <div className='flex items-center gap-4'>
-                        
-                            {
-                              idx < 3 ? (
-                             <div className="relative w-16 h-16 shrink-0">
-  <img
-    src={getLeaderLeaf(idx)}
-    alt=""
-    className="w-full h-full object-contain"
-  />
-  <img
-    src={user.profile_img}
-    alt={user.username}
-    className="w-10 h-10 rounded-full border-2 border-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
-  />
-</div>
-
-                              ) : (
+                            {idx < 3 ? (
+                              <div className='relative w-16 h-16 shrink-0'>
+                                <img
+                                  src={getLeaderLeaf(idx)}
+                                  alt=''
+                                  className='w-full h-full object-contain'
+                                />
+                                <img
+                                  src={user.profile_img}
+                                  alt={user.username}
+                                  className='w-10 h-10 rounded-full border-2 border-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10'
+                                />
+                              </div>
+                            ) : (
                               <img
                                 src={user.profile_img}
                                 alt={user.username}
-                                className='w-10 h-10 ml-4 rounded-full border-2 border-gray-200'
+                                className='w-10 h-10 ml-3 rounded-full border-2 border-gray-200'
                               />
-                              )
-                            }
+                            )}
 
-                            <span className={'font-semibold text-dark-grey text-base '  }>
+                            <span
+                              className={
+                                "font-semibold text-dark-grey text-base "
+                              }
+                            >
                               {user.fullname}
                             </span>
+                            {user.isVerified && (
+                              <img
+                                src={verfiedBadge}
+                                alt='profileimg'
+                                className='w-6 h-6 -ml-3 rounded-full'
+                              />
+                            )}
                           </div>
                         </td>
                       </Link>
@@ -225,13 +235,17 @@ const Leaderboard = () => {
                       <td className='py-4 px-6'>
                         <Link
                           to={`/user/${user.username}`}
-                          className={'text-dark-grey hover:underline ' }
+                          className={"text-dark-grey hover:underline "}
                         >
                           {user.username}
                         </Link>
                       </td>
                       <td className='py-4 px-6 text-right'>
-                        <span className={'text-lg font-bold text-dark-grey font-mono ' }>
+                        <span
+                          className={
+                            "text-lg font-bold text-dark-grey font-mono "
+                          }
+                        >
                           {formatNumber(
                             query === "followers"
                               ? user.followersCount

@@ -13,6 +13,8 @@ import LoadMoreData from "../components/load-more.component";
 import PageNotFound from "./404.page";
 import toast from "react-hot-toast";
 import FollowList from "../components/FollowingFollower";
+import verfiedBadge from ".././imgs/verified.png";
+
 export const profileDataStructure = {
   personal_info: {
     fullname: "",
@@ -57,7 +59,13 @@ const ProfilePage = () => {
     }
   }, [profile._id, userAuth.following]);
   let {
-    personal_info: { fullname, username: profile_username, profile_img, bio },
+    personal_info: {
+      fullname,
+      username: profile_username,
+      profile_img,
+      bio,
+      isVerified,
+    },
     account_info: { total_posts, total_reads },
     social_links,
     joinedAt,
@@ -209,7 +217,17 @@ const ProfilePage = () => {
               className='w-48 h-48 bg-grey rounded-full md:w-32 md:h-32'
             />
 
-            <h1 className='text-2xl font-medium'>@{profile_username}</h1>
+            <div className='flex gap-2 items-center'>
+              {" "}
+              <h1 className='text-2xl font-medium'>@{profile_username}</h1>{" "}
+              {isVerified && (
+                <img
+                  src={verfiedBadge}
+                  alt='profileimg'
+                  className='w-6 h-6 rounded-full'
+                />
+              )}{" "}
+            </div>
             <p className='text-xl capitalize h-6'>{fullname}</p>
 
             <p>

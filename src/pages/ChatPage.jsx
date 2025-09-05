@@ -17,6 +17,7 @@ import {
   Menu,
 } from "lucide-react";
 import { useContext, useEffect, useRef, useState } from "react";
+import verfiedBadge from ".././imgs/verified.png";
 
 import { userContext } from "../App";
 import { useSocket } from "../contexts/SocketContexts";
@@ -120,7 +121,7 @@ const ChatPage = () => {
             },
           }
         );
-      
+
         const formattedMessages = data.messages.map((msg) => ({
           id: msg._id,
           sender: msg.sender?.personal_info?.username || "Them",
@@ -175,7 +176,7 @@ const ChatPage = () => {
             },
           }
         );
-  console.log("message",data);
+        console.log("contacts gotten", data);
 
         const formatedMessages = data.contacts.map((msg) => ({
           id: msg._id,
@@ -192,20 +193,22 @@ const ChatPage = () => {
             hour: "2-digit",
             minute: "2-digit",
           }),
+          isVerified: msg.isVerified,
         }));
         // Add static group manually
         const staticGroup = {
           id: "global", // or some unique string you’ll use in group message logic
           name: "Campus Group",
           type: "group",
-          username:"temiq33",
+          username: "temiq33",
           lastMessage: "Welcome to the group!",
           unread: 0,
           online: true,
+          isVerified: true,
           members: 10,
           avatar: "CG",
           profile_img:
-            "https://res.cloudinary.com/dvaksrrgl/image/upload/v1752340675/user_images/user_r8hnv5Pbi3ydydK9SqnxD.jpg", // optional avatar image
+            "https://bowen.edu.ng/wp-content/uploads/2019/10/Podium-Bowen-Logo-e1572367768365.jpg", // optional avatar image
           timestamp: new Date().toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
@@ -603,7 +606,15 @@ const ChatPage = () => {
                             ({chat.members})
                           </span>
                         )}
+                        {chat.isVerified && (
+                          <img
+                            src={verfiedBadge}
+                            alt='profileimg'
+                            className='w-6 h-6 ml-5 rounded-full'
+                          />
+                        )}
                       </div>
+
                       <span className='text-xs text-gray-500 flex-shrink-0'>
                         {chat.timestamp}
                       </span>
@@ -718,19 +729,19 @@ const ChatPage = () => {
                       )}
                     </div>
                   </Link>
-                    <Link to={`/user/${currentChat?.username}`}>
-                  <div className='flex-1 min-w-0'>
-                    <p className='font-semibold text-black text-xl md:text-3xl truncate'>
-                      {currentChat.name}
-                    </p>
-                    <p className='text-sm text-gray-500 truncate'>
-                      {currentChat.type === "group"
-                        ? `${allusers} members`
-                        : currentChat.online
-                          ? "Online"
-                          : formatLastSeen(currentChat.lastSeen)}
-                    </p>
-                  </div>
+                  <Link to={`/user/${currentChat?.username}`}>
+                    <div className='flex-1 min-w-0'>
+                      <p className='font-semibold text-black text-xl md:text-3xl truncate'>
+                        {currentChat.name}
+                      </p>
+                      <p className='text-sm text-gray-500 truncate'>
+                        {currentChat.type === "group"
+                          ? `${allusers} members`
+                          : currentChat.online
+                            ? "Online"
+                            : formatLastSeen(currentChat.lastSeen)}
+                      </p>
+                    </div>
                   </Link>
                 </div>
 
@@ -760,10 +771,10 @@ const ChatPage = () => {
                         }`}
                       >
                         {!msg.isOwn && (
-                           <Link to={`/user/${msg?.sender}`}>
-                          <div className='w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-grey flex items-center justify-center text-black text-xs sm:text-sm font-semibold mr-2 sm:mr-3 flex-shrink-0'>
-                            {msg.avatar}
-                          </div>
+                          <Link to={`/user/${msg?.sender}`}>
+                            <div className='w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-grey flex items-center justify-center text-black text-xs sm:text-sm font-semibold mr-2 sm:mr-3 flex-shrink-0'>
+                              {msg.avatar}
+                            </div>
                           </Link>
                         )}
 

@@ -1,14 +1,18 @@
 import { Link } from "react-router-dom";
 import { getDay } from "../common/date";
+import verfiedBadge from ".././imgs/verified.png";
+
 const MinimalBlogPost = ({ blog, index }) => {
   let {
     title,
     blog_id: id,
     author: {
-      personal_info: { fullname, username, profile_img },
+      personal_info: { fullname, username, profile_img, isVerified },
     },
     publishedAt,
   } = blog;
+  console.log("isverified",isVerified);
+  
   return (
     <Link to={`/blog/${id}`} className='flex gap-5 mb-8'>
       <h1 className='blog-index'>{index < 10 ? "0" + (index + 1) : index}</h1>
@@ -24,9 +28,16 @@ const MinimalBlogPost = ({ blog, index }) => {
             {fullname} @{username}
           </p>
           <p className='min-w-fit'>{getDay(publishedAt)}</p>
+          {isVerified && (
+            <img
+              src={verfiedBadge}
+              alt='profileimg'
+              className='w-6 h-6 rounded-full'
+            />
+          )}
         </div>
 
-        <h1 className="blog-title">{title}</h1>
+        <h1 className='blog-title'>{title}</h1>
       </div>
     </Link>
   );
