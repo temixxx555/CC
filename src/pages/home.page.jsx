@@ -11,6 +11,7 @@ import { filterPaginationData } from "../common/filter-pagination-data";
 import LoadMoreData from "../components/load-more.component";
 import { Link, useNavigate } from "react-router-dom";
 import { userContext } from "../App";
+// import Alerts from "../components/alerts";
 
 const Home = () => {
   const {
@@ -157,6 +158,7 @@ const Home = () => {
   }, []);
   return (
     <AnimationWrapper>
+      {/* <Alerts /> */}
       <section className='h-cover flex justify-center gap-10 '>
         {/* latest blogs  */}
         <div className='w-full'>

@@ -16,7 +16,7 @@ const Notifications = () => {
     setUserAuth,
     userAuth: { access_token, new_notification_available },
   } = useContext(userContext);
-  let filters = ["all", "like", "comment", "reply"];
+  let filters = ["all", "like", "comment", "reply","info"];
   const [notifications, setNotifications] = useState(null);
 
   const fetchNotifications = ({ page, deletedDocCount = 0 }) => {

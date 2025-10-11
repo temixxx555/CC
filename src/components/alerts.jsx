@@ -9,7 +9,7 @@ const items = [
   { title: "🏆 First Place on the Leaderboard gets a Verified Badge", link: "#" },
 ];
 
-export default function Marquee() {
+export default function Alerts() {
   return (
     <div className="w-full overflow-hidden py-6">
       <div className="marquee">

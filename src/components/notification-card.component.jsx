@@ -28,7 +28,6 @@ const NotificationCard = ({ data, index, notificationState }) => {
   blog_id = "",
   title = "",
 } = blog || {};
-
   const {
     personal_info: { fullname, username, profile_img } = {},
   } = user || {};
@@ -94,7 +93,7 @@ const NotificationCard = ({ data, index, notificationState }) => {
     >
       <div className="flex gap-5 mb-3 ">
         <img
-          src={profile_img}
+          src={profile_img ||"https://bowen.edu.ng/wp-content/uploads/2019/10/Podium-Bowen-Logo-e1572367768365.jpg"}
           className="w-14 h-14 flex-none rounded-full"
           alt="pic"
         />
@@ -111,12 +110,19 @@ const NotificationCard = ({ data, index, notificationState }) => {
                 ? "commented on"
                 : type === "reply"
                 ? "replied you"
+                 : type === "info"
+                ? "annoucement"
                 : type === "followed"
                 ? "followed you"
                 : ""}
             </span>
           </h1>
-
+{(type === "announcement" || type === "info") && (
+  <div className="p-4 mt-4 rounded-md bg-grey">
+    {data.title && <p className="font-bold text-lg mb-2">{data.title}</p>}
+    <p className="text-dark-grey font-medium">{data.message}</p>
+  </div>
+)}
           {type === "reply" && replied_on_comment?.comment && (
             <div className="p-4 mt-4 rounded-md bg-grey">
               <p>{comment?.comment}</p>
@@ -128,7 +134,7 @@ const NotificationCard = ({ data, index, notificationState }) => {
             </div>
           )}
 
-          {type !== "followed" && (
+          {type !== "followed" && type !== "info" && (
             <Link
               className="font-medium hover:underline line-clamp-1"
               to={`/blog/${blog_id}`}
