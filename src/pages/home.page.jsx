@@ -24,17 +24,17 @@ const Home = () => {
   let [pageState, setPageState] = useState("home");
   let navigate = useNavigate();
   let categories = [
-    "fresher",
-    "CampusConnect",
-    "pastQuestions",
-    "banter",
-    "chapel",
-    "marketPlace",
-    "DayInTheLife",
-    "BowenNews",
-    "CampusGist",
-    "hostel",
-    "blogs",
+    "anime",
+    "news",
+    "storytime",
+    "football",
+    "game",
+    "research",
+    "thoughts",
+    "creativity",
+    "research",
+    "music",
+    "important",
   ];
   const fetchLatestBlogs = ({ page = 1 }) => {
     axios
