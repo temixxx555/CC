@@ -46,7 +46,7 @@ const Home = () => {
           page,
           counteRoute: "/all-latest-blogs-count",
         });
-        // console.log(formateData);
+        console.log(formateData,"looo");
 
         setBlogs(formateData);
       })
@@ -76,7 +76,7 @@ const Home = () => {
           user:access_token,
           counteRoute: "/all-latest-feed",
         });
-        console.log(data.blogs);
+        // console.log(data.blogs);
 
         setFeed(formateData);
       })
@@ -205,6 +205,7 @@ const Home = () => {
                     >
                       <BlogPostCard
                         content={blog}
+                        contents={blog.content}
                         author={blog.author.personal_info}
                       />
                     </AnimationWrapper>

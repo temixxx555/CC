@@ -1,8 +1,9 @@
 import { getDay } from "../common/date";
 import { Link } from "react-router-dom";
-import verfiedBadge from ".././imgs/verified.png";
+import verfiedBadge from "../imgs/verified.png";
+import BlogContent from "./blog-content.component";
 
-const BlogPostCard = ({ content, author }) => {
+const BlogPostCard = ({ content, contents, author }) => {
   let {
     blog_id: id,
     banner,
@@ -12,38 +13,43 @@ const BlogPostCard = ({ content, author }) => {
     tags,
     activity: { total_likes, total_comments },
   } = content;
+
   let { fullname, profile_img, username, isVerified } = author;
+
+  const previewText =
+    contents?.[0]?.blocks?.[0]?.data?.text?.replace(/&nbsp;/g, " ") || "";
+
   return (
     <Link
       to={`/blog/${id}`}
       className='flex gap-8 items-center border-b border-grey pb-5 mb-4'
     >
       <div className='w-full'>
+        {/* Author + Date */}
         <div className='gap-2 flex items-center mb-7'>
-          <img
-            src={profile_img}
-            alt='profileimg'
-            className='w-6 h-6 rounded-full'
-          />
-
-          <p className='line-clamp-1 '>
+          <img src={profile_img} alt='profileimg' className='w-6 h-6 rounded-full' />
+          <p className='line-clamp-1'>
             {fullname} @{username}
           </p>
           <p className='min-w-fit'>{getDay(publishedAt)}</p>
           {isVerified && (
-            <img
-              src={verfiedBadge}
-              alt='profileimg'
-              className='w-6 h-6 rounded-full'
-            />
+            <img src={verfiedBadge} alt='verified' className='w-5 h-5 rounded-full' />
           )}
         </div>
 
+        {/* Title */}
         <h1 className='blog-title'>{title}</h1>
-        <p className='my-3 text-xl font-gelasio leading-7 max-sm:hidden md:max-[1100px]:hidden line-clamp-2 '>
-          {des}
-        </p>
 
+        {/* Preview */}
+        {previewText ? (
+          <p className='my-3 text-xl font-gelasio leading-7 line-clamp-2 text-dark'>
+            {previewText.slice(0, 150)}...
+          </p>
+        ) : (
+          <p className='text-dark-grey italic'>Read more ...</p>
+        )}
+
+        {/* Tags + Reactions */}
         <div className='flex gap-2 mt-7'>
           <span className='btn-light text-[11px] md:text-[15px] py-1 px-4'>
             {tags[0]}
@@ -58,6 +64,8 @@ const BlogPostCard = ({ content, author }) => {
           </span>
         </div>
       </div>
+
+      {/* Banner Image */}
       <div className='h-28 aspect-square bg-grey'>
         <img
           src={banner}

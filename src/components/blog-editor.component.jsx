@@ -100,55 +100,58 @@ const BlogEditor = () => {
         .catch((err) => console.log(err));
     }
   };
-  const HandleSaveDraft = (e) => {
-    if (e.target.className.includes("disable")) {
+ const HandleSaveDraft = async (e) => {
+  if (e.target.className.includes("disable")) return;
+  if (!title.length) return toast.error("Write blog title before saving Draft");
+
+  e.target.classList.add("disable");
+  const loadingToast = toast.loading("Saving Draft...");
+
+  try {
+    // Save current editor content
+    const data = await textEditorState.save();
+
+    if (!data.blocks.length) {
+      toast.error("Write something before saving draft");
+      e.target.classList.remove("disable");
+      toast.dismiss(loadingToast);
       return;
     }
-    if (!title.length) {
-      return toast.error("Write blog title before saving Draft");
-    }
 
-    let loadingToast = toast.loading("Saving Draft...");
-    e.target.classList.add("disable");
-
-    // Ensure tags is an array
     const processedTags = Array.isArray(tags) ? tags : [];
 
-    let blogObj = {
+    const blogObj = {
       title,
-      banner: banner || "", // Provide default for optional fields
-      content: content || { blocks: [] }, // Ensure content is an object with blocks
+      banner: banner || "",
+      content: data, // ✅ Use the freshly saved data
       tags: processedTags,
-      des: des || "", // Provide default for optional description
+      des: des || "",
       draft: true,
     };
 
-    axios
-      .post(
-        import.meta.env.VITE_SERVER_DOMAIN + "/create-blog",
-        { ...blogObj, id: blog_id },
-        {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-          },
-        }
-      )
-      .then(() => {
-        e.target.classList.remove("disable");
-        toast.dismiss(loadingToast);
-        toast.success("Saved");
+    console.log("Saving draft:", blogObj);
 
-        setTimeout(() => {
-          navigate("/dashboard/blogs?tab=draft");
-        }, 500);
-      })
-      .catch(({ response, message }) => {
-        e.target.classList.remove("disable");
-        toast.dismiss(loadingToast);
-        console.error("Error saving draft:", response?.data || message);
-        return toast.error(response?.data?.error || "Failed to save draft");
-      });
-  };
+    await axios.post(
+      `${import.meta.env.VITE_SERVER_DOMAIN}/create-blog`,
+      { ...blogObj, id: blog_id },
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
+
+    toast.dismiss(loadingToast);
+    toast.success("Draft saved successfully!");
+    navigate("/dashboard/blogs?tab=draft");
+  } catch (error) {
+    console.error("Error saving draft:", error.response?.data || error.message);
+    toast.dismiss(loadingToast);
+    toast.error(error.response?.data?.error || "Failed to save draft");
+  } finally {
+    e.target.classList.remove("disable");
+  }
+};
   return (
     <>
       <nav className='navbar'>
