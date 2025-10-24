@@ -537,9 +537,9 @@ const ChatPage = () => {
             <h1 className='text-xl font-semibold text-black'>Messages</h1>
             <button
               onClick={() => setShowModal((preval) => !preval)}
-              className='p-2 hover:bg-gray-100 rounded-full transition-colors'
+              className='p-2 flex hover:opacity-20 text-black border border-black rounded-full transition-colors'
             >
-              <Plus className='w-5 h-5 text-gray-600' />
+             Add  <Plus className='w-5 h-5 black' />
             </button>
           </div>
 

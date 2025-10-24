@@ -336,7 +336,7 @@ const AnnonymousPage = () => {
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type a message..."
-              className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-8 sm:pr-12 border border-gray-300 rounded-xl sm:rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none max-h-20 sm:max-h-32 text-sm sm:text-base bg-gray-50 leading-tight"
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-8 sm:pr-12 border border-gray-300 rounded-xl sm:rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none max-h-20 sm:max-h-32 text-sm sm:text-base text-gray-900 bg-gray-50 leading-tight"
               rows={1}
               style={{
                 minHeight: "36px",

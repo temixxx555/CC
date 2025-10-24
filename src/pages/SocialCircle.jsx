@@ -118,13 +118,15 @@ const SocialCircle = () => {
     {
       icon: <i className='fi fi-rr-comment-alt text-2xl text-blue-600' />,
       title: "Anonymous Message",
-      link: isAnonymousMessageAvailable()
-        ? "/dashboard/anonymous-message"
-        : null,
-      description: isAnonymousMessageAvailable()
-        ? "Campus Tea, No IDs. Spill, share, or stir — it's all anonymous."
-        : "",
-      isAvailable: isAnonymousMessageAvailable(),
+        description: "Campus Tea, No IDs. Spill, share, or stir — it's all anonymous.",
+      link: "/dashboard/anonymous-message",
+      // link: isAnonymousMessageAvailable()
+      //   ? "/dashboard/anonymous-message"
+      //   : null,
+      // description: isAnonymousMessageAvailable()
+      //   ? "Campus Tea, No IDs. Spill, share, or stir — it's all anonymous."
+      //   : "",
+      // isAvailable: isAnonymousMessageAvailable(),
     },
   ];
 
@@ -146,8 +148,8 @@ const SocialCircle = () => {
               <div className='flex-1'>
                 <p className='text-xl md:text-4xl font-semibold'>{feature.title}</p>
                 <p className='text-sm text-dark-grey'>{feature.description}</p>
-                {feature.title === "Anonymous Message" &&
-                  !feature.isAvailable && <CountdownDisplay />}
+                {/* {feature.title === "Anonymous Message" &&
+                  !feature.isAvailable && <CountdownDisplay />} */}
               </div>
             </div>
           </Link>
