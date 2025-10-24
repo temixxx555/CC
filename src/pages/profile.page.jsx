@@ -132,7 +132,7 @@ const ProfilePage = () => {
           data_to_send: { author: user_id },
         });
         formattedData.user_id = user_id;
-        // console.log(formattedData);
+        console.log(formattedData,"poppp");
 
         setBlogs(formattedData);
       })
@@ -288,6 +288,7 @@ const ProfilePage = () => {
                         transition={{ duration: 1, delay: i * 0.1 }}
                       >
                         <BlogPostCard
+                        contents={blog.content}
                           content={blog}
                           author={blog.author.personal_info}
                         />

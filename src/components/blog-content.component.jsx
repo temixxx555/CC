@@ -136,7 +136,7 @@ const List = ({ style, items }) => {
       {items.map((item, i) => {
         const content = typeof item === "object" && item.content ? item.content : String(item);
         return (
-          <li key={i} className="my-4">
+          <li key={i} className="my-2">
             {content.includes("<") ? (
               <span dangerouslySetInnerHTML={{ __html: content }} />
             ) : (
@@ -154,7 +154,7 @@ const BlogContent = ({ block }) => {
   let { type, data } = block;
   
   if (type === "paragraph") {
-    return <p dangerouslySetInnerHTML={{ __html: data.text }}></p>;
+    return <p  dangerouslySetInnerHTML={{ __html: data.text }}></p>;
   }
   
   if (type === "header") {

@@ -24,17 +24,18 @@ const Home = () => {
   let [pageState, setPageState] = useState("home");
   let navigate = useNavigate();
   let categories = [
-    "anime",
-    "news",
-    "storytime",
+    "prediction",
+    "sports",
     "football",
-    "game",
-    "research",
-    "thoughts",
-    "creativity",
-    "research",
+    "chapel",
+    "anime",
+    "education",
+    "art",
     "music",
+    "foods",
+    "brands",
     "important",
+    "Western",
   ];
   const fetchLatestBlogs = ({ page = 1 }) => {
     axios
@@ -76,7 +77,8 @@ const Home = () => {
           user:access_token,
           counteRoute: "/all-latest-feed",
         });
-        // console.log(data.blogs);
+              console.log(formateData,"looo");
+
 
         setFeed(formateData);
       })
@@ -167,25 +169,22 @@ const Home = () => {
           </p>
 
           {/* Show on small screens only */}
-          <div className='md:hidden px-4 pt-4'>
-            <h1 className='font-medium text-xl mb-6'>
-              Stories from all interest
-            </h1>
-            <div className='flex text-[11px] gap-3 flex-wrap'>
-              {categories.map((category, i) => {
-                return (
-                  <button
-                    onClick={loadBlogByCategory}
-                    className={
-                      "tag " +
-                      (pageState == category ? "bg-black text-white" : "")
-                    }
-                    key={i}
-                  >
-                    {category}
-                  </button>
-                );
-              })}
+        <div className="md:hidden mb-6">
+            <h1 className="font-medium text-lg mb-4">Stories from all interests</h1>
+            <div className="flex flex-wrap gap-2">
+              {categories.map((category, i) => (
+                <button
+                  key={i}
+                  onClick={loadBlogByCategory}
+                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${
+                    pageState === category
+                      ? "bg-black text-white border-black"
+                      : "border-gray-300 text-dark-grey hover:bg-gray-100"
+                  }`}
+                >
+                  {category} +
+                </button>
+              ))}
             </div>
           </div>
 
@@ -232,7 +231,7 @@ const Home = () => {
                       transition={{ duration: 1, delay: i * 0.1 }}
                       className={"md:hidden"}
                     >
-                      <MinimalBlogPost blog={blog} index={i} />
+                      <MinimalBlogPost  contents={blog.content} blog={blog} index={i} />
                     </AnimationWrapper>
                   );
                 })
@@ -253,6 +252,7 @@ const Home = () => {
                       transition={{ duration: 1, delay: i * 0.1 }}
                     >
                       <BlogPostCard
+                        contents={blog.content}
                         content={blog}
                         author={blog.author.personal_info}
                       />
@@ -272,7 +272,7 @@ const Home = () => {
           <div className='flex flex-col gap-10'>
             <div className=''>
               <h1 className='font-medium text-xl mb-6'>
-                Stories from all interest
+                Stories from all interest 
               </h1>
               <div className='flex gap-3 flex-wrap'>
                 {categories.map((category, i) => {
@@ -285,7 +285,7 @@ const Home = () => {
                       }
                       key={i}
                     >
-                      {category}
+                      {category} +
                     </button>
                   );
                 })}

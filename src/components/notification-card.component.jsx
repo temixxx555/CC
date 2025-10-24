@@ -22,15 +22,10 @@ const NotificationCard = ({ data, index, notificationState }) => {
   } = data;
 
   // console.log("Notification data:", data);
-  
- const {
-  _id: blogId,
-  blog_id = "",
-  title = "",
-} = blog || {};
-  const {
-    personal_info: { fullname, username, profile_img } = {},
-  } = user || {};
+
+  const { _id: blogId, blog_id = "", title = "" } = blog || {};
+  const { personal_info: { fullname, username, profile_img } = {} } =
+    user || {};
 
   const {
     userAuth: {
@@ -91,52 +86,69 @@ const NotificationCard = ({ data, index, notificationState }) => {
         "p-6 border-grey border-l-black " + (!seen ? " border-l-2 " : "")
       }
     >
-      <div className="flex gap-5 mb-3 ">
+      <div className='flex gap-5 mb-3 '>
         <img
-          src={profile_img ||"https://bowen.edu.ng/wp-content/uploads/2019/10/Podium-Bowen-Logo-e1572367768365.jpg"}
-          className="w-14 h-14 flex-none rounded-full"
-          alt="pic"
+          src={
+            profile_img ||
+            "https://bowen.edu.ng/wp-content/uploads/2019/10/Podium-Bowen-Logo-e1572367768365.jpg"
+          }
+          className='w-14 h-14 flex-none rounded-full'
+          alt='pic'
         />
-        <div className="w-full">
-          <h1 className="font-medium text-dark-grey text-xl">
-            <span className="lg:inline-block hidden capitalize">{fullname}</span>
-            <Link className="mx-1 text-black underline" to={`/user/${username}`}>
+        <div className='w-full'>
+          <h1 className='font-medium text-dark-grey text-xl'>
+            <span className='lg:inline-block hidden capitalize'>
+              {fullname}
+            </span>
+            <Link
+              className='mx-1 text-black underline'
+              to={`/user/${username}`}
+            >
               @{username}
             </Link>
-            <span className="font-normal">
+            <span className='font-normal'>
               {type === "like"
                 ? "liked your blog"
                 : type === "comment"
-                ? "commented on"
-                : type === "reply"
-                ? "replied you"
-                 : type === "info"
-                ? "annoucement"
-                : type === "followed"
-                ? "followed you"
-                : ""}
+                  ? "commented on"
+                  : type === "reply"
+                    ? "replied you"
+                    : type === "info"
+                      ? "annoucement"
+                      : type === "followed"
+                        ? "followed you"
+                        : ""}
             </span>
           </h1>
-{(type === "announcement" || type === "info") && (
-  <div className="p-4 mt-4 rounded-md bg-grey">
-    {data.title && <p className="font-bold text-lg mb-2">{data.title}</p>}
-    <p className="text-dark-grey font-medium">{data.message}</p>
-  </div>
-)}
+          {(type === "announcement" || type === "info") && (
+            <Link
+              className=''
+              to={`/ranking`}
+            >
+              <div className='p-4 mt-4 rounded-md bg-grey'>
+                {data.title && (
+                  <p className='font-bold text-lg mb-2'>{data.title}</p>
+                )}
+                <p className='text-dark-grey font-medium'>{data.message}</p>
+              </div>
+            </Link>
+          )}
           {type === "reply" && replied_on_comment?.comment && (
-            <div className="p-4 mt-4 rounded-md bg-grey">
+            <div className='p-4 mt-4 rounded-md bg-grey'>
               <p>{comment?.comment}</p>
             </div>
           )}
           {type === "followed" && (
-            <div className="p-4 mt-4 rounded-md bg-grey">
-             <p className="font-medium text-dark-grey">You have a new follower!</p>
+            <div className='p-4 mt-4 rounded-md bg-grey'>
+              <p className='font-medium text-dark-grey'>
+                You have a new follower!
+              </p>
             </div>
           )}
 
           {type !== "followed" && type !== "info" && (
             <Link
-              className="font-medium hover:underline line-clamp-1"
+              className='font-medium hover:underline line-clamp-1'
               to={`/blog/${blog_id}`}
             >
               "{title}"
@@ -146,14 +158,16 @@ const NotificationCard = ({ data, index, notificationState }) => {
       </div>
 
       {type === "comment" && comment?.comment && (
-        <p className="ml-14 pl-5 font-gelasio text-xl my-5">{comment.comment}</p>
+        <p className='ml-14 pl-5 font-gelasio text-xl my-5'>
+          {comment.comment}
+        </p>
       )}
 
-      <div className="ml-14 pl-5 mt-3 text-dark-grey flex gap-8">
+      <div className='ml-14 pl-5 mt-3 text-dark-grey flex gap-8'>
         <p>{getDay(createdAt)}</p>
 
         {(type === "comment" || type === "reply") && !reply && (
-          <button onClick={handleReply} className="underline hover:text-black">
+          <button onClick={handleReply} className='underline hover:text-black'>
             Reply
           </button>
         )}
@@ -161,7 +175,7 @@ const NotificationCard = ({ data, index, notificationState }) => {
         {(type === "comment" || type === "reply") && (
           <button
             onClick={(e) => handleDelete(comment._id, type, e.target)}
-            className="underline hover:text-black"
+            className='underline hover:text-black'
           >
             Delete
           </button>
@@ -169,7 +183,7 @@ const NotificationCard = ({ data, index, notificationState }) => {
       </div>
 
       {isReplying && (
-        <div className="mt-8">
+        <div className='mt-8'>
           <NotificationCommentField
             _id={blogId}
             blog_author={user}
@@ -183,24 +197,24 @@ const NotificationCard = ({ data, index, notificationState }) => {
       )}
 
       {reply && (
-        <div className="ml-20 p-5 bg-grey mt-5 rounded-md">
-          <div className="flex gap-3 mb-3">
+        <div className='ml-20 p-5 bg-grey mt-5 rounded-md'>
+          <div className='flex gap-3 mb-3'>
             <img
               src={author_profile_img}
-              alt="pic"
-              className="w-8 h-8 rounded-full"
+              alt='pic'
+              className='w-8 h-8 rounded-full'
             />
             <div>
-              <h1 className="font-medium text-xl text-dark-grey">
+              <h1 className='font-medium text-xl text-dark-grey'>
                 <Link
-                  className="mx-1 text-black underline"
+                  className='mx-1 text-black underline'
                   to={`/user/${author_username}`}
                 >
                   @{author_username}
                 </Link>
-                <span className="font-normal"> replied to </span>
+                <span className='font-normal'> replied to </span>
                 <Link
-                  className="mx-1 text-black underline"
+                  className='mx-1 text-black underline'
                   to={`/user/${username}`}
                 >
                   @{username}
@@ -212,7 +226,7 @@ const NotificationCard = ({ data, index, notificationState }) => {
 
           <button
             onClick={(e) => handleDelete(comment._id, "reply", e.target)}
-            className="underline hover:text-black ml-14 mt-2"
+            className='underline hover:text-black ml-14 mt-2'
           >
             Delete
           </button>

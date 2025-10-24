@@ -35,7 +35,7 @@ const BlogEditor = () => {
           holder: "textEditor",
           data: Array.isArray(content) ? content[0] : content,
           tools: tools,
-          placeholder: "Lets write an awesome story",
+          placeholder: "Share your campus story! ✨",
         })
       );
     }

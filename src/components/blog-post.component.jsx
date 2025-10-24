@@ -1,10 +1,10 @@
 import { getDay } from "../common/date";
 import { Link } from "react-router-dom";
-import verfiedBadge from "../imgs/verified.png";
+import verifiedBadge from "../imgs/verified.png";
 import BlogContent from "./blog-content.component";
 
 const BlogPostCard = ({ content, contents, author }) => {
-  let {
+  const {
     blog_id: id,
     banner,
     publishedAt,
@@ -14,7 +14,7 @@ const BlogPostCard = ({ content, contents, author }) => {
     activity: { total_likes, total_comments },
   } = content;
 
-  let { fullname, profile_img, username, isVerified } = author;
+  const { fullname, profile_img, username, isVerified } = author;
 
   const previewText =
     contents?.[0]?.blocks?.[0]?.data?.text?.replace(/&nbsp;/g, " ") || "";
@@ -22,56 +22,73 @@ const BlogPostCard = ({ content, contents, author }) => {
   return (
     <Link
       to={`/blog/${id}`}
-      className='flex gap-8 items-center border-b border-grey pb-5 mb-4'
+      className="flex flex-col md:flex-row items-start gap-5 border border-grey rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white"
     >
-      <div className='w-full'>
+      {/* Banner Image */}
+      <div className="md:w-1/3 w-full h-48 md:h-48 overflow-hidden">
+        <img
+          src={banner}
+          alt="banner"
+          className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+        />
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 p-4 md:p-5">
         {/* Author + Date */}
-        <div className='gap-2 flex items-center mb-7'>
-          <img src={profile_img} alt='profileimg' className='w-6 h-6 rounded-full' />
-          <p className='line-clamp-1'>
-            {fullname} @{username}
-          </p>
-          <p className='min-w-fit'>{getDay(publishedAt)}</p>
+        <div className="flex items-center gap-2 mb-3 text-sm text-gray-600">
+          <img
+            src={profile_img}
+            alt="profile"
+            className="w-7 h-7 rounded-full object-cover"
+          />
+          <p className="font-medium text-dark-grey">{fullname}</p>
+          <span className="text-gray-500">@{username}</span>
           {isVerified && (
-            <img src={verfiedBadge} alt='verified' className='w-5 h-5 rounded-full' />
+            <img
+              src={verifiedBadge}
+              alt="verified"
+              className="w-4 h-4 ml-1 inline-block"
+            />
           )}
+          <span className="ml-auto text-gray-500">{getDay(publishedAt)}</span>
         </div>
 
         {/* Title */}
-        <h1 className='blog-title'>{title}</h1>
+        <h1 className="text-lg md:text-xl font-semibold text-da line-clamp-2 hover:text-blue-600 transition-colors duration-200">
+          {title}
+        </h1>
 
         {/* Preview */}
         {previewText ? (
-          <p className='my-3 text-xl font-gelasio leading-7 line-clamp-2 text-dark'>
-            {previewText.slice(0, 150)}...
+          <p className="mt-2 text-dark leading-relaxed line-clamp-8 md:line-clamp-2">
+            {previewText.slice(0, 210)}...
           </p>
         ) : (
-          <p className='text-dark-grey italic'>Read more ...</p>
+          <p className="text-dark italic mt-2">Read more ...</p>
         )}
 
         {/* Tags + Reactions */}
-        <div className='flex gap-2 mt-7'>
-          <span className='btn-light text-[11px] md:text-[15px] py-1 px-4'>
-            {tags[0]}
-          </span>
-          <span className='ml-1 flex items-center gap-2 text-dark-grey'>
-            <i className='fi fi-rr-heart text-xl'></i>
-            {total_likes}
-          </span>
-          <span className='ml-1 flex items-center gap-2 text-dark-grey'>
-            <i className='fi fi-rr-comment-dots text-xl'></i>
-            {total_comments}
-          </span>
+        <div className="flex items-center flex-wrap gap-4 mt-4 text-sm">
+          {tags?.[0] && (
+            <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">
+              #{tags[0]}
+            </span>
+          )}
+          {tags?.[1] && (
+            <span className="bg-blue-50 text-blue-700 -ml-4 px-3 py-1 rounded-full text-xs font-medium">
+              #{tags[1]}
+            </span>
+          )}
+          <div className="flex items-center gap-1 text-gray-500">
+            <i className="fi fi-rr-heart text-lg"></i>
+            <span>{total_likes}</span>
+          </div>
+          <div className="flex items-center gap-1 text-gray-500">
+            <i className="fi fi-rr-comment-dots text-lg"></i>
+            <span>{total_comments}</span>
+          </div>
         </div>
-      </div>
-
-      {/* Banner Image */}
-      <div className='h-28 aspect-square bg-grey'>
-        <img
-          src={banner}
-          className='w-full h-full aspect-square object-cover'
-          alt='banner'
-        />
       </div>
     </Link>
   );
