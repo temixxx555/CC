@@ -17,6 +17,7 @@ export const blogStructure = {
   content: "",
   author: { personal_info: {} },
   publishedAt: "",
+  activity: { total_reads: 0 },
   banner: "",
 };
 export const BlogContext = createContext({});
@@ -37,6 +38,7 @@ const BlogPage = () => {
     author: {
       personal_info: { fullname, username: author_username, profile_img },
     },
+    activity: { total_reads },
     publishedAt,
   } = blog;
 
@@ -50,7 +52,7 @@ const BlogPage = () => {
           blog_id: blog._id,
           setParentCommentFunc: setTotalParentsCommentsLoaaded,
         });
-        // console.log(blog);
+        console.log(blog, "pooo");
 
         setBlog(blog);
 
@@ -102,17 +104,18 @@ const BlogPage = () => {
         >
           <CommentsContainer />
           <div className='max-w-[900px] center py-10 max-lg:px-[5vw]'>
-            <img src={banner} alt='pic' className='aspect-video object-cover rounded-2xl shadow-md' />
+            <img
+              src={banner}
+              alt='pic'
+              className='aspect-video object-cover rounded-2xl shadow-md'
+            />
 
             <div className='mt-12'>
               <h2 className=''>{title}</h2>
 
-              <div className='flex max-sm:flex-col justify-between my-8'>
+              <div className='flex  justify-between my-8'>
                 <div className='flex gap-5 items-start '>
-                  <Link
-                    className=''
-                    to={`/user/${author_username}`}
-                  >
+                  <Link className='' to={`/user/${author_username}`}>
                     <img
                       src={profile_img}
                       alt='pic'
@@ -120,10 +123,7 @@ const BlogPage = () => {
                     />
                   </Link>
                   <p className='capitalize'>
-                    <Link
-                      className=''
-                      to={`/user/${author_username}`}
-                    >
+                    <Link className='' to={`/user/${author_username}`}>
                       {fullname}
                     </Link>
                     <br />
@@ -131,13 +131,13 @@ const BlogPage = () => {
                       className='underline text-blue-500'
                       to={`/user/${author_username}`}
                     >
-                     @{author_username}
+                      @{author_username}
                     </Link>
                   </p>
                 </div>
                 <div className='text-sm text-gray-500 italic  max-sm:mt-6 max-sm:ml-12 max-sm:pl-5'>
                   Published on {getDay(publishedAt)}
-                  <p>120 reads</p>
+                  <p className="text-black font-semibold">{total_reads} reads</p>
                 </div>
               </div>
             </div>

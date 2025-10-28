@@ -11,7 +11,7 @@ const BlogPostCard = ({ content, contents, author }) => {
     title,
     des,
     tags,
-    activity: { total_likes, total_comments },
+    activity: { total_likes, total_comments,total_reads },
   } = content;
 
   const { fullname, profile_img, username, isVerified } = author;
@@ -55,7 +55,7 @@ const BlogPostCard = ({ content, contents, author }) => {
         </div>
 
         {/* Title */}
-        <h1 className="text-lg md:text-xl font-semibold text-da line-clamp-2 hover:text-blue-600 transition-colors duration-200">
+        <h1 className="text-lg md:text-xl font-semibold text-da line-clamp-2 transition-colors duration-200">
           {title}
         </h1>
 
@@ -71,12 +71,12 @@ const BlogPostCard = ({ content, contents, author }) => {
         {/* Tags + Reactions */}
         <div className="flex items-center flex-wrap gap-4 mt-4 text-sm">
           {tags?.[0] && (
-            <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">
+            <span className="bg-blue-50 text-gray-500 px-3 py-1 rounded-full text-xs font-medium">
               #{tags[0]}
             </span>
           )}
           {tags?.[1] && (
-            <span className="bg-blue-50 text-blue-700 -ml-4 px-3 py-1 rounded-full text-xs font-medium">
+            <span className="bg-blue-50 text-gray-500 -ml-2 md:-ml-2 px-3 py-1 rounded-full text-xs font-medium">
               #{tags[1]}
             </span>
           )}
@@ -87,6 +87,10 @@ const BlogPostCard = ({ content, contents, author }) => {
           <div className="flex items-center gap-1 text-gray-500">
             <i className="fi fi-rr-comment-dots text-lg"></i>
             <span>{total_comments}</span>
+          </div>
+          <div className="flex items-center gap-1 text-gray-500">
+            <i className="fi fi-rr-eye text-lg"></i>
+            <span>{total_reads}</span>
           </div>
         </div>
       </div>

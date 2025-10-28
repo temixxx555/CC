@@ -18,7 +18,7 @@ const MinimalBlogPost = ({ blog, index }) => {
       className="flex items-start gap-5 group hover:bg-gray-50 rounded-xl p-3 transition-all duration-300"
     >
       {/* Index Number */}
-      <div className="text-3xl font-bold text-gray-300 group-hover:text-blue-600 transition-colors duration-300 min-w-[2.5rem] text-center">
+      <div className="text-3xl font-bold text-gray-300  transition-colors duration-300 min-w-[2.5rem] text-center">
         {index < 9 ? `0${index + 1}` : index + 1}
       </div>
 
@@ -46,7 +46,7 @@ const MinimalBlogPost = ({ blog, index }) => {
         </div>
 
         {/* Title */}
-        <h1 className="text-lg md:text-xl font-semibold text-dark group-hover:text-blue-600 transition-colors duration-200 line-clamp-2">
+        <h1 className="text-lg md:text-xl font-semibold text-dark  transition-colors duration-200 line-clamp-2">
           {title}
         </h1>
       </div>

@@ -53,6 +53,8 @@ const ManageBlogs = () => {
           setDrafts(formatedData);
         } else {
           setBlogs(formatedData);
+          console.log("pooeoo",formatedData);
+          
         }
       })
       .catch((err) => {

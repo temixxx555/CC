@@ -24,14 +24,14 @@ const Home = () => {
   let [pageState, setPageState] = useState("home");
   let navigate = useNavigate();
   let categories = [
-    "prediction",
-    "sports",
+    "events",
+    "songs",
     "football",
     "chapel",
     "anime",
     "education",
-    "art",
-    "music",
+    "competitions",
+    "songs",
     "foods",
     "brands",
     "important",
@@ -129,7 +129,7 @@ const Home = () => {
       });
   };
   const loadBlogByCategory = (e) => {
-    let category = e.target.innerText.toLowerCase();
+      let category = e.target.innerText.replace("+", "").trim().toLowerCase();
     setBlogs(null);
 
     if (pageState == category) {
@@ -170,7 +170,7 @@ const Home = () => {
 
           {/* Show on small screens only */}
         <div className="md:hidden mb-6">
-            <h1 className="font-medium text-lg mb-4">Stories from all interests</h1>
+            <h1 className="font-medium text-lg mb-4">Stories across Bowen University ✨</h1>
             <div className="flex flex-wrap gap-2">
               {categories.map((category, i) => (
                 <button
@@ -272,7 +272,7 @@ const Home = () => {
           <div className='flex flex-col gap-10'>
             <div className=''>
               <h1 className='font-medium text-xl mb-6'>
-                Stories from all interest 
+               Stories across Bowen University ✨
               </h1>
               <div className='flex gap-3 flex-wrap'>
                 {categories.map((category, i) => {

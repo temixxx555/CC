@@ -13,7 +13,7 @@ const BlogInteraction = () => {
       title,
       blog_id,
       activity,
-      activity: { total_likes, total_comments },
+      activity: { total_likes, total_comments,total_reads },
       author: {
         personal_info: { username: author_username },
       },
