@@ -26,6 +26,11 @@ import AnnonymousPage from "./pages/AnnonymousPage";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import ViewMessage from "./pages/viewMessage";
+import {
+  onForegroundMessage,
+  requestNotificationPermission,
+} from "./common/requestNotificationPermission";
+import axios from "axios";
 
 export const userContext = createContext({});
 export const ThemeContext = createContext({});
@@ -34,10 +39,11 @@ const darkThemePreference = () =>
   window.matchMedia("(prefers-color-scheme:dark)").matches;
 const App = () => {
   const [userAuth, setUserAuth] = useState({});
+
   const [theme, setTheme] = useState(() =>
     darkThemePreference() ? "dark" : "light"
   );
-  const entryLoader = document.getElementById('entry-loader');
+  const entryLoader = document.getElementById("entry-loader");
   if (entryLoader) entryLoader.remove();
   useEffect(() => {
     try {
@@ -58,6 +64,33 @@ const App = () => {
       console.error("Error parsing session data:", error);
     }
   }, []);
+
+  //For Push notification
+  useEffect(() => {
+    // console.log(userAuth, "important");
+
+    if (!userAuth?.access_token) {
+      return;
+    }
+    async function setupFCM() {
+      const token = await requestNotificationPermission();
+      if (token) {
+        await axios.post(
+          import.meta.env.VITE_SERVER_DOMAIN + "/save-token",
+          {
+            token,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${userAuth?.access_token}`,
+            },
+          }
+        );
+      }
+    }
+    setupFCM();
+    onForegroundMessage();
+  }, [userAuth?.access_token]);
   return (
     <>
       <Toaster position='top-right' reverseOrder={false} />
@@ -66,40 +99,52 @@ const App = () => {
           {/* because i think it is the parent provider */}
           {/* socketProvider to connect with the socket io in the backend */}
           <SocketProvider>
-          <Routes>
-            <Route path='/editor' element={<Editor />} />
-            <Route path='/editor/:blog_id' element={<Editor />} />
-            <Route path='/' element={<Navbar />}>
-              {/* index means render the parent path which is / */}
-              <Route index element={<Home />} />
-              <Route path='/ranking' element={<Ranking />} />
-              <Route path='/admin' element={<AssignRank />} />
-              <Route path='/dashboard' element={<SideNav />}>
-                <Route path='blogs' element={<ManageBlogs />} />
-                <Route path='notifications' element={<Notifications />} />
-                <Route path='leaderboard' element={<Leaderboard />} />
-                <Route path='social-circle' element={<SocialCircle />} />
+            <Routes>
+              <Route path='/editor' element={<Editor />} />
+              <Route path='/editor/:blog_id' element={<Editor />} />
+              <Route path='/' element={<Navbar />}>
+                {/* index means render the parent path which is / */}
+                <Route index element={<Home />} />
+                <Route path='/ranking' element={<Ranking />} />
+                <Route path='/admin' element={<AssignRank />} />
+                <Route path='/dashboard' element={<SideNav />}>
+                  <Route path='blogs' element={<ManageBlogs />} />
+                  <Route path='notifications' element={<Notifications />} />
+                  <Route path='leaderboard' element={<Leaderboard />} />
+                  <Route path='social-circle' element={<SocialCircle />} />
+                  <Route path='messages' element={<ChatPage />} />
+                  <Route
+                    path='anonymous-message'
+                    element={<AnnonymousPage />}
+                  />
+                </Route>
+                <Route path='/settings' element={<SideNav />}>
+                  <Route path='edit-profile' element={<EditProfile />} />
+                  <Route path='change-password' element={<ChangePassword />} />
+                </Route>
+                <Route
+                  path='signin'
+                  element={<UserAuthForm type='sign-in' />}
+                />
+                <Route
+                  path='signup'
+                  element={<UserAuthForm type='sign-up' />}
+                />
+                <Route path='forgot-password' element={<ForgotPassword />} />
+                <Route
+                  path='reset-password/:token'
+                  element={<ResetPassword />}
+                />
+                <Route path='search/:query' element={<SearchPage />} />
                 <Route path='messages' element={<ChatPage />} />
-                <Route path='anonymous-message' element={<AnnonymousPage />} />
+                <Route path='messages/:id' element={<ChatPage />} />
+                <Route path='/anonymous/:id' element={<ViewMessage />} />
+                <Route path='user/:id' element={<ProfilePage />} />
+                <Route path='blog/:blog_id' element={<BlogPage />} />
+                <Route path='test' element={<TestPage />} />
+                <Route path='*' element={<PageNotFound />} />
               </Route>
-              <Route path='/settings' element={<SideNav />}>
-                <Route path='edit-profile' element={<EditProfile />} />
-                <Route path='change-password' element={<ChangePassword />} />
-              </Route>
-              <Route path='signin' element={<UserAuthForm type='sign-in' />} />
-              <Route path='signup' element={<UserAuthForm type='sign-up' />} />
-              <Route path='forgot-password' element={<ForgotPassword />} />
-              <Route path='reset-password/:token' element={<ResetPassword />} />
-              <Route path='search/:query' element={<SearchPage />} />
-              <Route path='messages' element={<ChatPage />} />
-              <Route path='messages/:id' element={<ChatPage />} />
-              <Route path='/anonymous/:id' element={<ViewMessage />} />
-              <Route path='user/:id' element={<ProfilePage />} />
-              <Route path='blog/:blog_id' element={<BlogPage />} />
-              <Route path='test' element={<TestPage />} />
-              <Route path='*' element={<PageNotFound />} />
-            </Route>
-          </Routes>
+            </Routes>
           </SocketProvider>
         </userContext.Provider>
       </ThemeContext.Provider>
