@@ -22,7 +22,7 @@ const BlogPostCard = ({ content, contents, author }) => {
   return (
     <Link
       to={`/blog/${id}`}
-      className="flex flex-col md:flex-row items-start gap-5 border border-grey rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white"
+      className="flex flex-col md:flex-row items-start gap-5 border border-grey rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all mb-6 duration-300 hover:-translate-y-1 bg-white"
     >
       {/* Banner Image */}
       <div className="md:w-1/3 w-full h-48 md:h-48 overflow-hidden">
@@ -42,8 +42,8 @@ const BlogPostCard = ({ content, contents, author }) => {
             alt="profile"
             className="w-7 h-7 rounded-full object-cover"
           />
-          <p className="font-medium text-dark-grey">{fullname}</p>
-          <span className="text-gray-500">@{username}</span>
+          <p className="font-medium text-dark-grey line-clamp-1 ">{fullname}</p>
+          <span className="text-gray-500 line-clamp-1 ">@{username}</span>
           {isVerified && (
             <img
               src={verifiedBadge}
@@ -51,7 +51,7 @@ const BlogPostCard = ({ content, contents, author }) => {
               className="w-4 h-4 ml-1 inline-block"
             />
           )}
-          <span className="ml-auto text-gray-500">{getDay(publishedAt)}</span>
+          <span className="ml-auto text-sm md:text-lg text-gray-500">{getDay(publishedAt)}</span>
         </div>
 
         {/* Title */}

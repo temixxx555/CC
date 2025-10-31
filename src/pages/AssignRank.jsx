@@ -171,6 +171,68 @@ const AssignRank = () => {
         {success && <p className="text-green-600 mt-3 text-center">{success}</p>}
         {error && <p className="text-red-600 mt-3 text-center">{error}</p>}
       </div>
+
+
+
+      {/* --- Push Notification Form --- */}
+<div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-2xl shadow-md">
+  <h2 className="text-xl font-semibold mb-4 text-center">🔔 Send Push Notification</h2>
+
+  <form
+    onSubmit={async (e) => {
+      e.preventDefault();
+      setLoading(true);
+      setError("");
+      setSuccess("");
+
+      try {
+        await axios.post(
+          import.meta.env.VITE_SERVER_DOMAIN + "/send-notification",
+          { title, body: message },
+          {
+            headers: {
+              Authorization: `Bearer ${userAuth.access_token}`,
+            },
+          }
+        );
+        toast.success("Notification sent successfully 🎉");
+        setTitle("");
+        setMessage("");
+      } catch (err) {
+        console.error(err);
+        toast.error(err.response?.data?.error || "Failed to send notification");
+      } finally {
+        setLoading(false);
+      }
+    }}
+    className="flex flex-col gap-4"
+  >
+    <input
+      type="text"
+      value={title}
+      onChange={(e) => setTitle(e.target.value)}
+      placeholder="Enter notification title"
+      className="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+      required
+    />
+    <textarea
+      value={message}
+      onChange={(e) => setMessage(e.target.value)}
+      placeholder="Enter notification message"
+      className="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+      rows={3}
+      required
+    ></textarea>
+
+    <button
+      type="submit"
+      disabled={loading}
+      className="bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 disabled:opacity-60"
+    >
+      {loading ? "Sending..." : "Send Notification"}
+    </button>
+  </form>
+</div>
     </div>
   );
 };

@@ -31,7 +31,7 @@ const Home = () => {
     "anime",
     "education",
     "competitions",
-    "songs",
+    "rumour",
     "foods",
     "brands",
     "important",
