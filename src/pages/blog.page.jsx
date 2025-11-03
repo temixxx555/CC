@@ -107,7 +107,7 @@ const BlogPage = () => {
             <img
               src={banner}
               alt='pic'
-              className='aspect-video object-cover rounded-2xl shadow-md'
+              className='aspect-video min-h-[400px] object-cover rounded-2xl shadow-md'
             />
 
             <div className='mt-12'>
@@ -135,7 +135,7 @@ const BlogPage = () => {
                     </Link>
                   </p>
                 </div>
-                <div className='text-sm text-gray-500 italic  max-sm:mt-6 max-sm:ml-12 max-sm:pl-5'>
+                <div className='text-sm text-gray-500 italic   max-sm:ml-12 max-sm:pl-5'>
                   Published on {getDay(publishedAt)}
                   <p className="text-black font-semibold">{total_reads} reads</p>
                 </div>

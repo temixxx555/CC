@@ -14,16 +14,30 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// ✅ Let FCM handle showing notifications automatically
+// ✅ Handle background notifications properly
 messaging.onBackgroundMessage((payload) => {
   console.log("Received background message:", payload);
-  // Do not call showNotification here — Firebase already handles it
+
+  const notificationTitle = payload.notification?.title || "New Notification";
+  const notificationOptions = {
+    body: payload.notification?.body || "You have a new message.",
+    icon: payload.notification?.icon || "/logo.png",
+    data: {
+      url:
+        payload.fcmOptions?.link ||
+        payload.data?.url ||
+        "https://campus-connect.xyz/", // ✅ fallback URL for live app
+    },
+  };
+
+  // ✅ Explicitly show the notification
+  self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-// ✅ Keep your notification click handler (it’s good)
+// ✅ Handle click event and open correct page
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const targetUrl = event.notification.data?.url || "/";
+  const targetUrl = event.notification.data?.url || "https://campus-connect.xyz/";
   event.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
