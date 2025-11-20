@@ -124,6 +124,7 @@ export const ManageDraftBlog = ({ blog }) => {
 };
 
 const deleteBlog = (blog, access_token, target) => {
+   if (!window.confirm("Are you sure you want to delete this comment?")) return;
   let { index, blog_id, setateFunc } = blog;
 
   target.setAttribute("disabled", true);

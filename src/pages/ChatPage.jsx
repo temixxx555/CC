@@ -22,12 +22,14 @@ import verfiedBadge from ".././imgs/verified.png";
 import { userContext } from "../App";
 import { useSocket } from "../contexts/SocketContexts";
 import toast from "react-hot-toast";
+import Loader from "../components/loader.component";
 
 const ChatPage = () => {
   const navigate = useNavigate();
   const { id: chatIdFromUrl } = useParams();
   const [currentChat, setCurrentChat] = useState(null);
   const [groupMessages, setGroupMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const {
     userAuth: { access_token, userId },
@@ -165,6 +167,7 @@ const ChatPage = () => {
   //fetch contacts
   useEffect(() => {
     const fetchContacts = async () => {
+      setLoading(true);
       try {
         if (!access_token) return; // No token, skip fetching
         const { data } = await axios.post(
@@ -216,8 +219,10 @@ const ChatPage = () => {
         };
 
         setChat([...formatedMessages, staticGroup]);
+        setLoading(false);
       } catch (error) {
         console.log("Error fetching messages:", error);
+        setLoading(false);
       }
     };
     fetchContacts();
@@ -539,7 +544,7 @@ const ChatPage = () => {
               onClick={() => setShowModal((preval) => !preval)}
               className='p-2 flex hover:opacity-20 text-black border border-black rounded-full transition-colors'
             >
-             Add  <Plus className='w-5 h-5 black' />
+              Add <Plus className='w-5 h-5 black' />
             </button>
           </div>
 
@@ -569,8 +574,10 @@ const ChatPage = () => {
         </div>
 
         {/* Chat List */}
-        {!showmodal ? (
+        {
+          loading ? <Loader /> : !showmodal ? (
           <div className='flex-1 overflow-y-auto scrollbar-hide'>
+           
             {filteredChats?.map((chat) => (
               <div
                 key={chat.id}
