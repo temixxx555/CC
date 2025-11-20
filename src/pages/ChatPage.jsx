@@ -30,6 +30,7 @@ const ChatPage = () => {
   const [currentChat, setCurrentChat] = useState(null);
   const [groupMessages, setGroupMessages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadings, setLoadings] = useState(true);
   const [message, setMessage] = useState("");
   const {
     userAuth: { access_token, userId },
@@ -109,6 +110,7 @@ const ChatPage = () => {
 
   useEffect(() => {
     const fetchMessages = async () => {
+      setLoadings(true);
       if (!currentChat?.id || !access_token) return; // Ensure id and token exist
       try {
         const { data } = await axios.post(
@@ -139,9 +141,11 @@ const ChatPage = () => {
             minute: "2-digit",
           }),
         }));
-        setTestMessage(formattedMessages);
+        setTestMessage(formattedMessages.reverse());
+        setLoadings(false);
       } catch (error) {
         console.error("Error fetching messages:", error);
+        setLoadings(false);
       }
     };
     fetchMessages();
@@ -574,10 +578,10 @@ const ChatPage = () => {
         </div>
 
         {/* Chat List */}
-        {
-          loading ? <Loader /> : !showmodal ? (
+        {loading ? (
+          <Loader />
+        ) : !showmodal ? (
           <div className='flex-1 overflow-y-auto scrollbar-hide'>
-           
             {filteredChats?.map((chat) => (
               <div
                 key={chat.id}
@@ -760,7 +764,7 @@ const ChatPage = () => {
 
             {/* Messages */}
             <div className='flex-1  scrollbar-hide overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4'>
-              {Object.entries(groupedMessages).map(([date, messages]) => (
+            {loadings ? <Loader />: Object.entries(groupedMessages).map(([date, messages]) => (
                 <div key={date}>
                   <div className='text-center text-xs text-gray-500 my-4'>
                     {getDateLabel(date)}
