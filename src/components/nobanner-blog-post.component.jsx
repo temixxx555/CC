@@ -15,7 +15,7 @@ const MinimalBlogPost = ({ blog, index }) => {
   return (
     <Link
       to={`/blog/${id}`}
-      className="flex items-start gap-5 group hover:bg-gray-50 rounded-xl p-3 transition-all duration-300"
+      className="flex items-start gap-5 group  rounded-xl p-3 transition-all duration-300"
     >
       {/* Index Number */}
       <div className="text-3xl font-bold text-gray-300  transition-colors duration-300 min-w-[2.5rem] text-center">
