@@ -25,7 +25,7 @@ const BlogPostCard = ({ content, contents, author }) => {
       className="flex flex-col md:flex-row items-start gap-5 border border-grey rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all mb-6 duration-300 hover:-translate-y-1 bg-white"
     >
       {/* Banner Image */}
-      <div className="md:w-1/3 w-full h-49 md:h-48 overflow-hidden">
+      <div className="md:w-1/3 w-full h-48 md:h-48 overflow-hidden">
         <img
           src={banner}
           alt="banner"
