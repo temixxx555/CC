@@ -143,7 +143,7 @@ if(textEditorState.isReady){
           <p className='text-dark-grey mb-2'>Description about your blog</p>
           <textarea
             maxLength={characterLimit}
-            placeholder='Write a short description'
+            placeholder='Write a short description, can be your blog title'
             defaultValue={des}
             className='h-40 resize-none leading-7 input-box pl-4'
             onChange={handleBlogDesChange}
@@ -153,13 +153,13 @@ if(textEditorState.isReady){
             {characterLimit - (des?.length || 0)} characters left
           </p>
           <p className='text-dark-grey mb-2'>
-            Topics - (Helps in searching and ranking your blog post)
+            Tags - (just write a word and click enter on keypad)
           </p>
 
           <div className='relative input-box pl-2 pb-4'>
             <input
               type='text'
-              placeholder='Topics'
+              placeholder='Tag'
               className='sticky input-box bg-white top-0 left-0 pl-4 mb-3 focus:bg-white'
               onKeyDown={handleKeyDown}
             />

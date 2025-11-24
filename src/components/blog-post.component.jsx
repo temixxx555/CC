@@ -25,7 +25,7 @@ const BlogPostCard = ({ content, contents, author }) => {
       className="flex flex-col md:flex-row items-start gap-5 border border-grey rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all mb-6 duration-300 hover:-translate-y-1 bg-white"
     >
       {/* Banner Image */}
-      <div className="md:w-1/3 w-full h-48 md:h-48 overflow-hidden">
+      <div className="md:w-1/3 w-full h-49 md:h-48 overflow-hidden">
         <img
           src={banner}
           alt="banner"
@@ -43,7 +43,7 @@ const BlogPostCard = ({ content, contents, author }) => {
             className="w-7 h-7 rounded-full object-cover"
           />
           <p className="font-medium text-dark-grey line-clamp-1 ">{fullname}</p>
-          <span className="text-gray-500 line-clamp-1 ">@{username}</span>
+          <span className="text-gray-500  line-clamp-1 ">@{username}</span>
           {isVerified && (
             <img
               src={verifiedBadge}
@@ -71,12 +71,12 @@ const BlogPostCard = ({ content, contents, author }) => {
         {/* Tags + Reactions */}
         <div className="flex items-center flex-wrap gap-4 mt-4 text-sm">
           {tags?.[0] && (
-            <span className="bg-blue-50 text-gray-500 px-3 py-1 rounded-full text-xs font-medium">
+            <span className="bg-blue-50 text-gray-500 line-clamp-1 px-3 py-1 rounded-full text-xs font-medium">
               #{tags[0]}
             </span>
           )}
           {tags?.[1] && (
-            <span className="bg-blue-50 text-gray-500 -ml-2 md:-ml-2 px-3 py-1 rounded-full text-xs font-medium">
+            <span className="bg-blue-50 text-gray-500 line-clamp-1 -ml-2 md:-ml-2 px-3 py-1 rounded-full text-xs font-medium">
               #{tags[1]}
             </span>
           )}
