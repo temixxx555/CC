@@ -46,6 +46,7 @@ const Notifications = () => {
           data_to_send: { filter },
           user: access_token,
         });
+console.log(formatedData);
 
         setNotifications(formatedData);
       })

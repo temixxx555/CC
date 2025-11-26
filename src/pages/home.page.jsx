@@ -11,6 +11,7 @@ import { filterPaginationData } from "../common/filter-pagination-data";
 import LoadMoreData from "../components/load-more.component";
 import { Link, useNavigate } from "react-router-dom";
 import { userContext } from "../App";
+import TweetCard from "../components/TweetCard";
 // import Alerts from "../components/alerts";
 
 const Home = () => {
@@ -22,6 +23,7 @@ const Home = () => {
   let [trendingBlogs, setTrendingBlogs] = useState(null);
   let [users, setUsers] = useState(null);
   let [pageState, setPageState] = useState("home");
+  let [showEditorMenu, setShowEditorMenu] = useState(false);
   let navigate = useNavigate();
   let categories = [
     "events",
@@ -47,7 +49,7 @@ const Home = () => {
           page,
           counteRoute: "/all-latest-blogs-count",
         });
-        console.log(formateData,"looo");
+        console.log(formateData, "looo");
 
         setBlogs(formateData);
       })
@@ -74,11 +76,10 @@ const Home = () => {
           state: feed,
           data: data.blogs,
           page,
-          user:access_token,
+          user: access_token,
           counteRoute: "/all-latest-feed",
         });
-              console.log(formateData,"looo");
-
+        console.log(formateData, "looo");
 
         setFeed(formateData);
       })
@@ -129,7 +130,7 @@ const Home = () => {
       });
   };
   const loadBlogByCategory = (e) => {
-      let category = e.target.innerText.replace("+", "").trim().toLowerCase();
+    let category = e.target.innerText.replace("+", "").trim().toLowerCase();
     setBlogs(null);
 
     if (pageState == category) {
@@ -169,9 +170,11 @@ const Home = () => {
           </p>
 
           {/* Show on small screens only */}
-        <div className="md:hidden mb-6">
-            <h1 className="font-medium text-lg mb-4">Stories across Bowen University ✨</h1>
-            <div className="flex flex-wrap gap-2">
+          <div className='md:hidden mb-6'>
+            <h1 className='font-medium text-lg mb-4'>
+              Stories across Bowen University ✨
+            </h1>
+            <div className='flex flex-wrap gap-2'>
               {categories.map((category, i) => (
                 <button
                   key={i}
@@ -202,11 +205,18 @@ const Home = () => {
                       key={i}
                       transition={{ duration: 1, delay: i * 0.1 }}
                     >
-                      <BlogPostCard
-                        content={blog}
-                        contents={blog.content}
-                        author={blog.author.personal_info}
-                      />
+                      {blog.type == "tweet" ? (
+                        <TweetCard
+                          tweet={blog}
+                          author={blog.author.personal_info}
+                        />
+                      ) : (
+                        <BlogPostCard
+                          content={blog}
+                          contents={blog.content}
+                          author={blog.author.personal_info}
+                        />
+                      )}
                     </AnimationWrapper>
                   );
                 })
@@ -231,7 +241,11 @@ const Home = () => {
                       transition={{ duration: 1, delay: i * 0.1 }}
                       className={"md:hidden"}
                     >
-                      <MinimalBlogPost  contents={blog.content} blog={blog} index={i} />
+                      <MinimalBlogPost
+                        contents={blog.content}
+                        blog={blog}
+                        index={i}
+                      />
                     </AnimationWrapper>
                   );
                 })
@@ -251,11 +265,18 @@ const Home = () => {
                       key={i}
                       transition={{ duration: 1, delay: i * 0.1 }}
                     >
-                      <BlogPostCard
-                        contents={blog.content}
-                        content={blog}
-                        author={blog.author.personal_info}
-                      />
+                      {blog.type == "tweet" ? (
+                        <TweetCard
+                          tweet={blog}
+                          author={blog.author.personal_info}
+                        />
+                      ) : (
+                        <BlogPostCard
+                          content={blog}
+                          contents={blog.content}
+                          author={blog.author.personal_info}
+                        />
+                      )}
                     </AnimationWrapper>
                   );
                 })
@@ -272,7 +293,7 @@ const Home = () => {
           <div className='flex flex-col gap-10'>
             <div className=''>
               <h1 className='font-medium text-xl mb-6'>
-               Stories across Bowen University ✨
+                Stories across Bowen University ✨
               </h1>
               <div className='flex gap-3 flex-wrap'>
                 {categories.map((category, i) => {
@@ -319,12 +340,57 @@ const Home = () => {
             </div>
           </div>
         </div>
-        <Link
-          to='/editor'
-          className='fixed bottom-24 right-5 z-40 bg-grey   w-14 h-14 rounded-full shadow-lg flex items-center justify-center md:hidden'
+
+        <button
+          onClick={() => setShowEditorMenu(!showEditorMenu)}
+          className='fixed bottom-24 right-4 z-40 bg-blue-500  w-14 h-14 rounded-full shadow-lg flex items-center justify-center md:hidden'
         >
-          <i className='fi fi-rr-file-edit text-2xl'></i>
-        </Link>
+          <i
+            className={`fi fi-rr-plus text-[#FFFFFF] text-2xl transition-transform duration-300 ${showEditorMenu ? "rotate-90" : ""}`}
+          ></i>
+        </button>
+
+        {showEditorMenu && (
+          <div
+            className='md:hidden fixed inset-0 bg-white/80 z-30'
+            onClick={() => setShowEditorMenu(false)}
+          ></div>
+        )}
+
+        {showEditorMenu && (
+          <div className='md:hidden fixed bottom-40 right-5 z-40 flex flex-col gap-4 justify-center items-center align-middle'>
+            <div className='flex gap-4 justify-center items-center'>
+              <Link to='/tweet'>
+                <p>Post a Tweet</p>
+              </Link>
+              <Link
+                to='/tweet'
+                onClick={() => setShowEditorMenu(false)}
+                className='bg-[#FFFFFF] text-black  w-11 h-11 rounded-full  flex items-center justify-center transition-all'
+                title='Post a Tweet'
+              >
+                <i
+                  className='fi fi-rr-paper-plane
+ text-2xl text-blue-500'
+                ></i>
+              </Link>
+            </div>
+
+            <div className='flex gap-4 mb-2 justify-center items-center'>
+              <Link to='/editor'>
+                <p className='mr-2'>Post a Blog </p>
+              </Link>
+              <Link
+                to='/editor'
+                onClick={() => setShowEditorMenu(false)}
+                className='bg-[#FFFFFF] text-white w-11 h-11 rounded-full  flex items-center justify-center transition-all'
+                title='Write a Blog'
+              >
+                <i className='fi fi-rr-file-edit text-2xl text-blue-500'></i>
+              </Link>
+            </div>
+          </div>
+        )}
       </section>
     </AnimationWrapper>
   );

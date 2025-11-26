@@ -14,6 +14,7 @@ import PageNotFound from "./404.page";
 import toast from "react-hot-toast";
 import FollowList from "../components/FollowingFollower";
 import verfiedBadge from ".././imgs/verified.png";
+import TweetCard from "../components/TweetCard";
 
 export const profileDataStructure = {
   personal_info: {
@@ -287,11 +288,18 @@ const ProfilePage = () => {
                         key={i}
                         transition={{ duration: 1, delay: i * 0.1 }}
                       >
-                        <BlogPostCard
-                        contents={blog.content}
-                          content={blog}
+                         {blog.type == "tweet" ? (
+                        <TweetCard
+                          tweet={blog}
                           author={blog.author.personal_info}
                         />
+                      ) : (
+                        <BlogPostCard
+                          content={blog}
+                          contents={blog.content}
+                          author={blog.author.personal_info}
+                        />
+                      )}
                       </AnimationWrapper>
                     );
                   })

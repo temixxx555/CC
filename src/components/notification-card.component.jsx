@@ -23,7 +23,7 @@ const NotificationCard = ({ data, index, notificationState }) => {
 
   // console.log("Notification data:", data);
 
-  const { _id: blogId, blog_id = "", title = "" } = blog || {};
+  const { _id: blogId, blog_id = "", title = "", des = "" } = blog || {};
   const { personal_info: { fullname, username, profile_img } = {} } =
     user || {};
 
@@ -121,10 +121,7 @@ const NotificationCard = ({ data, index, notificationState }) => {
             </span>
           </h1>
           {(type === "announcement" || type === "info") && (
-            <Link
-              className=''
-              to={`/ranking`}
-            >
+            <Link className='' to={`/ranking`}>
               <div className='p-4 mt-4 rounded-md bg-grey'>
                 {data.title && (
                   <p className='font-bold text-lg mb-2'>{data.title}</p>
@@ -149,9 +146,9 @@ const NotificationCard = ({ data, index, notificationState }) => {
           {type !== "followed" && type !== "info" && (
             <Link
               className='font-medium hover:underline line-clamp-1'
-              to={`/blog/${blog_id}`}
+              to={`/${title?.length > 0 ? "blog" : "tweet"}/${blog_id}`}
             >
-              "{title}"
+              "{title?.length > 0 ? title : des}"
             </Link>
           )}
         </div>

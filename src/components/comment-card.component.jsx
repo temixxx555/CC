@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import CommentField from "./comment-field.component";
 import { BlogContext } from "../pages/blog.page";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const CommentsCard = ({ index, leftVal, commentData }) => {
   let {
@@ -192,6 +193,7 @@ const CommentsCard = ({ index, leftVal, commentData }) => {
   return (
     <div className='w-full' style={{ paddingLeft: `${leftVal * 10}px` }}>
       <div className='my-5 p-6 rounded-md border border-grey'>
+         <Link to={`/user/${commented_by_username}`}>
         <div className='flex gap-3 items-center mb-8'>
           <img src={profile_img} alt='image' className='w-6 h-6 rounded-full' />
           <p className='line-clamp-1'>
@@ -199,6 +201,7 @@ const CommentsCard = ({ index, leftVal, commentData }) => {
           </p>
           <p className='min-w-fit'>{getDay(commentedAt)}</p>
         </div>
+        </Link>
         <p className='font-gelasio text-xl ml-3'>{comment}</p>
         <div className='flex gap-5 items-center mt-5'>
           {commentData.isReplyLoaded ? (
