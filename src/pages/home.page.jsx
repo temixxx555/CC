@@ -52,6 +52,7 @@ const Home = () => {
         console.log(formateData, "looo");
 
         setBlogs(formateData);
+        localStorage.setItem("blogs_home", JSON.stringify(formateData));
       })
       .catch((err) => {
         console.log(err);
@@ -82,6 +83,7 @@ const Home = () => {
         console.log(formateData, "looo");
 
         setFeed(formateData);
+        localStorage.setItem("for-you", JSON.stringify(formateData));
       })
       .catch((err) => {
         console.log(err);
@@ -103,6 +105,8 @@ const Home = () => {
       .get(import.meta.env.VITE_SERVER_DOMAIN + "/trending-blogs")
       .then(({ data }) => {
         setTrendingBlogs(data.blogs);
+
+        localStorage.setItem("trending", JSON.stringify(data.blogs));
       })
       .catch((err) => {
         console.log(err);
@@ -159,6 +163,25 @@ const Home = () => {
     getallUsers();
     // console.log("i am getting called");
   }, []);
+
+  //cache blogs
+  useEffect(() => {
+    const cached = localStorage.getItem("blogs_home");
+
+    if (cached) {
+      setBlogs(JSON.parse(cached)); // Load instantly
+    }
+
+    const cachedTrending = localStorage.getItem("trending");
+    if (cachedTrending) setTrendingBlogs(JSON.parse(cachedTrending));
+    const cachedForYou = localStorage.getItem("for-you");
+    if (cachedForYou) setFeed(JSON.parse(cachedForYou));
+    // Always re-fetch to stay updated
+    fetchLatestBlogs({ page: 1 });
+    fetchForYou({ page: 1 });
+    fetchTrendingBlogs();
+  }, []);
+
   return (
     <AnimationWrapper>
       {/* <Alerts /> */}
