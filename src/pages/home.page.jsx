@@ -197,7 +197,7 @@ const Home = () => {
             <h1 className='font-medium text-lg mb-4'>
               Stories across Bowen University ✨
             </h1>
-            <div className='flex flex-wrap gap-2'>
+            {/* <div className='flex flex-wrap gap-2'>
               {categories.map((category, i) => (
                 <button
                   key={i}
@@ -211,7 +211,7 @@ const Home = () => {
                   {category} +
                 </button>
               ))}
-            </div>
+            </div> */}
           </div>
 
           <InPageNavigation
@@ -364,14 +364,16 @@ const Home = () => {
           </div>
         </div>
 
-        <button
-          onClick={() => setShowEditorMenu(!showEditorMenu)}
-          className='fixed bottom-24 right-4 z-40 bg-blue-500  w-14 h-14 rounded-full shadow-lg flex items-center justify-center md:hidden'
-        >
-          <i
-            className={`fi fi-rr-plus text-[#FFFFFF] text-2xl transition-transform duration-300 ${showEditorMenu ? "rotate-90" : ""}`}
-          ></i>
-        </button>
+        {access_token && (
+          <button
+            onClick={() => setShowEditorMenu(!showEditorMenu)}
+            className='fixed bottom-24 right-4 z-40 bg-blue-500  w-14 h-14 rounded-full shadow-lg flex items-center justify-center md:hidden'
+          >
+            <i
+              className={`fi fi-rr-plus text-[#FFFFFF] text-2xl transition-transform duration-300 ${showEditorMenu ? "rotate-90" : ""}`}
+            ></i>
+          </button>
+        )}
 
         {showEditorMenu && (
           <div

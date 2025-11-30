@@ -313,7 +313,7 @@ export default function TweetView() {
       });
   };
   return (
-    <div className='min-h-screen bg-white max-w-2xl mx-auto border-l border-r border-gray-200'>
+    <div className='min-h-screen bg-white max-w-2xl mx-auto border-l border-r border-grey'>
       {/* HEADER */}
       <div className='sticky top-0 bg-white/80 backdrop-blur flex items-center gap-4 px-4 py-3 border-b border-gray-200 z-20'>
         <button
@@ -326,7 +326,7 @@ export default function TweetView() {
       </div>
 
       {/* MAIN TWEET */}
-      <div className='border-b border-gray-200 p-4 pb-0'>
+      <div className='border-b border-grey p-4 pb-0'>
         {/* AUTHOR */}
         <div className='flex gap-3'>
           <Link to={`/user/${author.username}`}>
