@@ -32,39 +32,50 @@ export default function TweetView() {
   // ───────────────────────────────────────────────────────────────
   // FETCH TWEET
   // ───────────────────────────────────────────────────────────────
-  useEffect(() => {
-    const fetchTweet = async () => {
-      try {
-        const { data } = await axios.post(
-          `${import.meta.env.VITE_SERVER_DOMAIN}/get-tweet`,
-          { blog_id }
+
+useEffect(() => {
+  const fetchTweet = async () => {
+    try {
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_SERVER_DOMAIN}/get-tweet`,
+        { blog_id }
+      );
+
+      console.log("Raw tweet data:", data.tweet);
+      
+      setTweet(data.tweet);
+      setAuthor(data.tweet.author.personal_info);
+      setLikes(data.tweet.activity.total_likes);
+      
+      // ✅ CRITICAL FIX: Only set PARENT comments (no parent field = top-level comment)
+      const parentComments = (data.tweet.comments || []).filter(
+        comment => !comment.parent && !comment.isReply
+      );
+      
+      console.log("All comments from server:", data.tweet.comments);
+      console.log("Filtered parent comments only:", parentComments);
+      
+      setReplies(parentComments);
+
+      if (access_token) {
+        const likeCheck = await axios.post(
+          `${import.meta.env.VITE_SERVER_DOMAIN}/isliked-by-user`,
+          { _id: data.tweet._id },
+          { headers: { Authorization: `Bearer ${access_token}` } }
         );
 
-        console.log(data.tweet);
-        setTweet(data.tweet);
-        setAuthor(data.tweet.author.personal_info);
-        setLikes(data.tweet.activity.total_likes);
-        setReplies(data.tweet.comments || []);
-
-        if (access_token) {
-          const likeCheck = await axios.post(
-            `${import.meta.env.VITE_SERVER_DOMAIN}/isliked-by-user`,
-            { _id: data.tweet._id },
-            { headers: { Authorization: `Bearer ${access_token}` } }
-          );
-
-          setIsLikedByUser(Boolean(likeCheck.data.result));
-        }
-
-        setLoading(false);
-      } catch (err) {
-        toast.error("Unable to load tweet");
-        setLoading(false);
+        setIsLikedByUser(Boolean(likeCheck.data.result));
       }
-    };
 
-    fetchTweet();
-  }, [blog_id, access_token]);
+      setLoading(false);
+    } catch (err) {
+      toast.error("Unable to load tweet");
+      setLoading(false);
+    }
+  };
+
+  fetchTweet();
+}, [blog_id, access_token]);
 
   // ───────────────────────────────────────────────────────────────
   // LIKE (FIXED)
@@ -104,93 +115,76 @@ export default function TweetView() {
   // ───────────────────────────────────────────────────────────────
   // ADD COMMENT/REPLY
   // ───────────────────────────────────────────────────────────────
-  const handlePostReply = async () => {
-    if (!replyText.trim() && !imageUrl)
-      return toast.error("Write something or add an image");
+ const handlePostReply = async () => {
+  if (!replyText.trim() && !imageUrl)
+    return toast.error("Write something or add an image");
 
-    if (!access_token) return toast.error("Login to reply");
+  if (!access_token) return toast.error("Login to reply");
 
-    setReplying(true);
+  setReplying(true);
 
-    try {
-      const payload = {
-        _id: tweet._id,
-        comment: replyText.trim(),
-        blog_author: tweet.author._id, // Get from tweet object
-        ...(replyingToComment && {
-          replying_to: replyingToComment._id,
-          notification_id: replyingToComment.notification_id,
-        }),
-      };
+  try {
+    const payload = {
+      _id: tweet._id,
+      comment: replyText.trim(),
+      blog_author: tweet.author._id,
+      ...(replyingToComment && {
+        replying_to: replyingToComment._id,
+        notification_id: replyingToComment.notification_id,
+      }),
+    };
 
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_SERVER_DOMAIN}/add-comment`,
-        payload,
-        { headers: { Authorization: `Bearer ${access_token}` } }
+    const { data } = await axios.post(
+      `${import.meta.env.VITE_SERVER_DOMAIN}/add-comment`,
+      payload,
+      { headers: { Authorization: `Bearer ${access_token}` } }
+    );
+
+    const newComment = {
+      _id: data._id,
+      comment: data.comment,
+      commentedAt: data.commentedAt,
+      commented_by: {
+        personal_info: {
+          _id: user_id,
+          username,
+          fullname,
+          profile_img: profile_img,
+          isVerified: false,
+        },
+      },
+      children: [],
+      isReply: Boolean(replyingToComment),
+      parent: replyingToComment?._id || null,
+    };
+
+    // If replying to a comment, ONLY add to that comment's children
+    if (replyingToComment) {
+      setReplies((prev) =>
+        prev.map((comment) =>
+          comment._id === replyingToComment._id
+            ? {
+                ...comment,
+                children: [newComment, ...(comment.children || [])],
+              }
+            : comment
+        )
       );
-
-      // If replying to a comment, add to that comment's children
-      if (replyingToComment) {
-        setReplies((prev) =>
-          prev.map((comment) =>
-            comment._id === replyingToComment._id
-              ? {
-                  ...comment,
-                  children: [
-                    {
-                      _id: data._id,
-                      comment: data.comment,
-                      commentedAt: data.commentedAt,
-                      commented_by: {
-                        personal_info: {
-                          _id: user_id,
-                          username, // you can fill with actual username if available
-                          fullname, // actual fullname
-                          profile_img: profile_img,
-                          isVerified: false, // optional, default false
-                        },
-                      },
-                      isReply: true,
-                    },
-                    ...(comment.children || []),
-                  ],
-                }
-              : comment
-          )
-        );
-      } else {
-        // Add as new parent comment
-        setReplies([
-          {
-            _id: data._id,
-            comment: data.comment,
-            commentedAt: data.commentedAt,
-            commented_by: {
-              personal_info: {
-                _id: user_id,
-                username, // you can fill with actual username if available
-                fullname, // actual fullname
-                profile_img: profile_img,
-                isVerified: false, // optional, default false
-              },
-            },
-            children: data.children || [],
-            isReply: false,
-          },
-          ...replies,
-        ]);
-      }
-
-      setReplyText("");
-      setImageUrl("");
-      setReplyingToComment(null);
-      toast.success("Reply added!");
-    } catch (err) {
-      toast.error(err.response?.data?.error || "Failed to post reply");
-    } finally {
-      setReplying(false);
+    } else {
+      // Add as new parent comment ONLY if not replying
+      setReplies((prev) => [newComment, ...prev]);
     }
-  };
+
+    setReplyText("");
+    setImageUrl("");
+    setReplyingToComment(null);
+    toast.success("Reply added!");
+  } catch (err) {
+    toast.error(err.response?.data?.error || "Failed to post reply");
+  } finally {
+    setReplying(false);
+  }
+};
 
   // ───────────────────────────────────────────────────────────────
   // DELETE COMMENT

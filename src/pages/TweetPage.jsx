@@ -64,6 +64,9 @@ export default function TweetComposer() {
   };
   // Post Tweet
   const handlePostTweet = async () => {
+    if (tweetText.trim().length === 0) {
+      return toast.error("Write a text before posting")
+    }
     if (!tweetText.trim() && !imageurl) return;
 
     setPosting(true);

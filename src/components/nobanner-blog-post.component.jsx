@@ -15,40 +15,40 @@ const MinimalBlogPost = ({ blog, index }) => {
   return (
     <Link
       to={`/blog/${id}`}
-      className="flex items-start gap-5 group  rounded-xl p-3 transition-all duration-300"
+      className="flex gap-5 group rounded-xl p-4 transition-all duration-300 "
     >
       {/* Index Number */}
-      <div className="text-3xl font-bold text-gray-300  transition-colors duration-300 min-w-[2.5rem] text-center">
+      <div className="flex-shrink-0 text-4xl font-bold text-gray-300 group-hover:text-gray-400 transition-colors duration-300 w-12 pt-1">
         {index < 9 ? `0${index + 1}` : index + 1}
       </div>
 
-      {/* Blog Info */}
-      <div className="flex flex-col">
+      {/* Blog Content */}
+      <div className="flex-1 min-w-0">
+        {/* Title */}
+        <h1 className="text-xl font-semibold text-dark group-hover:text-black transition-colors duration-200 line-clamp-2 mb-3">
+          {title}
+        </h1>
+
         {/* Author Info */}
-        <div className="flex items-center gap-2 mb-2 text-sm text-gray-600">
+        <div className="flex items-center gap-2 text-sm">
           <img
             src={profile_img}
             alt="profile"
-            className="w-7 h-7 rounded-full object-cover"
+            className="w-6 h-6 rounded-full object-cover flex-shrink-0"
           />
-          <span className="font-medium line-clamp-1 text-dark-grey">{fullname}</span>
-          <span className="text-dark-grey line-clamp-1">@{username}</span>
-          {isVerified && (
-            <img
-              src={verifiedBadge}
-              alt="verified"
-              className="w-4 h-4 ml-1 inline-block"
-            />
-          )}
-          <span className="ml-auto text-gray-400 text-xs">
-            {getDay(publishedAt)}
-          </span>
+          <div className="flex items-center gap-2 min-w-0 flex-wrap">
+            <span className="font-medium text-dark-grey truncate">{fullname}</span>
+            {isVerified && (
+              <img
+                src={verifiedBadge}
+                alt="verified"
+                className="w-4 h-4 flex-shrink-0"
+              />
+            )}
+            <span className="text-gray-400">·</span>
+            <span className="text-gray-500 whitespace-nowrap">{getDay(publishedAt)}</span>
+          </div>
         </div>
-
-        {/* Title */}
-        <h1 className="text-lg md:text-xl font-semibold text-dark  transition-colors duration-200 line-clamp-2">
-          {title}
-        </h1>
       </div>
     </Link>
   );

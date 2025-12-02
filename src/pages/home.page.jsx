@@ -264,11 +264,13 @@ const Home = () => {
                       transition={{ duration: 1, delay: i * 0.1 }}
                       className={"md:hidden"}
                     >
-                      <MinimalBlogPost
-                        contents={blog.content}
-                        blog={blog}
-                        index={i}
-                      />
+                      {blog.type != "tweet" && (
+                        <MinimalBlogPost
+                          contents={blog.content}
+                          blog={blog}
+                          index={i}
+                        />
+                      )}
                     </AnimationWrapper>
                   );
                 })
@@ -352,7 +354,9 @@ const Home = () => {
                         transition={{ duration: 1, delay: i * 0.1 }}
                         className={"hidden md:block"}
                       >
-                        <MinimalBlogPost blog={blog} index={i} />
+                        {blog.type != "tweet" && (
+                          <MinimalBlogPost blog={blog} index={i} />
+                        )}
                       </AnimationWrapper>
                     );
                   })
