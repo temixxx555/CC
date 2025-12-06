@@ -1,5 +1,5 @@
 import { getDay } from "../common/date";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import verifiedBadge from "../imgs/verified.png";
 import BlogContent from "./blog-content.component";
 import { useContext, useEffect, useState } from "react";
@@ -32,6 +32,7 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
   } = useContext(userContext);
   const [isLikedByUser, setLikedByUser] = useState(false);
   const [likes, setLikes] = useState(total_likes);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (userAuth?.following && _ids) {
@@ -237,8 +238,16 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
         </div>
 
         {/* Blog Content */}
+
         <Link to={`/blog/${id}`}>
-          <div className='mt-3'>
+          <div className='mt-3' onClick={() => navigate(
+            `/blog/${id}`,
+            {
+              state: {
+                content, contents, author, id
+              }
+            }
+          )}>
             {/* Title */}
             <h1 className='text-lg font-semibold text-dark-grey line-clamp-2 mb-2 hover:underline'>
               {title}

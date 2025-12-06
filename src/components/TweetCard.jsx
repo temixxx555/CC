@@ -5,6 +5,8 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { userContext } from "../App";
 import toast from "react-hot-toast";
+import TweetView from "../pages/TweetView";
+import { useNavigate } from "react-router-dom";
 
 const TweetCard = ({ tweet, author, id }) => {
   const {
@@ -185,22 +187,7 @@ const TweetCard = ({ tweet, author, id }) => {
     }
   };
 
-  // to click links
-  const linkifyText = (text) => {
-    const urlRegex =
-      /(https?:\/\/[^\s]+)|(www\.[^\s]+)|([a-zA-Z0-9-]+\.[a-zA-Z]{2,})/g;
-
-    return text.replace(urlRegex, (url) => {
-      let href = url;
-
-      // If no http:// or https://, add https://
-      if (!href.startsWith("http")) {
-        href = "https://" + href;
-      }
-
-      return `<a href="${href}" target="_blank" class="text-blue-500 underline">${url}</a>`;
-    });
-  };
+  const navigate = useNavigate();
 
   return (
     <>
@@ -281,12 +268,20 @@ const TweetCard = ({ tweet, author, id }) => {
           </div>
 
           {/* Tweet Content */}
-          <Link to={`/tweet/${blog_id}`}>
-            <p
-              className='text-dark text-[15px] mt-3 whitespace-pre-wrap break-words leading-relaxed'
-              dangerouslySetInnerHTML={{ __html: linkifyText(des) }}
-            ></p>
-          </Link>
+          {/* <Link to={`/tweet/${blog_id}`}>
+            <p className='text-dark text-[15px] mt-3 whitespace-pre-wrap break-words leading-relaxed'>
+              {des}
+            </p>
+          </Link> */}
+            <p className='text-dark text-[15px] mt-3 whitespace-pre-wrap break-words leading-relaxed' onClick={() => navigate(
+              `/tweet/${blog_id}`,
+              {
+                state: {tweet, author}
+              }
+            )}>
+              {des}
+            </p>
+
         </div>
 
         {/* Media Section */}
