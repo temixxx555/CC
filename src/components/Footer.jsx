@@ -59,7 +59,8 @@ export default function FooterNav() {
     // console.log("User in session:", parsedData?.username);
   }, [location.pathname]);
   return (
-    <footer className='fixed bottom-0  inset-x-0 z-50 bg-white  shadow-md md:hidden'>
+  <footer className='w-full bg-white shadow-md md:hidden'>
+
       <nav className='flex justify-between items-center h-16 px-2'>
         {navItems.map((item,i) => (
           <Link

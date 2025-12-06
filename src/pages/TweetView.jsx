@@ -33,49 +33,49 @@ export default function TweetView() {
   // FETCH TWEET
   // ───────────────────────────────────────────────────────────────
 
-useEffect(() => {
-  const fetchTweet = async () => {
-    try {
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_SERVER_DOMAIN}/get-tweet`,
-        { blog_id }
-      );
-
-      console.log("Raw tweet data:", data.tweet);
-      
-      setTweet(data.tweet);
-      setAuthor(data.tweet.author.personal_info);
-      setLikes(data.tweet.activity.total_likes);
-      
-      // ✅ CRITICAL FIX: Only set PARENT comments (no parent field = top-level comment)
-      const parentComments = (data.tweet.comments || []).filter(
-        comment => !comment.parent && !comment.isReply
-      );
-      
-      console.log("All comments from server:", data.tweet.comments);
-      console.log("Filtered parent comments only:", parentComments);
-      
-      setReplies(parentComments);
-
-      if (access_token) {
-        const likeCheck = await axios.post(
-          `${import.meta.env.VITE_SERVER_DOMAIN}/isliked-by-user`,
-          { _id: data.tweet._id },
-          { headers: { Authorization: `Bearer ${access_token}` } }
+  useEffect(() => {
+    const fetchTweet = async () => {
+      try {
+        const { data } = await axios.post(
+          `${import.meta.env.VITE_SERVER_DOMAIN}/get-tweet`,
+          { blog_id }
         );
 
-        setIsLikedByUser(Boolean(likeCheck.data.result));
+        console.log("Raw tweet data:", data.tweet);
+
+        setTweet(data.tweet);
+        setAuthor(data.tweet.author.personal_info);
+        setLikes(data.tweet.activity.total_likes);
+
+        // ✅ CRITICAL FIX: Only set PARENT comments (no parent field = top-level comment)
+        const parentComments = (data.tweet.comments || []).filter(
+          (comment) => !comment.parent && !comment.isReply
+        );
+
+        console.log("All comments from server:", data.tweet.comments);
+        console.log("Filtered parent comments only:", parentComments);
+
+        setReplies(parentComments);
+
+        if (access_token) {
+          const likeCheck = await axios.post(
+            `${import.meta.env.VITE_SERVER_DOMAIN}/isliked-by-user`,
+            { _id: data.tweet._id },
+            { headers: { Authorization: `Bearer ${access_token}` } }
+          );
+
+          setIsLikedByUser(Boolean(likeCheck.data.result));
+        }
+
+        setLoading(false);
+      } catch (err) {
+        toast.error("Unable to load tweet");
+        setLoading(false);
       }
+    };
 
-      setLoading(false);
-    } catch (err) {
-      toast.error("Unable to load tweet");
-      setLoading(false);
-    }
-  };
-
-  fetchTweet();
-}, [blog_id, access_token]);
+    fetchTweet();
+  }, [blog_id, access_token]);
 
   // ───────────────────────────────────────────────────────────────
   // LIKE (FIXED)
@@ -115,76 +115,76 @@ useEffect(() => {
   // ───────────────────────────────────────────────────────────────
   // ADD COMMENT/REPLY
   // ───────────────────────────────────────────────────────────────
- const handlePostReply = async () => {
-  if (!replyText.trim() && !imageUrl)
-    return toast.error("Write something or add an image");
+  const handlePostReply = async () => {
+    if (!replyText.trim() && !imageUrl)
+      return toast.error("Write something or add an image");
 
-  if (!access_token) return toast.error("Login to reply");
+    if (!access_token) return toast.error("Login to reply");
 
-  setReplying(true);
+    setReplying(true);
 
-  try {
-    const payload = {
-      _id: tweet._id,
-      comment: replyText.trim(),
-      blog_author: tweet.author._id,
-      ...(replyingToComment && {
-        replying_to: replyingToComment._id,
-        notification_id: replyingToComment.notification_id,
-      }),
-    };
+    try {
+      const payload = {
+        _id: tweet._id,
+        comment: replyText.trim(),
+        blog_author: tweet.author._id,
+        ...(replyingToComment && {
+          replying_to: replyingToComment._id,
+          notification_id: replyingToComment.notification_id,
+        }),
+      };
 
-    const { data } = await axios.post(
-      `${import.meta.env.VITE_SERVER_DOMAIN}/add-comment`,
-      payload,
-      { headers: { Authorization: `Bearer ${access_token}` } }
-    );
-
-    const newComment = {
-      _id: data._id,
-      comment: data.comment,
-      commentedAt: data.commentedAt,
-      commented_by: {
-        personal_info: {
-          _id: user_id,
-          username,
-          fullname,
-          profile_img: profile_img,
-          isVerified: false,
-        },
-      },
-      children: [],
-      isReply: Boolean(replyingToComment),
-      parent: replyingToComment?._id || null,
-    };
-
-    // If replying to a comment, ONLY add to that comment's children
-    if (replyingToComment) {
-      setReplies((prev) =>
-        prev.map((comment) =>
-          comment._id === replyingToComment._id
-            ? {
-                ...comment,
-                children: [newComment, ...(comment.children || [])],
-              }
-            : comment
-        )
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_SERVER_DOMAIN}/add-comment`,
+        payload,
+        { headers: { Authorization: `Bearer ${access_token}` } }
       );
-    } else {
-      // Add as new parent comment ONLY if not replying
-      setReplies((prev) => [newComment, ...prev]);
-    }
 
-    setReplyText("");
-    setImageUrl("");
-    setReplyingToComment(null);
-    toast.success("Reply added!");
-  } catch (err) {
-    toast.error(err.response?.data?.error || "Failed to post reply");
-  } finally {
-    setReplying(false);
-  }
-};
+      const newComment = {
+        _id: data._id,
+        comment: data.comment,
+        commentedAt: data.commentedAt,
+        commented_by: {
+          personal_info: {
+            _id: user_id,
+            username,
+            fullname,
+            profile_img: profile_img,
+            isVerified: false,
+          },
+        },
+        children: [],
+        isReply: Boolean(replyingToComment),
+        parent: replyingToComment?._id || null,
+      };
+
+      // If replying to a comment, ONLY add to that comment's children
+      if (replyingToComment) {
+        setReplies((prev) =>
+          prev.map((comment) =>
+            comment._id === replyingToComment._id
+              ? {
+                  ...comment,
+                  children: [newComment, ...(comment.children || [])],
+                }
+              : comment
+          )
+        );
+      } else {
+        // Add as new parent comment ONLY if not replying
+        setReplies((prev) => [newComment, ...prev]);
+      }
+
+      setReplyText("");
+      setImageUrl("");
+      setReplyingToComment(null);
+      toast.success("Reply added!");
+    } catch (err) {
+      toast.error(err.response?.data?.error || "Failed to post reply");
+    } finally {
+      setReplying(false);
+    }
+  };
 
   // ───────────────────────────────────────────────────────────────
   // DELETE COMMENT
@@ -279,7 +279,7 @@ useEffect(() => {
       toast.success("Link copied!");
     }
   };
- const deleteTweet = (blog_id, access_token, target) => {
+  const deleteTweet = (blog_id, access_token, target) => {
     if (!window.confirm("Are you sure you want to delete this tweet?")) return;
 
     target.setAttribute("disabled", true);
@@ -298,7 +298,7 @@ useEffect(() => {
         target.removeAttribute("disabled");
         toast.success("Tweet deleted");
 
-        navigate("/")
+        navigate("/");
       })
       .catch((err) => {
         target.removeAttribute("disabled");
@@ -421,7 +421,7 @@ useEffect(() => {
           >
             <i className='fi fi-rr-share text-lg'></i>
           </button>
-              {username == author.username ? (
+          {username == author.username ? (
             <button
               onClick={(e) => deleteTweet(blog_id, access_token, e.target)}
               className='flex items-center gap-2 px-2 py-2 rounded-full hover:text-red transition'
@@ -494,144 +494,176 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* COMMENTS SECTION */}
-      <div>
+      {/* COMMENTS SECTION - FACEBOOK STYLE */}
+      <div className='px-4'>
         {replies.length === 0 && (
           <p className='text-center py-10 text-gray-500'>No comments yet</p>
         )}
 
         {replies.map((comment) => (
-          <div key={comment._id} className='border-b border-gray-200'>
-            {/* COMMENT */}
-            <div className='flex gap-3 p-4'>
+          <div key={comment._id} className='py-3 border-b border-gray-100'>
+            {/* MAIN COMMENT - Facebook bubble style */}
+            <div className='flex gap-2'>
               <Link
                 to={`/user/${comment.commented_by?.personal_info?.username}`}
+                className='flex-shrink-0'
               >
                 <img
                   src={comment.commented_by?.personal_info.profile_img}
-                  className='w-10 h-10 rounded-full'
+                  className='w-10 h-10 rounded-full hover:opacity-80 transition'
                 />
               </Link>
 
-              <div className='flex-1'>
-                <div className='flex items-center gap-1'>
-                  <Link
-                    to={`/user/${comment.commented_by?.personal_info?.username}`}
-                  >
-                    <p className='font-bold'>
-                      {comment.commented_by?.personal_info.fullname}
-                    </p>
-                  </Link>
-                  {comment.commented_by?.personal_info.isVerified && (
-                    <img src={verifiedBadge} className='w-4 h-4' />
+              <div className='flex-1 min-w-0'>
+                {/* Comment bubble */}
+                <div className='inline-block bg-grey rounded-2xl px-4 py-2.5 max-w-full break-words'>
+                  <div className='flex items-center gap-1'>
+                    <Link
+                      to={`/user/${comment.commented_by?.personal_info?.username}`}
+                      className='hover:underline'
+                    >
+                      <p className='font-semibold text-sm text-dark-grey'>
+                        {comment.commented_by?.personal_info.fullname}
+                      </p>
+                    </Link>
+                    {comment.commented_by?.personal_info.isVerified && (
+                      <img src={verifiedBadge} className='w-3.5 h-3.5' />
+                    )}
+                  </div>
+
+                  <p className='text-[15px] leading-snug text-dark-grey mt-0.5'>
+                    {comment.comment}
+                  </p>
+
+                  {comment.images?.length > 0 && (
+                    <img
+                      src={comment.images[0]}
+                      className='rounded-xl mt-2 max-w-full max-h-48 object-cover'
+                    />
                   )}
-                  <span className='text-gray-500'>
-                    @{comment.commented_by?.personal_info.username}
-                  </span>
-                  <span className='text-gray-500 text-sm'>
-                    · {getDay(comment.commentedAt)}
-                  </span>
                 </div>
 
-                <p className='mt-1 '>{comment.comment}</p>
+                {/* Action buttons below bubble */}
+                <div className='flex items-center gap-4 mt-1 ml-3 text-xs font-semibold text-dark-grey'>
+                  <span className='text-xs'>{getDay(comment.commentedAt)}</span>
 
-                {comment.images?.length > 0 && (
-                  <img
-                    src={comment.images[0]}
-                    className='rounded-xl mt-2 max-h-48 object-cover'
-                  />
-                )}
-
-                {/* COMMENT ACTIONS */}
-                <div className='flex gap-4 mt-2 text-gray-500 text-sm'>
                   <button
                     onClick={() => setReplyingToComment(comment)}
-                    className='hover:text-blue-500'
+                    className='hover:underline'
                   >
                     Reply
                   </button>
 
-                  {(username === comment.commented_by?.personal_info.username ||
-                    username === author.username) && (
-                    <button
-                      onClick={() => handleDeleteComment(comment._id)}
-                      className='hover:text-red-500 flex items-center gap-1'
-                    >
-                      <Trash2 size={14} />
-                      Delete
-                    </button>
-                  )}
-
                   {comment.children?.length > 0 && (
                     <button
                       onClick={() => handleLoadReplies(comment._id)}
-                      className='hover:text-blue-500'
+                      className='hover:underline flex items-center gap-1'
                     >
-                      {expandedReplies[comment._id]
-                        ? "Hide"
-                        : `${comment.children.length} ${
-                            comment.children.length === 1 ? "reply" : "replies"
-                          }`}
+                      {expandedReplies[comment._id] ? (
+                        <>
+                          <i className='fi fi-rr-angle-small-up text-sm'></i>
+                          Hide {comment.children.length}{" "}
+                          {comment.children.length === 1 ? "reply" : "replies"}
+                        </>
+                      ) : (
+                        <>
+                          <i className='fi fi-rr-angle-small-down text-sm'></i>
+                          View {comment.children.length}{" "}
+                          {comment.children.length === 1 ? "reply" : "replies"}
+                        </>
+                      )}
+                    </button>
+                  )}
+
+                  {(username ===
+                    comment.commented_by?.personal_info.username ||
+                    username === author.username) && (
+                    <button
+                      onClick={() => handleDeleteComment(comment._id)}
+                      className='hover:underline text-red ml-auto'
+                    >
+                      Delete
                     </button>
                   )}
                 </div>
+
+                {/* NESTED REPLIES - Facebook style */}
+                {expandedReplies[comment._id] &&
+                  comment.children?.length > 0 && (
+                    <div className='mt-3 space-y-3 ml-2'>
+                      {comment.children.map((reply) => (
+                        <div key={reply._id} className='flex gap-2'>
+                          <Link
+                            to={`/user/${reply.commented_by?.personal_info.username}`}
+                            className='flex-shrink-0'
+                          >
+                            <img
+                              src={
+                                reply.commented_by.personal_info?.profile_img
+                              }
+                              className='w-9 h-9 rounded-full hover:opacity-80 transition'
+                            />
+                          </Link>
+
+                          <div className='flex-1 min-w-0'>
+                            {/* Reply bubble (slightly smaller) */}
+                            <div className='inline-block bg-grey rounded-2xl px-3.5 py-2 max-w-full break-words'>
+                              <div className='flex items-center gap-1'>
+                                <Link
+                                  to={`/user/${reply.commented_by?.personal_info.username}`}
+                                  className='hover:underline'
+                                >
+                                  <p className='font-semibold text-sm text-dark-grey'>
+                                    {reply.commented_by?.personal_info.fullname}
+                                  </p>
+                                </Link>
+                                {reply.commented_by?.personal_info
+                                  .isVerified && (
+                                  <img
+                                    src={verifiedBadge}
+                                    className='w-3 h-3'
+                                  />
+                                )}
+                              </div>
+
+                              <p className='text-sm leading-snug text-dark-grey mt-0.5'>
+                                {reply.comment}
+                              </p>
+
+                              {reply.images?.length > 0 && (
+                                <img
+                                  src={reply.images[0]}
+                                  className='rounded-lg mt-2 max-w-full max-h-40 object-cover'
+                                />
+                              )}
+                            </div>
+
+                            {/* Reply actions */}
+                            <div className='flex items-center gap-3 mt-1 ml-3 text-xs font-semibold text-dark-grey'>
+                              <span className='text-xs'>
+                                {getDay(reply.commentedAt)}
+                              </span>
+
+                              {(user_id ===
+                                reply.commented_by?.personal_info._id ||
+                                user_id === tweet.author._id) && (
+                                <button
+                                  onClick={() =>
+                                    handleDeleteComment(reply._id)
+                                  }
+                                  className='hover:underline text-red'
+                                >
+                                  Delete
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
               </div>
             </div>
-
-            {/* NESTED REPLIES */}
-            {expandedReplies[comment._id] && comment.children?.length > 0 && (
-              <div className='ml-12 border-l border-gray-200'>
-                {comment.children.map((reply) => (
-                  <div
-                    key={reply._id}
-                    className='flex gap-3 p-4 border-b border-gray-100'
-                  >
-                    <Link
-                      to={`/user/${reply.commented_by?.personal_info.username}`}
-                    >
-                      <img
-                        src={reply.commented_by.personal_info?.profile_img}
-                        className='w-9 h-9 rounded-full'
-                      />
-                    </Link>
-
-                    <div className='flex-1'>
-                      <div className='flex items-center gap-1'>
-                        <p className='font-bold text-sm'>
-                          {reply.commented_by?.personal_info.fullname}
-                        </p>
-                        <span className='text-gray-500 text-sm'>
-                          @{reply.commented_by?.personal_info.username}
-                        </span>
-                        <span className='text-gray-500 text-xs'>
-                          · {getDay(reply.commentedAt)}
-                        </span>
-                      </div>
-
-                      <p className='mt-1 text-sm'>{reply.comment}</p>
-
-                      {reply.images?.length > 0 && (
-                        <img
-                          src={reply.images[0]}
-                          className='rounded-lg mt-2 max-h-40 object-cover'
-                        />
-                      )}
-
-                      {(user_id === reply.commented_by?.personal_info._id ||
-                        user_id === tweet.author._id) && (
-                        <button
-                          onClick={() => handleDeleteComment(reply._id)}
-                          className='text-xs text-red-500 hover:underline mt-1 flex items-center gap-1'
-                        >
-                          <Trash2 size={12} />
-                          Delete
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         ))}
       </div>

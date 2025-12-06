@@ -73,7 +73,7 @@ const ProfilePage = () => {
     followers,
     following,
   } = profile;
-
+//
   const fetchUserProfile = () => {
     axios
       .post(import.meta.env.VITE_SERVER_DOMAIN + "/get-profile", {

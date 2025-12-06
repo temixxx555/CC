@@ -38,7 +38,7 @@ export default {
       },
       dark: {
         oranges: "#FF8C00",
-        white: "#242424",
+        white: "#0D0D0D",
         black: "#F3F3F3",
         grey: "#2A2A2A",
         "dark-grey": "#E7E7E7",

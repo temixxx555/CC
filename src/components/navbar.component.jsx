@@ -165,9 +165,51 @@ const Navbar = () => {
     }
   };
 
+  ///remove header when scrolling
+
+  // ✅ Scroll state management
+  const [showNav, setShowNav] = useState(true);
+  const [showFooter, setShowFooter] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const scrollThreshold = 10; // Minimum scroll distance to trigger hide/show
+
+  // ✅ Handle scroll behavior
+  useEffect(() => {
+    const handleScroll = () => {
+      const current = window.scrollY;
+
+      if (current < 10) {
+        setShowNav(true);
+        setShowFooter(true);
+        return;
+      }
+
+      if (current > lastScrollY) {
+        // scrolling down
+        setShowNav(false);
+        setShowFooter(false);
+      } else {
+        // scrolling up
+        setShowNav(true);
+        setShowFooter(true);
+      }
+
+      setLastScrollY(current);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
   return (
     <>
-      <nav className='navbar z-50'>
+      <nav
+        className={`navbar z-50 fixed top-0 left-0 right-0 transition-transform duration-300 ease-in-out ${
+          showNav
+            ? "translate-y-0 md:translate-y-0"
+            : "-translate-y-full md:translate-y-0"
+        }`}
+      >
         <div>
           {/* link tag dosent reload the page like the <A> tag</A> */}
           <img
@@ -299,7 +341,7 @@ const Navbar = () => {
                   id='streak-overlay-title'
                   className='text-3xl text-black font-semibold tracking-tight'
                 >
-                  🔥 {streaks?.streak?.count ?? 0} Day Streak! 
+                  🔥 {streaks?.streak?.count ?? 0} Day Streak!
                 </p>
                 <p className='text-sm text-black'>
                   You're forging a winning habit! Aim to top the school
@@ -354,7 +396,13 @@ const Navbar = () => {
 
       <div className='h-20 md:hidden'></div>
 
-      <FooterNav />
+      <div
+        className={`transition-transform duration-300 ease-in-out fixed bottom-0 left-0 right-0 ${
+          showFooter ? "translate-y-0" : "translate-y-full"
+        }`}
+      >
+        <FooterNav />
+      </div>
     </>
   );
 };

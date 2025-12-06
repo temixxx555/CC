@@ -185,7 +185,7 @@ const Home = () => {
   return (
     <AnimationWrapper>
       {/* <Alerts /> */}
-      <section className='h-cover flex justify-center gap-10 '>
+      <section className='h-cover flex justify-center mt-[70px] gap-10 '>
         {/* latest blogs  */}
         <div className='w-full'>
           <p className='font-bold text-3xl ml-9 '>
@@ -232,12 +232,14 @@ const Home = () => {
                         <TweetCard
                           tweet={blog}
                           author={blog.author.personal_info}
+                          id={blog.author._id}
                         />
                       ) : (
                         <BlogPostCard
                           content={blog}
                           contents={blog.content}
                           author={blog.author.personal_info}
+                          id={blog.author._id}
                         />
                       )}
                     </AnimationWrapper>
@@ -294,12 +296,14 @@ const Home = () => {
                         <TweetCard
                           tweet={blog}
                           author={blog.author.personal_info}
+                          id={blog.author._id}
                         />
                       ) : (
                         <BlogPostCard
                           content={blog}
                           contents={blog.content}
                           author={blog.author.personal_info}
+                          id={blog.author._id}
                         />
                       )}
                     </AnimationWrapper>

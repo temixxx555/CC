@@ -95,7 +95,8 @@ const CommentsCard = ({ index, leftVal, commentData }) => {
       activity: {
         ...activity,
         total_parent_comments:
-          total_parent_comments - (commentData.childrenLevel === 0 && isDelete ? 1 : 0),
+          total_parent_comments -
+          (commentData.childrenLevel === 0 && isDelete ? 1 : 0),
       },
     });
   };
@@ -103,7 +104,7 @@ const CommentsCard = ({ index, leftVal, commentData }) => {
   const loadReplies = () => {
     if (children.length) {
       hideReplies();
-  
+
       axios
         .post(import.meta.env.VITE_SERVER_DOMAIN + "/get-replies", {
           _id,
@@ -111,15 +112,14 @@ const CommentsCard = ({ index, leftVal, commentData }) => {
         })
         .then(({ data: { replies } }) => {
           commentData.isReplyLoaded = true;
-  
+
           for (let i = 0; i < replies.length; i++) {
             replies[i].childrenLevel = commentData.childrenLevel + 1;
             commentsArr.splice(index + 1 + i, 0, replies[i]);
           }
-  
+
           setBlog({ ...blog, comments: { ...comments, results: commentsArr } });
-  
-          // ✅ RESET skipCount and hasMoreReplies properly
+
           setSkipCount(replies.length);
           setHasMoreReplies(replies.length >= 5);
         })
@@ -128,7 +128,6 @@ const CommentsCard = ({ index, leftVal, commentData }) => {
         });
     }
   };
-  
 
   const loadMoreReplies = () => {
     setIsLoadingMoreReplies(true);
@@ -159,7 +158,8 @@ const CommentsCard = ({ index, leftVal, commentData }) => {
 
   const deleteComment = (e) => {
     if (!commentData || !commentsArr[index]) return;
-    if (!window.confirm("Are you sure you want to delete this comment?")) return;
+    if (!window.confirm("Are you sure you want to delete this comment?"))
+      return;
 
     e.target.setAttribute("disabled", true);
 
@@ -185,83 +185,125 @@ const CommentsCard = ({ index, leftVal, commentData }) => {
   const hideReplies = () => {
     commentData.isReplyLoaded = false;
     setSkipCount(0);
-    setHasMoreReplies(children.length > 5); // Reset properly
+    setHasMoreReplies(children.length > 5);
     removeCommentsCards(index + 1);
   };
-  
 
   return (
     <div className='w-full' style={{ paddingLeft: `${leftVal * 10}px` }}>
-      <div className='my-5 p-6 rounded-md border border-grey'>
-         <Link to={`/user/${commented_by_username}`}>
-        <div className='flex gap-3 items-center mb-8'>
-          <img src={profile_img} alt='image' className='w-6 h-6 rounded-full' />
-          <p className='line-clamp-1'>
-            {fullname} @{commented_by_username}
-          </p>
-          <p className='min-w-fit'>{getDay(commentedAt)}</p>
-        </div>
-        </Link>
-        <p className='font-gelasio text-xl ml-3'>{comment}</p>
-        <div className='flex gap-5 items-center mt-5'>
-          {commentData.isReplyLoaded ? (
-            <button
-              className='text-dark-grey p-2 px-3 hover:bg-grey/30 rounded-md flex items-center gap-2'
-              onClick={hideReplies}
-            >
-              <i className='fi fi-rs-comment-dots'></i>
-              Hide Reply
-            </button>
-          ) : (
-            <button
-              className='text-dark-grey p-2 px-3 hover:bg-grey/30 rounded-md flex items-center gap-2'
-              onClick={() => loadReplies({ skip: 0 })}
-            >
-              <i className='fi fi-rs-comment-dots'></i>
-              {children.length} Reply
-            </button>
-          )}
-          <button className='underline' onClick={handleReplyClick}>
-            Reply
-          </button>
-
-          {username === commented_by_username || username === blog_author ? (
-            <button
-              className='p-2 px-3 rounded-md border border-grey ml-auto hover:bg-red/30 hover:text-red flex items-center'
-              onClick={deleteComment}
-            >
-              <i className='fi fi-rr-trash pointer-events-none'></i>
-            </button>
-          ) : (
-            ""
-          )}
-        </div>
-
-        {isReplying ? (
-          <div className='mt-8'>
-            <CommentField
-              action='reply'
-              index={index}
-              replyinTo={_id}
-              setReplying={setReplying}
+      <div className='my-3'>
+        {/* Main comment container */}
+        <div className='flex gap-2 group'>
+          {/* Avatar */}
+          <Link to={`/user/${commented_by_username}`} className='flex-shrink-0'>
+            <img
+              src={profile_img}
+              alt={fullname}
+              className='w-10 h-10 rounded-full hover:opacity-80 transition'
             />
-          </div>
-        ) : (
-          ""
-        )}
+          </Link>
 
-        {/* Load more replies */}
-        {commentData.isReplyLoaded && hasMoreReplies && (
-          <div className="mt-4">
-            <button
-              onClick={loadMoreReplies}
-              disabled={isLoadingMoreReplies}
-              className="text-blue-600 hover:underline"
-            >
-              {isLoadingMoreReplies ? "Loading..." : "Load More Replies"}
-            </button>
+          {/* Comment content */}
+          <div className='flex-1 min-w-0'>
+            {/* Comment bubble */}
+            <div className='inline-block bg-grey rounded-2xl px-4 py-2.5 max-w-full break-words'>
+              <Link
+                to={`/user/${commented_by_username}`}
+                className='hover:underline'
+              >
+                <p className='font-semibold text-sm text-dark-grey mb-0.5'>
+                  {fullname}
+                </p>
+              </Link>
+              <p className='text-[15px] leading-snug text-dark-grey'>
+                {comment}
+              </p>
+            </div>
+
+            {/* Action buttons row */}
+            <div className='flex items-center gap-4 mt-1 ml-3 text-xs font-semibold text-dark-grey'>
+              {/* Timestamp */}
+              <span className='text-xs'>{getDay(commentedAt)}</span>
+
+              {/* Reply button */}
+              <button
+                className='hover:underline'
+                onClick={handleReplyClick}
+              >
+                Reply
+              </button>
+
+              {/* View/Hide replies */}
+              {children.length > 0 && (
+                <>
+                  {commentData.isReplyLoaded ? (
+                    <button
+                      className='hover:underline flex items-center gap-1'
+                      onClick={hideReplies}
+                    >
+                      <i className='fi fi-rr-angle-small-up text-sm'></i>
+                      Hide {children.length} {children.length === 1 ? 'reply' : 'replies'}
+                    </button>
+                  ) : (
+                    <button
+                      className='hover:underline flex items-center gap-1'
+                      onClick={() => loadReplies({ skip: 0 })}
+                    >
+                      <i className='fi fi-rr-angle-small-down text-sm'></i>
+                      View {children.length} {children.length === 1 ? 'reply' : 'replies'}
+                    </button>
+                  )}
+                </>
+              )}
+
+              {/* Delete button (only for author or commenter) */}
+              {(username === commented_by_username ||
+                username === blog_author) && (
+                <button
+                  className='hover:underline text-red ml-auto'
+                  onClick={deleteComment}
+                >
+                  Delete
+                </button>
+              )}
+            </div>
+
+            {/* Reply input field */}
+            {isReplying && (
+              <div className='mt-3 ml-3'>
+                <CommentField
+                  action='reply'
+                  index={index}
+                  replyinTo={_id}
+                  setReplying={setReplying}
+                />
+              </div>
+            )}
+
+            {/* Load more replies button */}
+            {commentData.isReplyLoaded && hasMoreReplies && (
+              <div className='mt-3 ml-3'>
+                <button
+                  onClick={loadMoreReplies}
+                  disabled={isLoadingMoreReplies}
+                  className='text-sm font-semibold text-dark-grey hover:underline flex items-center gap-1'
+                >
+                  {isLoadingMoreReplies ? (
+                    <>
+                      <i className='fi fi-rr-spinner animate-spin'></i>
+                      Loading...
+                    </>
+                  ) : (
+                    <>
+                      <i className='fi fi-rr-angle-small-down text-sm'></i>
+                      View more replies
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
