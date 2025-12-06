@@ -105,6 +105,7 @@ const App = () => {
               <Route path='/editor' element={<Editor />} />
               <Route path='/tweet' element={<TweetPage />} />
               <Route path='/editor/:blog_id' element={<Editor />} />
+              <Route path='tweet/:blog_id' element={<TweetView />} />
               <Route path='/' element={<Navbar />}>
                 {/* index means render the parent path which is / */}
                 <Route index element={<Home />} />
@@ -144,7 +145,6 @@ const App = () => {
                 <Route path='/anonymous/:id' element={<ViewMessage />} />
                 <Route path='user/:id' element={<ProfilePage />} />
                 <Route path='blog/:blog_id' element={<BlogPage />} />
-                <Route path='tweet/:blog_id' element={<TweetView />} />
                 <Route path='test' element={<TestPage />} />
                 <Route path='*' element={<PageNotFound />} />
               </Route>
