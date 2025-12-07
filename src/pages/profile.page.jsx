@@ -210,7 +210,7 @@ const ProfilePage = () => {
       {loading ? (
         <Loader />
       ) : profile_username.length ? (
-        <section className='h-cover md:flex flex-row-reverse items-start gap-5 min-[1100px]:gap-12'>
+        <section className='h-cover mt-[70px] md:flex flex-row-reverse items-start gap-5 min-[1100px]:gap-12'>
           <div className='flex flex-col max-md:items-center gap-5 min-w-[250px] md:w-[50%] md:pl-8 md:border-2 border-grey md:sticky md:top-[100px] md:py-10'>
             <img
               src={profile_img}

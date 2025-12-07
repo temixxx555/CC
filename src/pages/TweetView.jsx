@@ -307,7 +307,7 @@ export default function TweetView() {
       });
   };
   return (
-    <div className='min-h-screen bg-white max-w-2xl mx-auto border-l border-r border-grey'>
+    <div className='min-h-screen mt-[70px] bg-white max-w-2xl mx-auto border-l border-r border-grey'>
       {/* HEADER */}
       <div className='sticky top-0 bg-white/80 backdrop-blur flex items-center gap-4 px-4 py-3 border-b border-gray-200 z-20'>
         <button
