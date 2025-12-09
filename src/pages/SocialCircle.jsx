@@ -128,6 +128,12 @@ const SocialCircle = () => {
       //   : "",
       // isAvailable: isAnonymousMessageAvailable(),
     },
+     {
+      icon: <i className='fi fi-rr-camera text-2xl text-pink-500' />,
+      title: "Lost and Found",
+      description: "Are you Searching for a missing item,check the lost and found",
+      link: "/dashboard/lostandfound",
+    },
   ];
 
   return (

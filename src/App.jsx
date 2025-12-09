@@ -33,6 +33,7 @@ import {
 import axios from "axios";
 import TweetPage from "./pages/TweetPage";
 import TweetView from "./pages/TweetView";
+import LostAndFoundSection from "./pages/LostAndFound";
 
 export const userContext = createContext({});
 export const ThemeContext = createContext({});
@@ -119,6 +120,10 @@ const App = () => {
                   <Route
                     path='anonymous-message'
                     element={<AnnonymousPage />}
+                  />
+                  <Route
+                    path='lostandfound'
+                    element={<LostAndFoundSection />}
                   />
                 </Route>
                 <Route path='/settings' element={<SideNav />}>
