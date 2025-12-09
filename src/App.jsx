@@ -33,6 +33,7 @@ import {
 import axios from "axios";
 import TweetPage from "./pages/TweetPage";
 import TweetView from "./pages/TweetView";
+import { GlobalContextProvider } from "./contexts/GlobalStoreContext";
 
 export const userContext = createContext({});
 export const ThemeContext = createContext({});
@@ -98,6 +99,7 @@ const App = () => {
       <Toaster position='top-right' reverseOrder={false} />
       <ThemeContext.Provider value={{ theme, setTheme }}>
         <userContext.Provider value={{ userAuth, setUserAuth }}>
+          <GlobalContextProvider>
           {/* because i think it is the parent provider */}
           {/* socketProvider to connect with the socket io in the backend */}
           <SocketProvider>
@@ -150,6 +152,7 @@ const App = () => {
               </Route>
             </Routes>
           </SocketProvider>
+          </GlobalContextProvider>
         </userContext.Provider>
       </ThemeContext.Provider>
     </>
