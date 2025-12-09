@@ -6,7 +6,6 @@ import { useContext, useEffect, useState } from "react";
 import { userContext } from "../App";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useGlobalContext } from "../contexts/GlobalStoreContext";
 
 const BlogPostCard = ({ content, contents, author, id: _ids }) => {
   const {
@@ -22,8 +21,6 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
   // console.log('Content: ', content);
 
   const { fullname, profile_img, username, isVerified } = author;
-
-  const { cachedBlog, setCachedBlog } = useGlobalContext();
 
   const previewText =
     contents?.[0]?.blocks?.[0]?.data?.text?.replace(/&nbsp;/g, " ") || "";
@@ -254,7 +251,6 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
 
         <Link to={`/blog/${id}`}>
           <div className='mt-3' onClick={() => (
-            setCachedBlog(content),
             navigate(`/blog/${id}`,)
           )}>
             {/* Title */}

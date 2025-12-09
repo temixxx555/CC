@@ -340,12 +340,12 @@ export default function TweetView() {
   return (
     <div className="min-h-screen bg-white max-w-2xl mx-auto border-l border-r border-grey">
       {/* HEADER */}
-      <div className="sticky top-0 bg-white/80 backdrop-blur flex items-center gap-4 px-4 py-3 border-b border-gray-200 z-20">
+      <div className="sticky top-0 bg-white/80 backdrop-blur flex items-center gap-4 px-4 py-3 border-b border-grey z-20">
         <button
           onClick={() => navigate(-1)}
-          className="p-2 hover:bg-gray-100 rounded-full"
+          className="p-2 hover:bg-black rounded-full bg-black"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={20} className="text-black dark:text-white" />
         </button>
         <h2 className="font-bold text-xl">Post</h2>
       </div>
@@ -407,7 +407,7 @@ export default function TweetView() {
         </p>
 
         {/* STATS */}
-        <div className="py-3 border-t border-b border-gray-200 text-sm text-gray-500 flex gap-6">
+        <div className="py-3 border-t border-b border-grey text-sm text-gray-500 flex gap-6">
           <div>
             <span className="font-bold text-black">{replies.length}</span>{" "}
             Comments
@@ -466,7 +466,7 @@ export default function TweetView() {
       {!commentLoading ? (
         <>
           {/* COMMENT BOX */}
-          <div className="border-b border-gray-200 p-4">
+          <div className="border-b border-grey p-4">
             {replyingToComment && (
               <div className="mb-3 p-2 bg-blue-50 rounded border-l-4 border-blue-500">
                 <p className="text-sm text-gray-600">
@@ -496,7 +496,7 @@ export default function TweetView() {
                       ? "Reply to this comment..."
                       : "Post a comment"
                   }
-                  className="w-full bg-transparent border text-lg outline-none resize-none p-2"
+                  className="w-full bg-transparent border border-grey text-lg outline-none resize-none p-2"
                   maxLength={300}
                 />
 
