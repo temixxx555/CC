@@ -22,7 +22,7 @@ const TweetCard = ({ tweet, author, id }) => {
   const [likes, setLikes] = useState(total_likes);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImage, setLightboxImage] = useState("");
-  
+
   let {
     userAuth,
     setUserAuth,
@@ -128,6 +128,7 @@ const TweetCard = ({ tweet, author, id }) => {
         toast.success("Tweet deleted");
 
         window.location.reload();
+        window.location.reload();
       })
       .catch((err) => {
         target.removeAttribute("disabled");
@@ -135,7 +136,7 @@ const TweetCard = ({ tweet, author, id }) => {
         toast.error("Failed to delete tweet");
       });
   };
-  
+
   const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
@@ -143,7 +144,7 @@ const TweetCard = ({ tweet, author, id }) => {
       setIsFollowing(userAuth.following.includes(id));
     }
   }, [userAuth, id]);
-  
+
   const handleFollow = async () => {
     if (!access_token) {
       return toast.error("Please login to follow users");
@@ -184,6 +185,23 @@ const TweetCard = ({ tweet, author, id }) => {
     }
   };
 
+  // to click links
+  const linkifyText = (text) => {
+    const urlRegex =
+      /(https?:\/\/[^\s]+)|(www\.[^\s]+)|([a-zA-Z0-9-]+\.[a-zA-Z]{2,})/g;
+
+    return text.replace(urlRegex, (url) => {
+      let href = url;
+
+      // If no http:// or https://, add https://
+      if (!href.startsWith("http")) {
+        href = "https://" + href;
+      }
+
+      return `<a href="${href}" target="_blank" class="text-blue-500 underline">${url}</a>`;
+    });
+  };
+
   return (
     <>
       <div className='bg-white border border-grey rounded-lg mb-4 shadow-sm hover:shadow-md transition-shadow'>
@@ -207,10 +225,17 @@ const TweetCard = ({ tweet, author, id }) => {
                     <p className='font-semibold text-dark-grey text-[15px]'>
                       {fullname}
                     </p>
+                    <p className='font-semibold text-gray-500 text-[11px]'>
+                      student - Bowen{" "}
+                    </p>
                   </Link>
 
                   {isVerified && (
-                    <img src={verifiedBadge} alt='verified' className='w-4 h-4' />
+                    <img
+                      src={verifiedBadge}
+                      alt='verified'
+                      className='w-4 h-4'
+                    />
                   )}
                 </div>
 
@@ -237,7 +262,7 @@ const TweetCard = ({ tweet, author, id }) => {
                       }`}
                     >
                       <i className='fi fi-rr-user-add'></i>
-                      {isFollowing ? "Connected" : "Follow"}
+                      {isFollowing ? "Connected" : "Connect"}
                     </button>
                   )
                 ) : null}
@@ -257,9 +282,10 @@ const TweetCard = ({ tweet, author, id }) => {
 
           {/* Tweet Content */}
           <Link to={`/tweet/${blog_id}`}>
-            <p className='text-dark text-[15px] mt-3 whitespace-pre-wrap break-words leading-relaxed'>
-              {des}
-            </p>
+            <p
+              className='text-dark text-[15px] mt-3 whitespace-pre-wrap break-words leading-relaxed'
+              dangerouslySetInnerHTML={{ __html: linkifyText(des) }}
+            ></p>
           </Link>
         </div>
 
@@ -379,80 +405,104 @@ const TweetCard = ({ tweet, author, id }) => {
       </div>
 
       {/* Lightbox Modal */}
-  {lightboxOpen && (
-  <div
-    className="fixed inset-0 z-50 flex items-center justify-center bg-[#0D0D0D] bg-opacity-95 p-4"
-    onClick={closeLightbox}
-  >
-    {/* Close Button */}
-    <button
-      onClick={closeLightbox}
-      className="absolute top-4 right-4 text-[#ffff] text-3xl hover:text-gray-300 transition z-10"
-    >
-      ×
-    </button>
+      {lightboxOpen && (
+        <div
+          className='fixed inset-0 z-50 flex items-center justify-center bg-[#0D0D0D] bg-opacity-95 p-4'
+          onClick={closeLightbox}
+        >
+          {/* Close Button */}
+          <button
+            onClick={closeLightbox}
+            className='absolute top-4 right-4 text-[#ffff] text-3xl hover:text-gray-300 transition z-10'
+          >
+            ×
+          </button>
 
-    {/* Modal Content */}
-    <div
-      className="flex flex-col md:flex-row w-full p-3 max-w-5xl bg-[#0D0D0D]  rounded-lg overflow-hidden shadow-lg"
-      onClick={(e) => e.stopPropagation()}
-    >
-      {/* Image Section */}
-      <div className="flex-1 flex items-center justify-center">
-        <img
-          src={lightboxImage}
-          alt="Full size"
-          className="max-h-[80vh] w-auto object-contain"
-        />
-      </div>
+          {/* Modal Content */}
+          <div
+            className='flex flex-col md:flex-row w-full p-3 max-w-5xl bg-[#0D0D0D]  rounded-lg overflow-hidden shadow-lg'
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Image Section */}
+            <div className='flex-1 flex items-center justify-center'>
+              <img
+                src={lightboxImage}
+                alt='Full size'
+                className='max-h-[80vh] w-auto object-contain'
+              />
+            </div>
 
-      {/* Right Sidebar: Description & Engagement */}
-      <div className="md:w-96 w-full flex flex-col justify-between md:justify-normal p-4 text-white">
-        {/* Post Description */}
-        <div className="mb-4 overflow-y-auto max-h-[60vh]">
-          <h2 className="text-lg text-[#ffff] font-semibold mb-2">Post</h2>
-          <p className="text-sm text-[#ffff] leading-relaxed">{des}</p>
-        </div>
+            {/* Right Sidebar: Description & Engagement */}
+            <div className='md:w-96 w-full flex flex-col justify-between md:justify-normal p-4 text-white'>
+              {/* Post Description */}
+              <div className='mb-4 overflow-y-auto max-h-[60vh]'>
+                <h2 className='text-lg text-[#ffff] font-semibold mb-2'>
+                  Post
+                </h2>
+                <p className='text-sm text-[#ffff] leading-relaxed'>{des}</p>
+              </div>
 
-        {/* Engagement Stats */}
-        <div className="mb-4">
-          <div className="flex items-center gap-4 text-sm text-[#ffff]">
-            {likes > 0 && <span>{likes} {likes === 1 ? "like" : "likes"}</span>}
-            {total_comments > 0 && <span>{total_comments} {total_comments === 1 ? "comment" : "comments"}</span>}
-            {total_reads > 0 && <span>{total_reads} {total_reads === 1 ? "view" : "views"}</span>}
+              {/* Engagement Stats */}
+              <div className='mb-4'>
+                <div className='flex items-center gap-4 text-sm text-[#ffff]'>
+                  {likes > 0 && (
+                    <span>
+                      {likes} {likes === 1 ? "like" : "likes"}
+                    </span>
+                  )}
+                  {total_comments > 0 && (
+                    <span>
+                      {total_comments}{" "}
+                      {total_comments === 1 ? "comment" : "comments"}
+                    </span>
+                  )}
+                  {total_reads > 0 && (
+                    <span>
+                      {total_reads} {total_reads === 1 ? "view" : "views"}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className='flex items-center justify-around border-t border-gray-700 pt-2'>
+                <Link to={`/tweet/${blog_id}`} className='flex-1'>
+                  <button className='flex items-center justify-center gap-2 px-4 py-2.5 w-full rounded-lg hover:bg-gray-800 transition group'>
+                    <i className='fi fi-rr-comment-dots text-xl text-gray-400 group-hover:text-blue-500'></i>
+                    <span className='text-sm font-medium text-[#ffff] group-hover:text-blue-500'>
+                      Comment
+                    </span>
+                  </button>
+                </Link>
+
+                <button
+                  onClick={handleLiking}
+                  className='flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg hover:bg-gray-800 transition group'
+                >
+                  <i
+                    className={`fi text-xl ${isLikedByUser ? "text-red fi-sr-heart" : "text-gray-400 group-hover:text-blue-500 fi-rr-heart"}`}
+                  ></i>
+                  <span
+                    className={`text-sm font-medium ${isLikedByUser ? "text-red" : "text-gray-400 group-hover:text-blue-500"}`}
+                  >
+                    Like
+                  </span>
+                </button>
+
+                <button
+                  onClick={handleShare}
+                  className='flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg hover:bg-gray-800 transition group'
+                >
+                  <i className='fi fi-rr-share text-xl text-gray-400 group-hover:text-blue-500'></i>
+                  <span className='text-sm font-medium text-gray-400 group-hover:text-blue-500'>
+                    Share
+                  </span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* Action Buttons */}
-        <div className="flex items-center justify-around border-t border-gray-700 pt-2">
-          <Link to={`/tweet/${blog_id}`} className="flex-1">
-            <button className="flex items-center justify-center gap-2 px-4 py-2.5 w-full rounded-lg hover:bg-gray-800 transition group">
-              <i className="fi fi-rr-comment-dots text-xl text-gray-400 group-hover:text-blue-500"></i>
-              <span className="text-sm font-medium text-[#ffff] group-hover:text-blue-500">Comment</span>
-            </button>
-          </Link>
-
-          <button
-            onClick={handleLiking}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg hover:bg-gray-800 transition group"
-          >
-            <i className={`fi text-xl ${isLikedByUser ? "text-red fi-sr-heart" : "text-gray-400 group-hover:text-blue-500 fi-rr-heart"}`}></i>
-            <span className={`text-sm font-medium ${isLikedByUser ? "text-red" : "text-gray-400 group-hover:text-blue-500"}`}>Like</span>
-          </button>
-
-          <button
-            onClick={handleShare}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg hover:bg-gray-800 transition group"
-          >
-            <i className="fi fi-rr-share text-xl text-gray-400 group-hover:text-blue-500"></i>
-            <span className="text-sm font-medium text-gray-400 group-hover:text-blue-500">Share</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
-
+      )}
     </>
   );
 };
