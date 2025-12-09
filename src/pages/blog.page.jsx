@@ -1,12 +1,262 @@
+// import axios from "axios";
+// import { createContext, useEffect, useState } from "react";
+// import { Link, useParams, useLocation, useNavigation } from "react-router-dom";
+// import AnimationWrapper from "../common/page-animation";
+// import Loader from "../components/loader.component";
+// import { getDay } from "../common/date";
+// import BlogInteraction from "../components/blog-interaction.component";
+// import BlogPostCard from "../components/blog-post.component";
+// import BlogContent from "../components/blog-content.component";
+// import { useGlobalContext } from "../contexts/GlobalStoreContext";
+
+// import CommentsContainer, {
+//   fetchComments,
+// } from "../components/comments.component";
+
+// export const blogStructure = {
+//   title: "",
+//   dess: "",
+//   content: "",
+//   author: { personal_info: {} },
+//   publishedAt: "",
+//   activity: { total_reads: 0 },
+//   banner: "",
+// };
+// export const BlogContext = createContext({});
+// const BlogPage = () => {
+//   let { blog_id } = useParams();
+  
+//   const {cachedBlog, setCachedBlog} = useGlobalContext();
+//   const [blog, setBlog] = useState(cachedBlog || blogStructure);
+  
+//   const [similarblogs, setSimilarblogs] = useState(null);
+//   const [isLikedByUser, setLikedByUser] = useState(false);
+//   const [commentsWrapper, setCommentsWrapper] = useState(false);
+//   const [totalParentCommentsLoaded, setTotalParentsCommentsLoaaded] =
+//     useState(0);
+
+//   const [loading, setLoading] = useState(true);
+//   const [blogLoading, setBlogLoading] = useState(false);
+//   const [othersLoading, setOthersLoading] = useState(false);
+
+
+  
+//   let {
+//     title,
+//     content,
+//     banner,
+//     author: {
+//       personal_info: { fullname, username: author_username, profile_img },
+//     },
+//     activity: { total_reads },
+//     publishedAt,
+//   } = blog;
+
+//   const fetchBlog = () => {
+//     if (cachedBlog) return;
+//     axios
+//       .post(import.meta.env.VITE_SERVER_DOMAIN + "/get-blog", {
+//         blog_id,
+//       })
+//       .then(async ({ data: { blog } }) => {
+//         blog.comments = await fetchComments({
+//           blog_id: blog._id,
+//           setParentCommentFunc: setTotalParentsCommentsLoaaded,
+//         });
+//         console.log(blog, "pooo");
+
+//         setBlog(blog);
+
+//         axios
+//           .post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", {
+//             tag: blog.tags[0],
+//             limit: 6,
+//             eliminate_blog: blog_id,
+//           })
+//           .then(({ data }) => {
+//             setSimilarblogs(data.blogs);
+//           });
+
+//         setLoading(false);
+//       })
+//       .catch((err) => {
+//         console.log(err);
+//         setLoading(false);
+//       });
+//   };
+
+//   const fetchCommentAndRelatedBlogs = async () => {
+//     axios
+//       .post(import.meta.env.VITE_SERVER_DOMAIN + "/get-blog", {
+//         blog_id,
+//       })
+//       .then(async ({ data: { blog } }) => {
+//         blog.comments = await fetchComments({
+//           blog_id: blog._id,
+//           setParentCommentFunc: setTotalParentsCommentsLoaaded,
+//         });
+//         console.log(blog, "pooo");
+
+//         setBlog(blog);
+
+//         axios
+//           .post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", {
+//             tag: blog.tags[0],
+//             limit: 6,
+//             eliminate_blog: blog_id,
+//           })
+//           .then(({ data }) => {
+//             setSimilarblogs(data.blogs);
+//           });
+
+//         setOthersLoading(false);
+//       })
+//       .catch((err) => {
+//         console.log(err);
+//         setOthersLoading(false);
+//       });
+//   };
+
+// //   useEffect(() => {
+// //     setBlog(content_);
+// //     fetchCommentAndRelatedBlogs();
+// //   }, [content_]);
+
+//   useEffect(() => {
+//     resetState();
+//     if(!cachedBlog)
+//     {
+//         fetchBlog();
+//     }
+//   }, [blog_id]);
+
+//   const resetState = () => {
+//     setBlog(blogStructure);
+//     setSimilarblogs(null);
+//     setLoading(true);
+//     setLikedByUser(false);
+//     // setCommentsWrapper(false)
+//     setTotalParentsCommentsLoaaded(0);
+//   };
+//   return (
+//     <AnimationWrapper>
+//       {loading ? (
+//         <div className="mt-[100px]">
+//           <Loader />
+//         </div>
+//       ) : (
+//         <BlogContext.Provider
+//           value={{
+//             blog,
+//             setBlog,
+//             isLikedByUser,
+//             setLikedByUser,
+//             setCommentsWrapper,
+//             setTotalParentsCommentsLoaaded,
+//             commentsWrapper,
+//             totalParentCommentsLoaded,
+//           }}
+//         >
+//           <CommentsContainer />
+//           <div className="max-w-[900px] center py-10 max-lg:px-[5vw]">
+//             <img
+//               src={banner}
+//               alt="pic"
+//               className="aspect-video min-h-[400px] object-cover rounded-2xl shadow-md"
+//             />
+            
+
+//             <div className="mt-12">
+//               <h2 className="">{title}</h2>
+
+//               <div className="flex  justify-between my-8">
+//                 <div className="flex gap-5 items-start ">
+//                   <Link className="" to={`/user/${author_username}`}>
+//                     <img
+//                       src={profile_img}
+//                       alt="pic"
+//                       className="w-12 h-12 rounded-full"
+//                     />
+//                   </Link>
+//                   <p className="capitalize">
+//                     <Link className="" to={`/user/${author_username}`}>
+//                       {fullname}
+//                     </Link>
+//                     <br />
+//                     <Link
+//                       className="underline text-blue-500"
+//                       to={`/user/${author_username}`}
+//                     >
+//                       @{author_username}
+//                     </Link>
+//                   </p>
+//                 </div>
+//                 <div className="text-sm text-gray-500 italic   max-sm:ml-12 max-sm:pl-5">
+//                   Published on {getDay(publishedAt)}
+//                   <p className="text-black font-semibold">
+//                     {total_reads} reads
+//                   </p>
+//                 </div>
+//               </div>
+//             </div>
+
+//             <BlogInteraction />
+
+//             <div className="my-8 font-gelasio blog-page-content">
+//               {content[0].blocks.map((block, i) => {
+//                 return (
+//                   <div key={i} className="my-4 md:my-4">
+//                     <BlogContent block={block} />
+//                   </div>
+//                 );
+//               })}
+//             </div>
+
+//             <BlogInteraction />
+
+//             {/* Similar Blogs */}
+//             {similarblogs && similarblogs.length > 0 && (
+//               <div className="mt-16">
+//                 <h2 className="text-2xl font-semibold mb-8 border-l-4 border-black pl-3">
+//                   Similar Blogs
+//                 </h2>
+
+//                 <div className="grid sm:grid-cols-2 gap-8">
+//                   {similarblogs.map((blog, i) => {
+//                     const {
+//                       author: { personal_info },
+//                     } = blog;
+//                     return (
+//                       <AnimationWrapper
+//                         key={i}
+//                         transition={{ duration: 0.8, delay: i * 0.1 }}
+//                       >
+//                         <BlogPostCard content={blog} author={personal_info} />
+//                       </AnimationWrapper>
+//                     );
+//                   })}
+//                 </div>
+//               </div>
+//             )}
+//           </div>
+//         </BlogContext.Provider>
+//       )}
+//     </AnimationWrapper>
+//   );
+// };
+
+// export default BlogPage;
+
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
-import { Link, useParams, useLocation } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AnimationWrapper from "../common/page-animation";
 import Loader from "../components/loader.component";
 import { getDay } from "../common/date";
 import BlogInteraction from "../components/blog-interaction.component";
 import BlogPostCard from "../components/blog-post.component";
 import BlogContent from "../components/blog-content.component";
+import { useGlobalContext } from "../contexts/GlobalStoreContext";
 
 import CommentsContainer, {
   fetchComments,
@@ -21,51 +271,49 @@ export const blogStructure = {
   activity: { total_reads: 0 },
   banner: "",
 };
+
 export const BlogContext = createContext({});
+
 const BlogPage = () => {
   let { blog_id } = useParams();
-  const [blog, setBlog] = useState(blogStructure);
+
+  const { cachedBlog, setCachedBlog } = useGlobalContext();
+
+  // If cachedBlog exists, show it instantly. Otherwise show blank structure.
+  const [blog, setBlog] = useState(cachedBlog || blogStructure);
+
   const [similarblogs, setSimilarblogs] = useState(null);
   const [isLikedByUser, setLikedByUser] = useState(false);
   const [commentsWrapper, setCommentsWrapper] = useState(false);
-  const [totalParentCommentsLoaded, setTotalParentsCommentsLoaaded] =
-    useState(0);
+  const [totalParentCommentsLoaded, setTotalParentsCommentsLoaaded] = useState(0);
 
-  const [loading, setLoading] = useState(true);
-  const [blogLoading, setBlogLoading] = useState(false);
+  // If cachedBlog exists → skip loading spinner
+  const [loading, setLoading] = useState(!cachedBlog);
   const [othersLoading, setOthersLoading] = useState(false);
-  const { state } = useLocation();
-  const {
-    content: content_,
-    contents: contents_,
-    author: author_,
-    blog_id: id,
-  } = state || {};
+
   let {
     title,
     content,
     banner,
     author: {
-      personal_info: { fullname, username: author_username, profile_img },
-    },
-    activity: { total_reads },
+      personal_info: { fullname, username: author_username, profile_img } = {},
+    } = {},
+    activity: { total_reads } = {},
     publishedAt,
   } = blog;
 
+  // Fetch fresh blog + comments
   const fetchBlog = () => {
-    // if (content_) return;
     axios
-      .post(import.meta.env.VITE_SERVER_DOMAIN + "/get-blog", {
-        blog_id,
-      })
+      .post(import.meta.env.VITE_SERVER_DOMAIN + "/get-blog", { blog_id })
       .then(async ({ data: { blog } }) => {
         blog.comments = await fetchComments({
           blog_id: blog._id,
           setParentCommentFunc: setTotalParentsCommentsLoaaded,
         });
-        console.log(blog, "pooo");
 
         setBlog(blog);
+        setCachedBlog(blog);
 
         axios
           .post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", {
@@ -73,67 +321,73 @@ const BlogPage = () => {
             limit: 6,
             eliminate_blog: blog_id,
           })
-          .then(({ data }) => {
-            setSimilarblogs(data.blogs);
-          });
+          .then(({ data }) => setSimilarblogs(data.blogs));
 
         setLoading(false);
       })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
+      .catch(() => setLoading(false));
   };
 
-  // const fetchCommentAndRelatedBlogs = async () => {
-  //   setOthersLoading(true);
-  //   axios
-  //     .post(import.meta.env.VITE_SERVER_DOMAIN + "/get-blog", {
-  //       blog_id,
-  //     })
-  //     .then(async ({ data: { blog } }) => {
-  //       blog.comments = await fetchComments({
-  //         blog_id: blog._id,
-  //         setParentCommentFunc: setTotalParentsCommentsLoaaded,
-  //       });
-  //       console.log(blog, "pooo");
+  // Only fetch comments + similar blogs (for cached preview)
+  const fetchCommentAndRelatedBlogs = async () => {
+    axios
+      .post(import.meta.env.VITE_SERVER_DOMAIN + "/get-blog", { blog_id })
+      .then(async ({ data: { blog } }) => {
+        blog.comments = await fetchComments({
+          blog_id: blog._id,
+          setParentCommentFunc: setTotalParentsCommentsLoaaded,
+        });
 
-  //       setBlog(blog);
+        setBlog(blog);
+        setCachedBlog(blog);
 
-  //       axios
-  //         .post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", {
-  //           tag: blog.tags[0],
-  //           limit: 6,
-  //           eliminate_blog: blog_id,
-  //         })
-  //         .then(({ data }) => {
-  //           setSimilarblogs(data.blogs);
-  //         });
+        axios
+          .post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", {
+            tag: blog.tags[0],
+            limit: 6,
+            eliminate_blog: blog_id,
+          })
+          .then(({ data }) => setSimilarblogs(data.blogs));
 
-  //       setOthersLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //       setOthersLoading(false);
-  //     });
-  // };
-  useEffect(() => {
-    resetState();
-    fetchBlog();
-  }, [blog_id]);
+        setOthersLoading(false);
+      })
+      .catch(() => setOthersLoading(false));
+  };
 
   const resetState = () => {
-    setBlog(blogStructure);
     setSimilarblogs(null);
-    setLoading(true);
     setLikedByUser(false);
-    // setCommentsWrapper(false)
     setTotalParentsCommentsLoaaded(0);
+
+    // Don't clear blog if cached exists (we want the preview!)
+    if (!cachedBlog) {
+      setBlog(blogStructure);
+      setLoading(true);
+    }
   };
+
+  useEffect(() => {
+    resetState();
+
+    if (cachedBlog) {
+      // Show cached instantly
+      setBlog(cachedBlog);
+      setLoading(false);
+
+      // Fetch updated version silently
+      fetchCommentAndRelatedBlogs();
+    } else {
+      // No cached preview → full loading
+      fetchBlog();
+    }
+  }, [blog_id]);
+
   return (
     <AnimationWrapper>
       {loading ? (
-        <p>Howa</p>
+        <div className="mt-[100px]">
+          <Loader />
+        </div>
       ) : (
         <BlogContext.Provider
           value={{
@@ -148,6 +402,7 @@ const BlogPage = () => {
           }}
         >
           <CommentsContainer />
+
           <div className="max-w-[900px] mt-[70px] center py-10 max-lg:px-[5vw]">
             <img
               src={banner}
@@ -156,21 +411,20 @@ const BlogPage = () => {
             />
 
             <div className="mt-12">
-              <h2 className="">{title}</h2>
+              <h2>{title}</h2>
 
-              <div className="flex  justify-between my-8">
-                <div className="flex gap-5 items-start ">
-                  <Link className="" to={`/user/${author_username}`}>
+              <div className="flex justify-between my-8">
+                <div className="flex gap-5 items-start">
+                  <Link to={`/user/${author_username}`}>
                     <img
                       src={profile_img}
-                      alt="pic"
                       className="w-12 h-12 rounded-full"
+                      alt="profile"
                     />
                   </Link>
+
                   <p className="capitalize">
-                    <Link className="" to={`/user/${author_username}`}>
-                      {fullname}
-                    </Link>
+                    <Link to={`/user/${author_username}`}>{fullname}</Link>
                     <br />
                     <Link
                       className="underline text-blue-500"
@@ -180,11 +434,10 @@ const BlogPage = () => {
                     </Link>
                   </p>
                 </div>
-                <div className="text-sm text-gray-500 italic   max-sm:ml-12 max-sm:pl-5">
+
+                <div className="text-sm text-gray-500 italic max-sm:ml-12 max-sm:pl-5">
                   Published on {getDay(publishedAt)}
-                  <p className="text-black font-semibold">
-                    {total_reads} reads
-                  </p>
+                  <p className="text-black font-semibold">{total_reads} reads</p>
                 </div>
               </div>
             </div>
@@ -192,13 +445,11 @@ const BlogPage = () => {
             <BlogInteraction />
 
             <div className="my-8 font-gelasio blog-page-content">
-              {content[0].blocks.map((block, i) => {
-                return (
-                  <div key={i} className="my-4 md:my-4">
-                    <BlogContent block={block} />
-                  </div>
-                );
-              })}
+              {content?.[0]?.blocks?.map((block, i) => (
+                <div key={i} className="my-4 md:my-4">
+                  <BlogContent block={block} />
+                </div>
+              ))}
             </div>
 
             <BlogInteraction />
@@ -212,9 +463,7 @@ const BlogPage = () => {
 
                 <div className="grid sm:grid-cols-2 gap-8">
                   {similarblogs.map((blog, i) => {
-                    const {
-                      author: { personal_info },
-                    } = blog;
+                    const { personal_info } = blog.author;
                     return (
                       <AnimationWrapper
                         key={i}
@@ -235,3 +484,4 @@ const BlogPage = () => {
 };
 
 export default BlogPage;
+

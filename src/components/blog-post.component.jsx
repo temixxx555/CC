@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import { userContext } from "../App";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useGlobalContext } from "../contexts/GlobalStoreContext";
 
 const BlogPostCard = ({ content, contents, author, id: _ids }) => {
   const {
@@ -18,8 +19,11 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
     tags,
     activity: { total_likes, total_comments, total_reads },
   } = content;
+  // console.log('Content: ', content);
 
   const { fullname, profile_img, username, isVerified } = author;
+
+  const { cachedBlog, setCachedBlog } = useGlobalContext();
 
   const previewText =
     contents?.[0]?.blocks?.[0]?.data?.text?.replace(/&nbsp;/g, " ") || "";
@@ -236,17 +240,25 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
             </div>
           </div>
         </div>
-
-        {/* Blog Content */}
-
-        <Link to={`/blog/${id}`}>
-          <div className='mt-3' onClick={() => navigate(
+{/* 
+                  <div className='mt-3' onClick={() => (
+            console.log("haha", { content, author, id, contents }),
+            navigate(
             `/blog/${id}`,
             {
               state: {
                 content, contents, author, id
               }
             }
+          )
+          )}></div> */}
+
+        {/* Blog Content */}
+
+        <Link to={`/blog/${id}`}>
+          <div className='mt-3' onClick={() => (
+            setCachedBlog(content),
+            navigate(`/blog/${id}`,)
           )}>
             {/* Title */}
             <h1 className='text-lg font-semibold text-dark-grey line-clamp-2 mb-2 hover:underline'>
