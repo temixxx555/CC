@@ -319,22 +319,6 @@ export default function TweetView() {
         toast.error("Failed to delete tweet");
       });
   };
-  const linkifyText = (text) => {
-    const urlRegex =
-      /(https?:\/\/[^\s]+)|(www\.[^\s]+)|([a-zA-Z0-9-]+\.[a-zA-Z]{2,})/g;
-
-    return text.replace(urlRegex, (url) => {
-      let href = url;
-
-      // If no http:// or https://, add https://
-      if (!href.startsWith("http")) {
-        href = "https://" + href;
-      }
-
-      return `<a href="${href}" target="_blank" class="text-blue-500 underline">${url}</a>`;
-    });
-  };
-
 
   // ───────────────────────────────────────────────────────────────
   // UI RENDERING
@@ -354,7 +338,7 @@ export default function TweetView() {
     );
 
   return (
-    <div className="min-h-screen mt-[70px] bg-white max-w-2xl mx-auto border-l border-r border-grey">
+    <div className="min-h-screen bg-white max-w-2xl mx-auto border-l border-r border-grey">
       {/* HEADER */}
       <div className="sticky top-0 bg-white/80 backdrop-blur flex items-center gap-4 px-4 py-3 border-b border-grey z-20">
         <button

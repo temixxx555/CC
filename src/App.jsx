@@ -124,10 +124,6 @@ const App = () => {
                     path='anonymous-message'
                     element={<AnnonymousPage />}
                   />
-                  <Route
-                    path='lostandfound'
-                    element={<LostAndFoundSection />}
-                  />
                 </Route>
                 <Route path='/settings' element={<SideNav />}>
                   <Route path='edit-profile' element={<EditProfile />} />

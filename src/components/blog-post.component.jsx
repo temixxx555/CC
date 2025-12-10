@@ -195,9 +195,6 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
                   <p className='font-semibold text-dark-grey text-[15px]'>
                     {fullname}
                   </p>
-                  <p className='font-semibold text-gray-500 text-[11px]'>
-                    student - Bowen{" "}
-                  </p>
                 </Link>
 
                 {isVerified && (
@@ -225,7 +222,7 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
                     }`}
                   >
                     <i className='fi fi-rr-user-add'></i>
-                    {isFollowing ? "Connected" : "Connect"}
+                    {isFollowing ? "Connected" : "Follow"}
                   </button>
                 )
               ) : null}
