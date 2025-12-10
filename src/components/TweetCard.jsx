@@ -343,14 +343,19 @@ const TweetCard = ({ tweet, author, id }) => {
         <div className='border-t border-grey px-2 py-1'>
           <div className='flex items-center justify-around'>
             {/* Comments */}
-            <Link to={`/tweet/${blog_id}`} className='flex-1'>
+            <div className='flex-1' onClick={() => navigate(
+              `/tweet/${blog_id}`,
+              {
+                state: {tweet, author}
+              }
+            )}>
               <button className='flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg hover:bg-grey/20 transition w-full group'>
                 <i className='fi fi-rr-comment-dots text-xl text-gray-500 group-hover:text-blue-500'></i>
                 <span className='text-sm font-medium text-gray-500 group-hover:text-blue-500'>
                   Comment
                 </span>
               </button>
-            </Link>
+            </div>
 
             {/* Likes */}
             <button
@@ -438,12 +443,17 @@ const TweetCard = ({ tweet, author, id }) => {
 
         {/* Action Buttons */}
         <div className="flex items-center justify-around border-t border-gray-700 pt-2">
-          <Link to={`/tweet/${blog_id}`} className="flex-1">
+          <div className="flex-1" onClick={() => navigate(
+              `/tweet/${blog_id}`,
+              {
+                state: {tweet, author}
+              }
+            )}>
             <button className="flex items-center justify-center gap-2 px-4 py-2.5 w-full rounded-lg hover:bg-gray-800 transition group">
               <i className="fi fi-rr-comment-dots text-xl text-gray-400 group-hover:text-blue-500"></i>
               <span className="text-sm font-medium text-[#ffff] group-hover:text-blue-500">Comment</span>
             </button>
-          </Link>
+          </div>
 
           <button
             onClick={handleLiking}
