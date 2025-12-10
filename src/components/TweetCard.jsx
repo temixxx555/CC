@@ -24,7 +24,7 @@ const TweetCard = ({ tweet, author, id }) => {
   const [likes, setLikes] = useState(total_likes);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImage, setLightboxImage] = useState("");
-  
+
   let {
     userAuth,
     setUserAuth,
@@ -137,7 +137,7 @@ const TweetCard = ({ tweet, author, id }) => {
         toast.error("Failed to delete tweet");
       });
   };
-  
+
   const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
@@ -145,7 +145,7 @@ const TweetCard = ({ tweet, author, id }) => {
       setIsFollowing(userAuth.following.includes(id));
     }
   }, [userAuth, id]);
-  
+
   const handleFollow = async () => {
     if (!access_token) {
       return toast.error("Please login to follow users");
@@ -190,31 +190,35 @@ const TweetCard = ({ tweet, author, id }) => {
 
   return (
     <>
-      <div className='bg-white border border-grey rounded-lg mb-4 shadow-sm hover:shadow-md transition-shadow'>
+      <div className="bg-white border border-grey rounded-lg mb-4 shadow-sm hover:shadow-md transition-shadow">
         {/* Header Section */}
-        <div className='p-4'>
-          <div className='flex items-start gap-3'>
+        <div className="p-4">
+          <div className="flex items-start gap-3">
             {/* Avatar */}
             <Link to={`/user/${username}`}>
               <img
                 src={profile_img}
-                alt='profile'
-                className='w-10 h-10 rounded-full hover:opacity-80 transition flex-shrink-0'
+                alt="profile"
+                className="w-10 h-10 rounded-full hover:opacity-80 transition flex-shrink-0"
               />
             </Link>
 
             {/* Author Info and Options */}
-            <div className='flex-1 min-w-0'>
-              <div className='flex items-center justify-between'>
-                <div className='flex items-center gap-1 flex-wrap'>
-                  <Link to={`/user/${username}`} className='hover:underline'>
-                    <p className='font-semibold text-dark-grey text-[15px]'>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1 flex-wrap">
+                  <Link to={`/user/${username}`} className="hover:underline">
+                    <p className="font-semibold text-dark-grey text-[15px]">
                       {fullname}
                     </p>
                   </Link>
 
                   {isVerified && (
-                    <img src={verifiedBadge} alt='verified' className='w-4 h-4' />
+                    <img
+                      src={verifiedBadge}
+                      alt="verified"
+                      className="w-4 h-4"
+                    />
                   )}
                 </div>
 
@@ -226,9 +230,9 @@ const TweetCard = ({ tweet, author, id }) => {
                       onClick={(e) =>
                         deleteTweet(blog_id, access_token, e.target)
                       }
-                      className='text-gray-500 hover:text-red p-2 rounded-full hover:bg-grey/20 transition'
+                      className="text-gray-500 hover:text-red p-2 rounded-full hover:bg-grey/20 transition"
                     >
-                      <i className='fi fi-rr-trash text-lg'></i>
+                      <i className="fi fi-rr-trash text-lg"></i>
                     </button>
                   ) : (
                     // Follow / Following button
@@ -240,19 +244,19 @@ const TweetCard = ({ tweet, author, id }) => {
                           : "bg-blue-500 text-white hover:bg-blue-600"
                       }`}
                     >
-                      <i className='fi fi-rr-user-add'></i>
+                      <i className="fi fi-rr-user-add"></i>
                       {isFollowing ? "Connected" : "Follow"}
                     </button>
                   )
                 ) : null}
               </div>
 
-              <div className='flex items-center gap-1 text-sm text-gray-500'>
-                <Link to={`/user/${username}`} className='hover:underline'>
+              <div className="flex items-center gap-1 text-sm text-gray-500">
+                <Link to={`/user/${username}`} className="hover:underline">
                   @{username}
                 </Link>
                 <span>·</span>
-                <Link to={`/tweet/${blog_id}`} className='hover:underline'>
+                <Link to={`/tweet/${blog_id}`} className="hover:underline">
                   {getDay(publishedAt)}
                 </Link>
               </div>
@@ -265,26 +269,27 @@ const TweetCard = ({ tweet, author, id }) => {
               {des}
             </p>
           </Link> */}
-            <p className='text-dark text-[15px] mt-3 whitespace-pre-wrap break-words leading-relaxed' onClick={() => navigate(
-              `/tweet/${blog_id}`,
-              {
-                state: {tweet, author}
-              }
-            )}>
-              {des}
-            </p>
-
+          <p
+            className="text-dark text-[15px] mt-3 whitespace-pre-wrap break-words leading-relaxed"
+            onClick={() =>
+              navigate(`/tweet/${blog_id}`, {
+                state: { tweet, author },
+              })
+            }
+          >
+            {des}
+          </p>
         </div>
 
         {/* Media Section */}
         {(banner || images) && (
-          <div className='w-full'>
+          <div className="w-full">
             {banner ? (
               <img
                 src={banner}
-                alt='tweet-media'
+                alt="tweet-media"
                 onClick={(e) => openLightbox(banner, e)}
-                className='w-full max-h-[500px] object-cover hover:brightness-95 transition cursor-pointer'
+                className="w-full max-h-[500px] object-cover hover:brightness-95 transition cursor-pointer"
               />
             ) : images && images.length > 0 ? (
               <div
@@ -292,10 +297,10 @@ const TweetCard = ({ tweet, author, id }) => {
                   images.length === 1
                     ? "grid-cols-1"
                     : images.length === 2
-                      ? "grid-cols-2"
-                      : images.length === 3
-                        ? "grid-cols-2"
-                        : "grid-cols-2"
+                    ? "grid-cols-2"
+                    : images.length === 3
+                    ? "grid-cols-2"
+                    : "grid-cols-2"
                 }`}
               >
                 {images.map((img, idx) => (
@@ -309,7 +314,7 @@ const TweetCard = ({ tweet, author, id }) => {
                       src={img}
                       alt={`tweet-${idx}`}
                       onClick={(e) => openLightbox(img, e)}
-                      className='w-full h-64 object-cover hover:brightness-95 transition cursor-pointer'
+                      className="w-full h-64 object-cover hover:brightness-95 transition cursor-pointer"
                     />
                   </div>
                 ))}
@@ -319,8 +324,8 @@ const TweetCard = ({ tweet, author, id }) => {
         )}
 
         {/* Engagement Stats */}
-        <div className='px-4 py-2 border-t border-grey'>
-          <div className='flex items-center gap-4 text-sm text-gray-500'>
+        <div className="px-4 py-2 border-t border-grey">
+          <div className="flex items-center gap-4 text-sm text-gray-500">
             {likes > 0 && (
               <span>
                 {likes} {likes === 1 ? "like" : "likes"}
@@ -340,18 +345,20 @@ const TweetCard = ({ tweet, author, id }) => {
         </div>
 
         {/* Action Buttons */}
-        <div className='border-t border-grey px-2 py-1'>
-          <div className='flex items-center justify-around'>
+        <div className="border-t border-grey px-2 py-1">
+          <div className="flex items-center justify-around">
             {/* Comments */}
-            <div className='flex-1' onClick={() => navigate(
-              `/tweet/${blog_id}`,
-              {
-                state: {tweet, author}
+            <div
+              className="flex-1"
+              onClick={() =>
+                navigate(`/tweet/${blog_id}`, {
+                  state: { tweet, author },
+                })
               }
-            )}>
-              <button className='flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg hover:bg-grey/20 transition w-full group'>
-                <i className='fi fi-rr-comment-dots text-xl text-gray-500 group-hover:text-blue-500'></i>
-                <span className='text-sm font-medium text-gray-500 group-hover:text-blue-500'>
+            >
+              <button className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg hover:bg-grey/20 transition w-full group">
+                <i className="fi fi-rr-comment-dots text-xl text-gray-500 group-hover:text-blue-500"></i>
+                <span className="text-sm font-medium text-gray-500 group-hover:text-blue-500">
                   Comment
                 </span>
               </button>
@@ -360,7 +367,7 @@ const TweetCard = ({ tweet, author, id }) => {
             {/* Likes */}
             <button
               onClick={handleLiking}
-              className='flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg hover:bg-grey/20 transition group'
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg hover:bg-grey/20 transition group"
             >
               <i
                 className={
@@ -385,10 +392,10 @@ const TweetCard = ({ tweet, author, id }) => {
             {/* Share */}
             <button
               onClick={handleShare}
-              className='flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg hover:bg-grey/20 transition group'
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg hover:bg-grey/20 transition group"
             >
-              <i className='fi fi-rr-share text-xl text-gray-500 group-hover:text-blue-500'></i>
-              <span className='text-sm font-medium text-gray-500 group-hover:text-blue-500'>
+              <i className="fi fi-rr-share text-xl text-gray-500 group-hover:text-blue-500"></i>
+              <span className="text-sm font-medium text-gray-500 group-hover:text-blue-500">
                 Share
               </span>
             </button>
@@ -397,85 +404,119 @@ const TweetCard = ({ tweet, author, id }) => {
       </div>
 
       {/* Lightbox Modal */}
-  {lightboxOpen && (
-  <div
-    className="fixed inset-0 z-50 flex items-center justify-center bg-[#0D0D0D] bg-opacity-95 p-4"
-    onClick={closeLightbox}
-  >
-    {/* Close Button */}
-    <button
-      onClick={closeLightbox}
-      className="absolute top-4 right-4 text-[#ffff] text-3xl hover:text-gray-300 transition z-10"
-    >
-      ×
-    </button>
-
-    {/* Modal Content */}
-    <div
-      className="flex flex-col md:flex-row w-full p-3 max-w-5xl bg-[#0D0D0D]  rounded-lg overflow-hidden shadow-lg"
-      onClick={(e) => e.stopPropagation()}
-    >
-      {/* Image Section */}
-      <div className="flex-1 flex items-center justify-center">
-        <img
-          src={lightboxImage}
-          alt="Full size"
-          className="max-h-[80vh] w-auto object-contain"
-        />
-      </div>
-
-      {/* Right Sidebar: Description & Engagement */}
-      <div className="md:w-96 w-full flex flex-col justify-between md:justify-normal p-4 text-white">
-        {/* Post Description */}
-        <div className="mb-4 overflow-y-auto max-h-[60vh]">
-          <h2 className="text-lg text-[#ffff] font-semibold mb-2">Post</h2>
-          <p className="text-sm text-[#ffff] leading-relaxed">{des}</p>
-        </div>
-
-        {/* Engagement Stats */}
-        <div className="mb-4">
-          <div className="flex items-center gap-4 text-sm text-[#ffff]">
-            {likes > 0 && <span>{likes} {likes === 1 ? "like" : "likes"}</span>}
-            {total_comments > 0 && <span>{total_comments} {total_comments === 1 ? "comment" : "comments"}</span>}
-            {total_reads > 0 && <span>{total_reads} {total_reads === 1 ? "view" : "views"}</span>}
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex items-center justify-around border-t border-gray-700 pt-2">
-          <div className="flex-1" onClick={() => navigate(
-              `/tweet/${blog_id}`,
-              {
-                state: {tweet, author}
-              }
-            )}>
-            <button className="flex items-center justify-center gap-2 px-4 py-2.5 w-full rounded-lg hover:bg-gray-800 transition group">
-              <i className="fi fi-rr-comment-dots text-xl text-gray-400 group-hover:text-blue-500"></i>
-              <span className="text-sm font-medium text-[#ffff] group-hover:text-blue-500">Comment</span>
-            </button>
-          </div>
-
+      {lightboxOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#0D0D0D] bg-opacity-95 p-4"
+          onClick={closeLightbox}
+        >
+          {/* Close Button */}
           <button
-            onClick={handleLiking}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg hover:bg-gray-800 transition group"
+            onClick={closeLightbox}
+            className="absolute top-4 right-4 text-[#ffff] text-3xl hover:text-gray-300 transition z-10"
           >
-            <i className={`fi text-xl ${isLikedByUser ? "text-red fi-sr-heart" : "text-gray-400 group-hover:text-blue-500 fi-rr-heart"}`}></i>
-            <span className={`text-sm font-medium ${isLikedByUser ? "text-red" : "text-gray-400 group-hover:text-blue-500"}`}>Like</span>
+            ×
           </button>
 
-          <button
-            onClick={handleShare}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg hover:bg-gray-800 transition group"
+          {/* Modal Content */}
+          <div
+            className="flex flex-col md:flex-row w-full p-3 max-w-5xl bg-[#0D0D0D]  rounded-lg overflow-hidden shadow-lg"
+            onClick={(e) => e.stopPropagation()}
           >
-            <i className="fi fi-rr-share text-xl text-gray-400 group-hover:text-blue-500"></i>
-            <span className="text-sm font-medium text-gray-400 group-hover:text-blue-500">Share</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
+            {/* Image Section */}
+            <div className="flex-1 flex items-center justify-center">
+              <img
+                src={lightboxImage}
+                alt="Full size"
+                className="max-h-[80vh] w-auto object-contain"
+              />
+            </div>
 
+            {/* Right Sidebar: Description & Engagement */}
+            <div className="md:w-96 w-full flex flex-col justify-between md:justify-normal p-4 text-white">
+              {/* Post Description */}
+              <div className="mb-4 overflow-y-auto max-h-[60vh]">
+                <h2 className="text-lg text-[#ffff] font-semibold mb-2">
+                  Post
+                </h2>
+                <p className="text-sm text-[#ffff] leading-relaxed">{des}</p>
+              </div>
+
+              {/* Engagement Stats */}
+              <div className="mb-4">
+                <div className="flex items-center gap-4 text-sm text-[#ffff]">
+                  {likes > 0 && (
+                    <span>
+                      {likes} {likes === 1 ? "like" : "likes"}
+                    </span>
+                  )}
+                  {total_comments > 0 && (
+                    <span>
+                      {total_comments}{" "}
+                      {total_comments === 1 ? "comment" : "comments"}
+                    </span>
+                  )}
+                  {total_reads > 0 && (
+                    <span>
+                      {total_reads} {total_reads === 1 ? "view" : "views"}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-around border-t border-gray-700 pt-2">
+                <div
+                  className="flex-1"
+                  onClick={() =>
+                    navigate(`/tweet/${blog_id}`, {
+                      state: { tweet, author },
+                    })
+                  }
+                >
+                  <button className="flex items-center justify-center gap-2 px-4 py-2.5 w-full rounded-lg hover:bg-gray-800 transition group">
+                    <i className="fi fi-rr-comment-dots text-xl text-gray-400 group-hover:text-blue-500"></i>
+                    <span className="text-sm font-medium text-[#ffff] group-hover:text-blue-500">
+                      Comment
+                    </span>
+                  </button>
+                </div>
+
+                <button
+                  onClick={handleLiking}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg hover:bg-gray-800 transition group"
+                >
+                  <i
+                    className={`fi text-xl ${
+                      isLikedByUser
+                        ? "text-red fi-sr-heart"
+                        : "text-gray-400 group-hover:text-blue-500 fi-rr-heart"
+                    }`}
+                  ></i>
+                  <span
+                    className={`text-sm font-medium ${
+                      isLikedByUser
+                        ? "text-red"
+                        : "text-gray-400 group-hover:text-blue-500"
+                    }`}
+                  >
+                    Like
+                  </span>
+                </button>
+
+                <button
+                  onClick={handleShare}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg hover:bg-gray-800 transition group"
+                >
+                  <i className="fi fi-rr-share text-xl text-gray-400 group-hover:text-blue-500"></i>
+                  <span className="text-sm font-medium text-gray-400 group-hover:text-blue-500">
+                    Share
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
