@@ -50,7 +50,7 @@ const Leaderboard = () => {
         }));
 
         setData(transformedData);
-        // console.log(transformedData);
+        console.log(transformedData);
         
         setLoading(false);
       } catch (error) {
@@ -100,7 +100,7 @@ const Leaderboard = () => {
     }
   };
   return (
-    <div className='min-h-screen mt-[66px]'>
+    <div className='min-h-screen'>
       {loading ? (
         <Loader />
       ) : (

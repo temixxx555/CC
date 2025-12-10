@@ -319,22 +319,6 @@ export default function TweetView() {
         toast.error("Failed to delete tweet");
       });
   };
-  const linkifyText = (text) => {
-    const urlRegex =
-      /(https?:\/\/[^\s]+)|(www\.[^\s]+)|([a-zA-Z0-9-]+\.[a-zA-Z]{2,})/g;
-
-    return text.replace(urlRegex, (url) => {
-      let href = url;
-
-      // If no http:// or https://, add https://
-      if (!href.startsWith("http")) {
-        href = "https://" + href;
-      }
-
-      return `<a href="${href}" target="_blank" class="text-blue-500 underline">${url}</a>`;
-    });
-  };
-
 
   // ───────────────────────────────────────────────────────────────
   // UI RENDERING
@@ -354,7 +338,6 @@ export default function TweetView() {
     );
 
   return (
-    <div className='min-h-screen mt-[70px] bg-white max-w-2xl mx-auto border-l border-r border-grey'>
     <div className="min-h-screen bg-white max-w-2xl mx-auto border-l border-r border-grey">
       {/* HEADER */}
       <div className="sticky top-0 bg-white/80 backdrop-blur flex items-center gap-4 px-4 py-3 border-b border-grey z-20">
@@ -390,10 +373,6 @@ export default function TweetView() {
         </div>
 
         {/* TEXT */}
-        <p
-          className='text-[22px] mt-3 mb-3 whitespace-pre-wrap leading-snug'
-          dangerouslySetInnerHTML={{ __html: linkifyText(tweet.des) }}
-        ></p>
         <p className="text-[22px] mt-3 mb-3 whitespace-pre-wrap leading-snug">
           {tweet.des}
         </p>
@@ -607,16 +586,6 @@ export default function TweetView() {
                         </button>
                       )}
 
-                  {(username === comment.commented_by?.personal_info.username ||
-                    username === author.username) && (
-                    <button
-                      onClick={() => handleDeleteComment(comment._id)}
-                      className='hover:underline text-red ml-auto'
-                    >
-                      Delete
-                    </button>
-                  )}
-                </div>
                       {(username ===
                         comment.commented_by.personal_info.username ||
                         username === author.username) && (
@@ -654,33 +623,6 @@ export default function TweetView() {
                                   </p>
                                 </div>
 
-                            {/* Reply actions */}
-                            <div className='flex items-center gap-3 mt-1 ml-3 text-xs font-semibold text-dark-grey'>
-                              <span className='text-xs'>
-                                {getDay(reply.commentedAt)}
-                              </span>
-
-                              {(user_id ===
-                                reply.commented_by?.personal_info._id ||
-                                user_id === tweet.author._id) && (
-                                <button
-                                  onClick={() => handleDeleteComment(reply._id)}
-                                  className='hover:underline text-red'
-                                >
-                                  Delete
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
                                 <div className="text-xs mt-1 ml-3">
                                   <span>{getDay(reply.commentedAt)}</span>
                                 </div>
@@ -701,4 +643,3 @@ export default function TweetView() {
     </div>
   );
 }
-
