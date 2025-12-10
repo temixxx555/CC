@@ -117,11 +117,12 @@ export default function TweetView() {
       } finally {
         setCommentLoading(false);
       }
-    };
-    if (tweet_) {
+    }
+    if (tweet_)
+    {
       fetchCommentAndLikes();
     }
-  }, [tweet_]);
+  }, [tweet_])
 
   // ───────────────────────────────────────────────────────────────
   // LIKE HANDLER
@@ -271,10 +272,8 @@ export default function TweetView() {
       );
 
       setReplies((prev) =>
-        prev.map((comment) =>
-          comment._id === commentId
-            ? { ...comment, children: data.replies }
-            : comment
+        prev.map((c) =>
+          c._id === commentId ? { ...c, children: data.replies } : c
         )
       );
 
@@ -320,146 +319,154 @@ export default function TweetView() {
         toast.error("Failed to delete tweet");
       });
   };
+
+  // ───────────────────────────────────────────────────────────────
+  // UI RENDERING
+  // ───────────────────────────────────────────────────────────────
+  if (tweetLoading)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <SmallLoader />
+      </div>
+    );
+
+  if (!tweet)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Tweet not found</p>
+      </div>
+    );
+
   return (
     <div className="min-h-screen bg-white max-w-2xl mx-auto border-l border-r border-grey">
       {/* HEADER */}
-      <div className="sticky top-0 bg-white/80 backdrop-blur flex items-center gap-4 px-4 py-3 border-b border-gray-200 z-20">
+      <div className="sticky top-0 bg-white/80 backdrop-blur flex items-center gap-4 px-4 py-3 border-b border-grey z-20">
         <button
           onClick={() => navigate(-1)}
-          className="p-2 hover:bg-gray-100 hover:text-black rounded-full bg-black text-white"
+          className="p-2 hover:bg-black rounded-full bg-black"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={20} className="text-black dark:text-white" />
         </button>
         <h2 className="font-bold text-xl">Post</h2>
       </div>
 
       {/* MAIN TWEET */}
-      {tweetLoading || !tweet || !author ? (
-        <div className="flex justify-center items-center py-20">
-          <SmallLoader />
-        </div>
-      ) : (
-        <div className="border-b border-grey p-4 pb-0">
-          {/* AUTHOR */}
-          <div className="flex gap-3">
-            <Link to={`/user/${author.username}`}>
-              <img
-                src={author.profile_img}
-                className="w-12 h-12 rounded-full"
-              />
-            </Link>
+      <div className="border-b border-grey p-4 pb-0">
+        {/* AUTHOR */}
+        <div className="flex gap-3">
+          <Link to={`/user/${author.username}`}>
+            <img src={author.profile_img} className="w-12 h-12 rounded-full" />
+          </Link>
 
-            <div className="flex-1">
-              <div className="flex items-center gap-1">
-                <Link to={`/user/${author.username}`}>
-                  <p className="font-bold hover:underline">{author.fullname}</p>
-                </Link>
-                {author.isVerified && (
-                  <img src={verifiedBadge} className="w-4 h-4" />
-                )}
-              </div>
-
-              <p className="text-gray-500">@{author.username}</p>
-            </div>
-          </div>
-
-          {/* TEXT */}
-          <p
-          className="text-[22px] mt-3 mb-3 whitespace-pre-wrap leading-snug"
-            dangerouslySetInnerHTML={{ __html: linkifyText(tweet.des) }}
-          ></p>
-
-          {/* MEDIA */}
-          {tweet.banner && (
-            <div className="rounded-2xl overflow-hidden border border-gray-200 mb-3">
-              <img
-                src={tweet.banner}
-                className="w-full max-h-[500px] object-cover"
-              />
-            </div>
-          )}
-
-          {tweet.images?.length > 0 && (
-            <div className="rounded-2xl overflow-hidden border border-gray-200 mb-3">
-              <div
-                className={`grid gap-1 ${
-                  tweet.images.length === 1 ? "grid-cols-1" : "grid-cols-2"
-                }`}
-              >
-                {tweet.images.map((img, i) => (
-                  <img key={i} src={img} className="w-full h-48 object-cover" />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* TIME */}
-          <p className="text-gray-500 text-sm pb-4">
-            {getDay(tweet.publishedAt)}
-          </p>
-
-          {/* STATS */}
-          <div className="py-3 border-t border-b border-gray-200 text-sm text-gray-500 flex gap-6">
-            <div>
-              <span className="font-bold text-black">{replies.length}</span>{" "}
-              Comments
+          <div className="flex-1">
+            <div className="flex items-center gap-1">
+              <Link to={`/user/${author.username}`}>
+                <p className="font-bold hover:underline">{author.fullname}</p>
+              </Link>
+              {author.isVerified && (
+                <img src={verifiedBadge} className="w-4 h-4" />
+              )}
             </div>
 
-            <div>
-              <span className="font-bold text-black">{likes}</span> Likes
-            </div>
-
-            <div>
-              <span className="font-bold text-black">
-                {tweet.activity.total_reads}
-              </span>{" "}
-              Views
-            </div>
-          </div>
-
-          {/* ACTION BUTTONS */}
-          <div className="flex justify-around py-3 text-gray-600">
-            <button className="p-2 rounded-full hover:bg-blue-50 hover:text-blue-500 transition">
-              <MessageCircle size={20} />
-            </button>
-
-            <button
-              onClick={handleLike}
-              disabled={isLiking}
-              className="p-2 rounded-full hover:bg-red-50 hover:text-red-500 transition"
-            >
-              <i
-                className={
-                  "fi fi-rr-heart text-lg " +
-                  (isLikedByUser ? "text-red fi-sr-heart" : "fi-rr-heart")
-                }
-              ></i>
-            </button>
-
-            <button
-              onClick={handleShare}
-              className="p-2 rounded-full hover:bg-blue-50 hover:text-blue-500 transition"
-            >
-              <i className="fi fi-rr-share text-lg"></i>
-            </button>
-
-            {username === author.username && (
-              <button
-                onClick={(e) => deleteTweet(blog_id, access_token, e.target)}
-                className="flex items-center gap-2 px-2 py-2 rounded-full hover:text-red transition"
-              >
-                <i className="fi fi-rr-trash"></i>
-              </button>
-            )}
+            <p className="text-gray-500">@{author.username}</p>
           </div>
         </div>
-      )}
+
+        {/* TEXT */}
+        <p className="text-[22px] mt-3 mb-3 whitespace-pre-wrap leading-snug">
+          {tweet.des}
+        </p>
+
+        {/* MEDIA */}
+        {tweet.banner && (
+          <div className="rounded-2xl overflow-hidden border border-gray-200 mb-3">
+            <img
+              src={tweet.banner}
+              className="w-full max-h-[500px] object-cover"
+            />
+          </div>
+        )}
+
+        {tweet.images?.length > 0 && (
+          <div className="rounded-2xl overflow-hidden border border-gray-200 mb-3">
+            <div
+              className={`grid gap-1 ${
+                tweet.images.length === 1 ? "grid-cols-1" : "grid-cols-2"
+              }`}
+            >
+              {tweet.images.map((img, i) => (
+                <img key={i} src={img} className="w-full h-48 object-cover" />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* TIME */}
+        <p className="text-gray-500 text-sm pb-4">
+          {getDay(tweet.publishedAt)}
+        </p>
+
+        {/* STATS */}
+        <div className="py-3 border-t border-b border-grey text-sm text-gray-500 flex gap-6">
+          <div>
+            <span className="font-bold text-black">{replies.length}</span>{" "}
+            Comments
+          </div>
+
+          <div>
+            <span className="font-bold text-black">{likes}</span> Likes
+          </div>
+
+          <div>
+            <span className="font-bold text-black">
+              {tweet.activity.total_reads}
+            </span>{" "}
+            Views
+          </div>
+        </div>
+
+        {/* ACTION BUTTONS */}
+        <div className="flex justify-around py-3 text-gray-600">
+          <button className="p-2 rounded-full hover:bg-blue-50 hover:text-blue-500 transition">
+            <MessageCircle size={20} />
+          </button>
+
+          <button
+            onClick={handleLike}
+            disabled={isLiking}
+            className="p-2 rounded-full hover:bg-red-50 hover:text-red-500 transition"
+          >
+            <i
+              className={
+                "fi fi-rr-heart text-lg " +
+                (isLikedByUser ? "text-red fi-sr-heart" : "fi-rr-heart")
+              }
+            ></i>
+          </button>
+
+          <button
+            onClick={handleShare}
+            className="p-2 rounded-full hover:bg-blue-50 hover:text-blue-500 transition"
+          >
+            <i className="fi fi-rr-share text-lg"></i>
+          </button>
+
+          {username === author.username && (
+            <button
+              onClick={(e) => deleteTweet(blog_id, access_token, e.target)}
+              className="flex items-center gap-2 px-2 py-2 rounded-full hover:text-red transition"
+            >
+              <i className="fi fi-rr-trash"></i>
+            </button>
+          )}
+        </div>
+      </div>
 
       {/* COMMENTS */}
       {!commentLoading ? (
         <>
           {/* COMMENT BOX */}
-          <div className="border-b border-gray-200 p-4">
+          <div className="border-b border-grey p-4">
             {replyingToComment && (
               <div className="mb-3 p-2 bg-blue-50 rounded border-l-4 border-blue-500">
                 <p className="text-sm text-gray-600">
@@ -489,7 +496,7 @@ export default function TweetView() {
                       ? "Reply to this comment..."
                       : "Post a comment"
                   }
-                  className="w-full bg-transparent border text-lg outline-none resize-none p-2"
+                  className="w-full bg-transparent border border-grey text-lg outline-none resize-none p-2"
                   maxLength={300}
                 />
 
@@ -532,23 +539,21 @@ export default function TweetView() {
                 <div className="flex gap-2">
                   <Link
                     to={`/user/${comment.commented_by.personal_info.username}`}
-                    className="flex-shrink-0"
                   >
                     <img
                       src={comment.commented_by.personal_info.profile_img}
-                      className="w-10 h-10 rounded-full hover:opacity-80 transition"
+                      className="w-10 h-10 rounded-full"
                     />
                   </Link>
 
-                  <div className="flex-1 min-w-0">
-                    {/* Comment bubble */}
+                  <div className="flex-1">
                     <div className="inline-block bg-grey rounded-2xl px-4 py-2.5">
                       <div className="flex items-center gap-1">
                         <Link
-                          to={`/user/${comment.commented_by.personal_info?.username}`}
+                          to={`/user/${comment.commented_by.personal_info.username}`}
                         >
                           <p className="font-semibold text-sm">
-                            {comment.commented_by?.personal_info.fullname}
+                            {comment.commented_by.personal_info.fullname}
                           </p>
                         </Link>
 
@@ -558,16 +563,8 @@ export default function TweetView() {
                       </div>
 
                       <p className="text-[15px] mt-0.5">{comment.comment}</p>
-
-                      {comment.images?.length > 0 && (
-                        <img
-                          src={comment.images[0]}
-                          className="rounded-xl mt-2 max-w-full max-h-48 object-cover"
-                        />
-                      )}
                     </div>
 
-                    {/* Action buttons below bubble */}
                     <div className="flex items-center gap-4 mt-1 ml-3 text-xs">
                       <span>{getDay(comment.commentedAt)}</span>
 
@@ -583,28 +580,14 @@ export default function TweetView() {
                           onClick={() => handleLoadReplies(comment._id)}
                           className="hover:underline"
                         >
-                          {expandedReplies[comment._id] ? (
-                            <>
-                              <i className="fi fi-rr-angle-small-up text-sm"></i>
-                              Hide {comment.children.length}{" "}
-                              {comment.children.length === 1
-                                ? "reply"
-                                : "replies"}
-                            </>
-                          ) : (
-                            <>
-                              <i className="fi fi-rr-angle-small-down text-sm"></i>
-                              View {comment.children.length}{" "}
-                              {comment.children.length === 1
-                                ? "reply"
-                                : "replies"}
-                            </>
-                          )}
+                          {expandedReplies[comment._id]
+                            ? `Hide ${comment.children.length} replies`
+                            : `View ${comment.children.length} replies`}
                         </button>
                       )}
 
                       {(username ===
-                        comment.commented_by?.personal_info.username ||
+                        comment.commented_by.personal_info.username ||
                         username === author.username) && (
                         <button
                           onClick={() => handleDeleteComment(comment._id)}
@@ -615,71 +598,33 @@ export default function TweetView() {
                       )}
                     </div>
 
-                    {/* NESTED REPLIES - Facebook style */}
                     {expandedReplies[comment._id] &&
                       comment.children?.length > 0 && (
                         <div className="mt-3 space-y-3 ml-2">
                           {comment.children.map((reply) => (
                             <div key={reply._id} className="flex gap-2">
-                              <Link
-                                to={`/user/${reply.commented_by?.personal_info.username}`}
-                                className="flex-shrink-0"
-                              >
-                                <img
-                                  src={
-                                    reply.commented_by.personal_info.profile_img
-                                  }
-                                  className="w-9 h-9 rounded-full"
-                                />
-                              </Link>
+                              <img
+                                src={
+                                  reply.commented_by.personal_info.profile_img
+                                }
+                                className="w-9 h-9 rounded-full"
+                              />
 
-                              <div className="flex-1 min-w-0">
-                                {/* Reply bubble (slightly smaller) */}
-                                <div className="inline-block bg-grey rounded-2xl px-3.5 py-2 max-w-full break-words">
-                                  <div className="flex items-center gap-1">
-                                    <Link
-                                      to={`/user/${reply.commented_by?.personal_info.username}`}
-                                      className="hover:underline"
-                                    >
-                                      <p className="font-semibold text-sm text-dark-grey">
-                                        {
-                                          reply.commented_by?.personal_info
-                                            .fullname
-                                        }
-                                      </p>
-                                    </Link>
-                                    {reply.commented_by?.personal_info
-                                      .isVerified && (
-                                      <img
-                                        src={verifiedBadge}
-                                        className="w-3 h-3"
-                                      />
-                                    )}
-                                  </div>
-
-                                  <p className="text-[14px] mt-0.5">
+                              <div className="flex-1">
+                                <div className="inline-block bg-grey rounded-2xl px-3 py-2">
+                                  <p className="font-semibold text-sm">
+                                    {
+                                      reply.commented_by.personal_info
+                                        .fullname
+                                    }
+                                  </p>
+                                  <p className="text-sm mt-1">
                                     {reply.comment}
                                   </p>
                                 </div>
 
-                                {/* Reply actions */}
-                                <div className="flex items-center gap-3 mt-1 ml-3 text-xs font-semibold text-dark-grey">
-                                  <span className="text-xs">
-                                    {getDay(reply.commentedAt)}
-                                  </span>
-
-                                  {(user_id ===
-                                    reply.commented_by?.personal_info._id ||
-                                    user_id === tweet.author._id) && (
-                                    <button
-                                      onClick={() =>
-                                        handleDeleteComment(reply._id)
-                                      }
-                                      className="hover:underline text-red"
-                                    >
-                                      Delete
-                                    </button>
-                                  )}
+                                <div className="text-xs mt-1 ml-3">
+                                  <span>{getDay(reply.commentedAt)}</span>
                                 </div>
                               </div>
                             </div>

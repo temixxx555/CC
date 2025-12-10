@@ -34,7 +34,7 @@ import axios from "axios";
 import TweetPage from "./pages/TweetPage";
 import TweetView from "./pages/TweetView";
 import { CachedBlogProvider } from "./contexts/globalContext";
-import LostAndFoundSection from "./pages/LostAndFound";
+import { CachedBlogProvider } from "./contexts/globalContext";
 
 export const userContext = createContext({});
 export const ThemeContext = createContext({});
