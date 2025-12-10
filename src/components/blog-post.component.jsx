@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import { userContext } from "../App";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useCachedBlog } from "../contexts/globalContext";
 
 const BlogPostCard = ({ content, contents, author, id: _ids }) => {
   const {
@@ -34,6 +35,7 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
   const [isLikedByUser, setLikedByUser] = useState(false);
   const [likes, setLikes] = useState(total_likes);
   const navigate = useNavigate();
+  const {setCachedBlog} = useCachedBlog();
 
   useEffect(() => {
     if (userAuth?.following && _ids) {
@@ -234,24 +236,16 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
             </div>
           </div>
         </div>
-{/* 
-                  <div className='mt-3' onClick={() => (
-            console.log("haha", { content, author, id, contents }),
-            navigate(
-            `/blog/${id}`,
-            {
-              state: {
-                content, contents, author, id
-              }
-            }
-          )
-          )}></div> */}
 
         {/* Blog Content */}
 
-        <Link to={`/blog/${id}`}>
+        <div onClick={() => (
+          setCachedBlog(content),
+          navigate(`/blog/${id}`)
+        )}>
           <div className='mt-3' onClick={() => (
-            navigate(`/blog/${id}`,)
+            setCachedBlog(content),
+            navigate(`/blog/${id}`)
           )}>
             {/* Title */}
             <h1 className='text-lg font-semibold text-dark-grey line-clamp-2 mb-2 hover:underline'>
@@ -283,12 +277,15 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
               </div>
             )}
           </div>
-        </Link>
+        </div>
       </div>
 
       {/* Banner Image */}
       {banner && (
-        <Link to={`/blog/${id}`}>
+        <div onClick={() => (
+          setCachedBlog(content),
+          navigate(`/blog/${id}`)
+        )}>
           <div className='w-full'>
             <img
               src={banner}
@@ -296,7 +293,7 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
               className='w-full max-h-[400px] object-cover hover:brightness-95 transition'
             />
           </div>
-        </Link>
+        </div>
       )}
 
       {/* Engagement Stats */}
@@ -328,14 +325,17 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
       <div className='border-t border-grey px-2 py-1'>
         <div className='flex items-center justify-around'>
           {/* Comment */}
-          <Link to={`/blog/${id}`} className='flex-1'>
+          <div className='flex-1' onClick={() => (
+            setCachedBlog(content),
+            navigate(`/blog/${id}`)
+          )}>
             <button className='flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg hover:bg-grey/20 transition w-full group'>
               <i className='fi fi-rr-comment-dots text-xl text-gray-500 group-hover:text-blue-500'></i>
               <span className='text-sm font-medium text-gray-500 group-hover:text-blue-500'>
                 Comment
               </span>
             </button>
-          </Link>
+          </div>
 
           {/* Likes */}
           <button
