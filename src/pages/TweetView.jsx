@@ -535,7 +535,7 @@ export default function TweetView() {
             )}
 
             {replies.map((comment) => (
-              <div key={comment._id} className="py-3 border-b border-gray-100">
+              <div key={comment._id} className="py-3 border-b border-grey">
                 <div className="flex gap-2">
                   <Link
                     to={`/user/${comment.commented_by.personal_info.username}`}
