@@ -73,7 +73,7 @@ const ProfilePage = () => {
     followers,
     following,
   } = profile;
-//
+  //
   const fetchUserProfile = () => {
     axios
       .post(import.meta.env.VITE_SERVER_DOMAIN + "/get-profile", {
@@ -133,7 +133,7 @@ const ProfilePage = () => {
           data_to_send: { author: user_id },
         });
         formattedData.user_id = user_id;
-        console.log(formattedData,"poppp");
+        console.log(formattedData, "poppp");
 
         setBlogs(formattedData);
       })
@@ -288,18 +288,20 @@ const ProfilePage = () => {
                         key={i}
                         transition={{ duration: 1, delay: i * 0.1 }}
                       >
-                         {blog.type == "tweet" ? (
-                        <TweetCard
-                          tweet={blog}
-                          author={blog.author.personal_info}
-                        />
-                      ) : (
-                        <BlogPostCard
-                          content={blog}
-                          contents={blog.content}
-                          author={blog.author.personal_info}
-                        />
-                      )}
+                        {blog.type == "tweet" ? (
+                          <TweetCard
+                            tweet={blog}
+                            author={blog.author.personal_info}
+                             id={blog.author._id}
+                          />
+                        ) : (
+                          <BlogPostCard
+                            content={blog}
+                            contents={blog.content}
+                            author={blog.author.personal_info}
+                            id={blog.author._id}
+                          />
+                        )}
                       </AnimationWrapper>
                     );
                   })

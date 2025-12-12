@@ -137,15 +137,16 @@ const TweetCard = ({ tweet, author, id }) => {
         toast.error("Failed to delete tweet");
       });
   };
-  
-  const [isFollowing, setIsFollowing] = useState(false);
 
-  useEffect(() => {
-    if (userAuth?.following && id) {
-      setIsFollowing(userAuth.following.includes(id));
-    }
-  }, [userAuth, id]);
-  
+    const isFollowing = userAuth?.following?.includes(id);
+
+
+  // useEffect(() => {
+  //   if (userAuth?.following && id) {
+  //     setIsFollowing(userAuth.following.includes(id));
+  //   }
+  // }, [userAuth, id]);
+
   const handleFollow = async () => {
     if (!access_token) {
       return toast.error("Please login to follow users");
@@ -155,7 +156,7 @@ const TweetCard = ({ tweet, author, id }) => {
     const newState = !isFollowing;
 
     // optimistic UI
-    setIsFollowing(newState);
+    // setIsFollowing(newState);
 
     try {
       const { data } = await axios.post(
@@ -214,7 +215,11 @@ const TweetCard = ({ tweet, author, id }) => {
                   </Link>
 
                   {isVerified && (
-                    <img src={verifiedBadge} alt='verified' className='w-4 h-4' />
+                    <img
+                      src={verifiedBadge}
+                      alt='verified'
+                      className='w-6 h-6 mb-3'
+                    />
                   )}
                 </div>
 
