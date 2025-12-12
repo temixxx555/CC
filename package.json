@@ -28,6 +28,8 @@
     "@vercel/analytics": "^1.5.0",
     "@weekwood/editorjs-video": "^1.0.2",
     "axios": "^1.4.0",
+    "baseline-browser-mapping": "^2.9.3",
+    "caniuse-lite": "^1.0.30001759",
     "dayjs": "^1.11.13",
     "editorjs-video": "^1.1.0",
     "firebase": "^10.1.0",

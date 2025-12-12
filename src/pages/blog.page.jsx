@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import AnimationWrapper from "../common/page-animation";
 import Loader from "../components/loader.component";
 import { getDay } from "../common/date";
@@ -10,6 +10,7 @@ import BlogContent from "../components/blog-content.component";
 import CommentsContainer, {
   fetchComments,
 } from "../components/comments.component";
+import { useCachedBlog } from "../contexts/globalContext";
 
 export const blogStructure = {
   title: "",
@@ -19,18 +20,23 @@ export const blogStructure = {
   publishedAt: "",
   activity: { total_reads: 0 },
   banner: "",
+  comments: { results: [] }, // Add default comments structure
 };
 export const BlogContext = createContext({});
+
 const BlogPage = () => {
   let { blog_id } = useParams();
-  const [blog, setBlog] = useState(blogStructure);
+  
   const [similarblogs, setSimilarblogs] = useState(null);
   const [isLikedByUser, setLikedByUser] = useState(false);
   const [commentsWrapper, setCommentsWrapper] = useState(false);
-  const [totalParentCommentsLoaded, setTotalParentsCommentsLoaaded] =
-    useState(0);
+  const [totalParentCommentsLoaded, setTotalParentsCommentsLoaaded] = useState(0);
+  const [commentLoading, setCommentLoading] = useState(true);
+  const [similarBlogLoading, setSimilarBlogLoading] = useState(true);
+  const {cachedBlog, setCachedBlog} = useCachedBlog();
+  const [blog, setBlog] = useState(cachedBlog || blogStructure);
+  const [loading, setLoading] = useState(!cachedBlog); // Don't show loader if cached
 
-  const [loading, setLoading] = useState(true);
   let {
     title,
     content,
@@ -42,53 +48,104 @@ const BlogPage = () => {
     publishedAt,
   } = blog;
 
-  const fetchBlog = () => {
-    axios
-      .post(import.meta.env.VITE_SERVER_DOMAIN + "/get-blog", {
-        blog_id,
-      })
-      .then(async ({ data: { blog } }) => {
-        blog.comments = await fetchComments({
-          blog_id: blog._id,
-          setParentCommentFunc: setTotalParentsCommentsLoaaded,
-        });
-        console.log(blog, "pooo");
-
-        setBlog(blog);
-
-        axios
-          .post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", {
-            tag: blog.tags[0],
-            limit: 6,
-            eliminate_blog: blog_id,
-          })
-          .then(({ data }) => {
-            setSimilarblogs(data.blogs);
-          });
-
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
+  const fetchCommentsAndSimilar = async (blogData) => {
+    // Fetch comments
+    try {
+      const comments = await fetchComments({
+        blog_id: blogData.id,
+        setParentCommentFunc: setTotalParentsCommentsLoaaded,
       });
+      setBlog(prev => ({ ...prev, comments }));
+      setCommentLoading(false);
+    } catch (err) {
+      console.log(err);
+      setCommentLoading(false);
+    }
+
+    // Fetch similar blogs
+    try {
+      const { data } = await axios.post(
+        import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs",
+        {
+          tag: blogData.tags[0],
+          limit: 6,
+          eliminate_blog: blog_id,
+        }
+      );
+      setSimilarblogs(data.blogs);
+      setSimilarBlogLoading(false);
+    } catch (err) {
+      console.log(err);
+      setSimilarBlogLoading(false);
+    }
   };
+
+  const fetchBlog = async () => {
+    // If we have cached blog, display it first
+    if (cachedBlog) {
+      // Ensure cached blog has comments structure
+      const blogWithComments = {
+        ...cachedBlog,
+        comments: cachedBlog.comments || { results: [] }
+      };
+      setBlog(blogWithComments);
+      setLoading(false);
+      // Fetch comments and similar blogs in background
+      fetchCommentsAndSimilar(blogWithComments);
+      return;
+    }
+
+    // No cache, fetch everything
+    setLoading(true);
+    try {
+      const { data: { blog: fetchedBlog } } = await axios.post(
+        import.meta.env.VITE_SERVER_DOMAIN + "/get-blog",
+        { blog_id }
+      );
+
+      // Ensure blog has comments structure to avoid
+      const blogWithComments = {
+        ...fetchedBlog,
+        comments: fetchedBlog.comments || { results: [] }
+      };
+
+      setBlog(blogWithComments);
+      setLoading(false);
+      
+      // Fetch comments and similar blogs
+      await fetchCommentsAndSimilar(blogWithComments);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      setSimilarBlogLoading(false);
+      setCommentLoading(false);
+    }
+  };
+
   useEffect(() => {
     resetState();
     fetchBlog();
   }, [blog_id]);
+
   const resetState = () => {
-    setBlog(blogStructure);
+    if (!cachedBlog) {
+      setBlog(blogStructure);
+      setLoading(true);
+    }
     setSimilarblogs(null);
-    setLoading(true);
     setLikedByUser(false);
-    // setCommentsWrapper(false)
+    setCommentsWrapper(false);
     setTotalParentsCommentsLoaaded(0);
+    setCommentLoading(true);
+    setSimilarBlogLoading(true);
   };
+
   return (
     <AnimationWrapper>
       {loading ? (
-        <Loader />
+        <div className="mt-[100px]">
+          <Loader />
+        </div>
       ) : (
         <BlogContext.Provider
           value={{
@@ -102,8 +159,8 @@ const BlogPage = () => {
             totalParentCommentsLoaded,
           }}
         >
-          <CommentsContainer />
-          <div className='max-w-[900px] mt-[70px] center py-10 max-lg:px-[5vw]'>
+          {!commentLoading && <CommentsContainer />}
+          <div className='max-w-[900px] center py-10 max-lg:px-[5vw]'>
             <img
               src={banner}
               alt='pic'
@@ -157,7 +214,7 @@ const BlogPage = () => {
             <BlogInteraction />
 
             {/* Similar Blogs */}
-            {similarblogs && similarblogs.length > 0 && (
+            {!similarBlogLoading && similarblogs && similarblogs.length > 0 && (
               <div className='mt-16'>
                 <h2 className='text-2xl font-semibold mb-8 border-l-4 border-black pl-3'>
                   Similar Blogs

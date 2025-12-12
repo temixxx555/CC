@@ -21,6 +21,8 @@ const NotificationCard = ({ data, index, notificationState }) => {
     _id: notification_id,
   } = data;
 
+  // console.log("Notification data:", data);
+
   const { _id: blogId, blog_id = "", title = "", des = "" } = blog || {};
   const { personal_info: { fullname, username, profile_img } = {} } =
     user || {};
@@ -78,243 +80,155 @@ const NotificationCard = ({ data, index, notificationState }) => {
       });
   };
 
-  // Get notification icon and color based on type
-  const getNotificationStyle = () => {
-    switch (type) {
-      case "like":
-        return {
-          icon: "fi fi-sr-heart",
-          iconBg: "bg-red/10",
-          iconColor: "text-red",
-        };
-      case "comment":
-        return {
-          icon: "fi fi-rr-comment-dots",
-          iconBg: "bg-blue-500/10",
-          iconColor: "text-blue-500",
-        };
-      case "reply":
-        return {
-          icon: "fi fi-rr-comment-arrow-up",
-          iconBg: "bg-purple-500/10",
-          iconColor: "text-purple-500",
-        };
-      case "followed":
-        return {
-          icon: "fi fi-rr-user-add",
-          iconBg: "bg-green-500/10",
-          iconColor: "text-green-500",
-        };
-      case "info":
-      case "announcement":
-        return {
-          icon: "fi fi-rr-megaphone",
-          iconBg: "bg-orange-500/10",
-          iconColor: "text-orange-500",
-        };
-      default:
-        return {
-          icon: "fi fi-rr-bell",
-          iconBg: "bg-grey",
-          iconColor: "text-dark-grey",
-        };
-    }
-  };
-
-  const notificationStyle = getNotificationStyle();
-
   return (
     <div
-      className={`relative p-4 hover:bg-grey/30 transition-colors border-b border-grey ${
-        !seen ? "bg-blue-50/30" : ""
-      }`}
+      className={
+        "p-6 border-grey border-l-black " + (!seen ? " border-l-2 " : "")
+      }
     >
-      {/* Unread indicator dot */}
-      {!seen && (
-        <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
-      )}
-
-      <div className="flex gap-3">
-        {/* Avatar with notification icon badge */}
-        <div className="relative flex-shrink-0">
-          <Link to={`/user/${username}`}>
-            <img
-              src={
-                profile_img ||
-                "https://bowen.edu.ng/wp-content/uploads/2019/10/Podium-Bowen-Logo-e1572367768365.jpg"
-              }
-              className="w-12 h-12 rounded-full hover:opacity-80 transition"
-              alt={fullname}
-            />
-          </Link>
-          
-          {/* Notification type icon badge */}
-          <div
-            className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center ${notificationStyle.iconBg} border-2 border-white`}
-          >
-            <i
-              className={`${notificationStyle.icon} ${notificationStyle.iconColor} text-xs`}
-            ></i>
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          {/* Notification text */}
-          <div className="mb-1">
-            <Link
-              to={`/user/${username}`}
-              className="font-semibold text-dark-grey hover:underline"
-            >
+      <div className='flex gap-5 mb-3 '>
+        <img
+          src={
+            profile_img ||
+            "https://bowen.edu.ng/wp-content/uploads/2019/10/Podium-Bowen-Logo-e1572367768365.jpg"
+          }
+          className='w-14 h-14 flex-none rounded-full'
+          alt='pic'
+        />
+        <div className='w-full'>
+          <h1 className='font-medium text-dark-grey text-xl'>
+            <span className='lg:inline-block hidden capitalize'>
               {fullname}
-            </Link>
-            <span className="text-dark-grey">
-              {" "}
-              {type === "like"
-                ? "liked your post"
-                : type === "comment"
-                  ? "commented on your post"
-                  : type === "reply"
-                    ? "replied to your comment"
-                    : type === "info" || type === "announcement"
-                      ? "posted an announcement"
-                      : type === "followed"
-                        ? "started following you"
-                        : "interacted with your content"}
             </span>
-          </div>
-
-          {/* Time */}
-          <p className="text-sm text-blue-500 mb-2">{getDay(createdAt)}</p>
-
-          {/* Announcement content */}
-          {(type === "announcement" || type === "info") && (
-            <Link to={`/ranking`}>
-              <div className="bg-grey rounded-lg p-3 mt-2 hover:bg-grey/80 transition">
-                {data.title && (
-                  <p className="font-bold text-base mb-1 text-dark-grey">
-                    {data.title}
-                  </p>
-                )}
-                <p className="text-sm text-dark-grey">{data.message}</p>
-              </div>
-            </Link>
-          )}
-
-          {/* Reply preview */}
-          {type === "reply" && replied_on_comment?.comment && (
-            <div className="bg-grey rounded-lg p-3 mt-2">
-              <p className="text-sm text-dark-grey line-clamp-2">
-                {comment?.comment}
-              </p>
-            </div>
-          )}
-
-          {/* Follow notification */}
-          {type === "followed" && (
-            <div className="bg-grey rounded-lg p-3 mt-2">
-              <p className="text-sm text-dark-grey">
-                You have a new follower! 🎉
-              </p>
-            </div>
-          )}
-
-          {/* Blog/Tweet link */}
-          {type !== "followed" && type !== "info" && type !== "announcement" && (
             <Link
-              to={`/${title?.length > 0 ? "blog" : "tweet"}/${blog_id}`}
-              className="block mt-2"
+              className='mx-1 text-black underline'
+              to={`/user/${username}`}
             >
-              <div className="bg-grey rounded-lg p-3 hover:bg-grey/80 transition">
-                <p className="text-sm text-dark-grey line-clamp-2">
-                  {title?.length > 0 ? title : des}
-                </p>
+              @{username}
+            </Link>
+            <span className='font-normal'>
+              {type === "like"
+                ? "liked your blog"
+                : type === "comment"
+                  ? "commented on"
+                  : type === "reply"
+                    ? "replied you"
+                    : type === "info"
+                      ? "annoucement"
+                      : type === "followed"
+                        ? "followed you"
+                        : ""}
+            </span>
+          </h1>
+          {(type === "announcement" || type === "info") && (
+            <Link className='' to={`/ranking`}>
+              <div className='p-4 mt-4 rounded-md bg-grey'>
+                {data.title && (
+                  <p className='font-bold text-lg mb-2'>{data.title}</p>
+                )}
+                <p className='text-dark-grey font-medium'>{data.message}</p>
               </div>
             </Link>
           )}
-
-          {/* Comment preview */}
-          {type === "comment" && comment?.comment && (
-            <div className="bg-grey rounded-lg p-3 mt-2">
-              <p className="text-sm text-dark-grey line-clamp-3">
-                {comment.comment}
+          {type === "reply" && replied_on_comment?.comment && (
+            <div className='p-4 mt-4 rounded-md bg-grey'>
+              <p>{comment?.comment}</p>
+            </div>
+          )}
+          {type === "followed" && (
+            <div className='p-4 mt-4 rounded-md bg-grey'>
+              <p className='font-medium text-dark-grey'>
+                You have a new follower!
               </p>
             </div>
           )}
 
-          {/* Action buttons */}
-          {(type === "comment" || type === "reply") && (
-            <div className="flex gap-4 mt-2">
-              {!reply && (
-                <button
-                  onClick={handleReply}
-                  className="text-sm font-semibold text-dark-grey hover:underline"
-                >
-                  Reply
-                </button>
-              )}
-              <button
-                onClick={(e) => handleDelete(comment._id, type, e.target)}
-                className="text-sm font-semibold text-red hover:underline"
-              >
-                Delete
-              </button>
-            </div>
-          )}
-
-          {/* Reply input */}
-          {isReplying && (
-            <div className="mt-3 bg-white rounded-lg border border-grey p-3">
-              <NotificationCommentField
-                _id={blogId}
-                blog_author={user}
-                index={index}
-                replyingTo={comment._id}
-                setIsReplying={setIsReplying}
-                notification_id={notification_id}
-                notificationData={notificationState}
-              />
-            </div>
-          )}
-
-          {/* Your reply display */}
-          {reply && (
-            <div className="mt-3 bg-white rounded-lg border border-grey p-3">
-              <div className="flex gap-2 mb-2">
-                <img
-                  src={author_profile_img}
-                  alt="Your avatar"
-                  className="w-8 h-8 rounded-full"
-                />
-                <div className="flex-1">
-                  <div className="mb-1">
-                    <Link
-                      to={`/user/${author_username}`}
-                      className="font-semibold text-sm text-dark-grey hover:underline"
-                    >
-                      You
-                    </Link>
-                    <span className="text-sm text-dark-grey"> replied to </span>
-                    <Link
-                      to={`/user/${username}`}
-                      className="font-semibold text-sm text-dark-grey hover:underline"
-                    >
-                      {fullname}
-                    </Link>
-                  </div>
-                  <p className="text-sm text-dark-grey">{reply.comment}</p>
-                </div>
-              </div>
-              <button
-                onClick={(e) => handleDelete(comment._id, "reply", e.target)}
-                className="text-xs font-semibold text-red hover:underline ml-10"
-              >
-                Delete
-              </button>
-            </div>
+          {type !== "followed" && type !== "info" && (
+            <Link
+              className='font-medium hover:underline line-clamp-1'
+              to={`/${title?.length > 0 ? "blog" : "tweet"}/${blog_id}`}
+            >
+              "{title?.length > 0 ? title : des}"
+            </Link>
           )}
         </div>
       </div>
+
+      {type === "comment" && comment?.comment && (
+        <p className='ml-14 pl-5 font-gelasio text-xl my-5'>
+          {comment.comment}
+        </p>
+      )}
+
+      <div className='ml-14 pl-5 mt-3 text-dark-grey flex gap-8'>
+        <p>{getDay(createdAt)}</p>
+
+        {(type === "comment" || type === "reply") && !reply && (
+          <button onClick={handleReply} className='underline hover:text-black'>
+            Reply
+          </button>
+        )}
+
+        {(type === "comment" || type === "reply") && (
+          <button
+            onClick={(e) => handleDelete(comment._id, type, e.target)}
+            className='underline hover:text-black'
+          >
+            Delete
+          </button>
+        )}
+      </div>
+
+      {isReplying && (
+        <div className='mt-8'>
+          <NotificationCommentField
+            _id={blogId}
+            blog_author={user}
+            index={index}
+            replyingTo={comment._id}
+            setIsReplying={setIsReplying}
+            notification_id={notification_id}
+            notificationData={notificationState}
+          />
+        </div>
+      )}
+
+      {reply && (
+        <div className='ml-20 p-5 bg-grey mt-5 rounded-md'>
+          <div className='flex gap-3 mb-3'>
+            <img
+              src={author_profile_img}
+              alt='pic'
+              className='w-8 h-8 rounded-full'
+            />
+            <div>
+              <h1 className='font-medium text-xl text-dark-grey'>
+                <Link
+                  className='mx-1 text-black underline'
+                  to={`/user/${author_username}`}
+                >
+                  @{author_username}
+                </Link>
+                <span className='font-normal'> replied to </span>
+                <Link
+                  className='mx-1 text-black underline'
+                  to={`/user/${username}`}
+                >
+                  @{username}
+                </Link>
+              </h1>
+            </div>
+          </div>
+          <p>{reply.comment}</p>
+
+          <button
+            onClick={(e) => handleDelete(comment._id, "reply", e.target)}
+            className='underline hover:text-black ml-14 mt-2'
+          >
+            Delete
+          </button>
+        </div>
+      )}
     </div>
   );
 };
