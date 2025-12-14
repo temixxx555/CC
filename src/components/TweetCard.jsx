@@ -138,14 +138,13 @@ const TweetCard = ({ tweet, author, id }) => {
       });
   };
 
-    const isFollowing = userAuth?.following?.includes(id);
+  const [isFollowing, setIsFollowing] = useState(false);
 
-
-  // useEffect(() => {
-  //   if (userAuth?.following && id) {
-  //     setIsFollowing(userAuth.following.includes(id));
-  //   }
-  // }, [userAuth, id]);
+  useEffect(() => {
+    if (userAuth?.following && id) {
+      setIsFollowing(userAuth.following.includes(id));
+    }
+  }, [userAuth, id]);
 
   const handleFollow = async () => {
     if (!access_token) {
@@ -156,7 +155,7 @@ const TweetCard = ({ tweet, author, id }) => {
     const newState = !isFollowing;
 
     // optimistic UI
-    // setIsFollowing(newState);
+    setIsFollowing(newState);
 
     try {
       const { data } = await axios.post(
@@ -218,7 +217,7 @@ const TweetCard = ({ tweet, author, id }) => {
                     <img
                       src={verifiedBadge}
                       alt='verified'
-                      className='w-6 h-6 mb-3'
+                      className='w-4 h-4'
                     />
                   )}
                 </div>

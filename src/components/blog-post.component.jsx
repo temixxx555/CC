@@ -26,24 +26,22 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
   const previewText =
     contents?.[0]?.blocks?.[0]?.data?.text?.replace(/&nbsp;/g, " ") || "";
 
-
+  const [isFollowing, setIsFollowing] = useState(false);
   let {
     userAuth,
     setUserAuth,
     userAuth: { access_token, username: mainusername },
   } = useContext(userContext);
-  const isFollowing = userAuth?.following?.includes(_ids);
-
   const [isLikedByUser, setLikedByUser] = useState(false);
   const [likes, setLikes] = useState(total_likes);
   const navigate = useNavigate();
   const {setCachedBlog} = useCachedBlog();
 
-  // useEffect(() => {
-  //   if (userAuth?.following && _ids) {
-  //     setIsFollowing(userAuth.following.includes(_ids));
-  //   }
-  // }, [userAuth, _ids]);
+  useEffect(() => {
+    if (userAuth?.following && _ids) {
+      setIsFollowing(userAuth.following.includes(_ids));
+    }
+  }, [userAuth, _ids]);
 
   const handleFollow = async () => {
     if (!access_token) {
@@ -51,10 +49,10 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
     }
 
     const userIdToFollow = _ids;
-    // const newState = !isFollowing;
+    const newState = !isFollowing;
 
-    // // optimistic UI
-    // setIsFollowing(newState);
+    // optimistic UI
+    setIsFollowing(newState);
 
     try {
       const { data } = await axios.post(
@@ -200,7 +198,7 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
                 </Link>
 
                 {isVerified && (
-                  <img src={verifiedBadge} alt='verified' className='w-6 h-6 mb-3' />
+                  <img src={verifiedBadge} alt='verified' className='w-4 h-4' />
                 )}
               </div>
 
