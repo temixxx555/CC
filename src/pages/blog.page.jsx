@@ -159,6 +159,8 @@ const BlogPage = () => {
             totalParentCommentsLoaded,
           }}
         >
+          <CommentsContainer />
+          <div className='max-w-[900px] mt-[70px] center py-10 max-lg:px-[5vw]'>
           {!commentLoading && <CommentsContainer />}
           <div className='max-w-[900px] center py-10 max-lg:px-[5vw]'>
             <img
