@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { BlogContext } from "../pages/blog.page";
 import CommentField from "./comment-field.component";
 import axios from "axios";
@@ -52,10 +52,6 @@ let newCommentArr = await fetchComments({skip:totalParentCommentsLoaded,blog_id:
 if (!blog) return <Loader />
 setBlog({...blog,comments:newCommentArr})
 }
-
-useEffect(() => {
-  loadMoreComments();
-}, []);
   return (
     <div
       className={

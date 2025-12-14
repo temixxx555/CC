@@ -1,12 +1,11 @@
 import { getDay } from "../common/date";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import verifiedBadge from "../imgs/verified.png";
 import BlogContent from "./blog-content.component";
 import { useContext, useEffect, useState } from "react";
 import { userContext } from "../App";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useCachedBlog } from "../contexts/globalContext";
 
 const BlogPostCard = ({ content, contents, author, id: _ids }) => {
   const {
@@ -19,29 +18,28 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
     tags,
     activity: { total_likes, total_comments, total_reads },
   } = content;
-  // console.log('Content: ', content);
 
   const { fullname, profile_img, username, isVerified } = author;
 
   const previewText =
     contents?.[0]?.blocks?.[0]?.data?.text?.replace(/&nbsp;/g, " ") || "";
 
-  const [isFollowing, setIsFollowing] = useState(false);
+
   let {
     userAuth,
     setUserAuth,
     userAuth: { access_token, username: mainusername },
   } = useContext(userContext);
+  const isFollowing = userAuth?.following?.includes(_ids);
+
   const [isLikedByUser, setLikedByUser] = useState(false);
   const [likes, setLikes] = useState(total_likes);
-  const navigate = useNavigate();
-  const {setCachedBlog} = useCachedBlog();
 
-  useEffect(() => {
-    if (userAuth?.following && _ids) {
-      setIsFollowing(userAuth.following.includes(_ids));
-    }
-  }, [userAuth, _ids]);
+  // useEffect(() => {
+  //   if (userAuth?.following && _ids) {
+  //     setIsFollowing(userAuth.following.includes(_ids));
+  //   }
+  // }, [userAuth, _ids]);
 
   const handleFollow = async () => {
     if (!access_token) {
@@ -49,10 +47,10 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
     }
 
     const userIdToFollow = _ids;
-    const newState = !isFollowing;
+    // const newState = !isFollowing;
 
-    // optimistic UI
-    setIsFollowing(newState);
+    // // optimistic UI
+    // setIsFollowing(newState);
 
     try {
       const { data } = await axios.post(
@@ -201,7 +199,7 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
                 </Link>
 
                 {isVerified && (
-                  <img src={verifiedBadge} alt='verified' className='w-4 h-4' />
+                  <img src={verifiedBadge} alt='verified' className='w-6 h-6 mb-3' />
                 )}
               </div>
 
@@ -241,15 +239,8 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
         </div>
 
         {/* Blog Content */}
-
-        <div onClick={() => (
-          setCachedBlog(content),
-          navigate(`/blog/${id}`)
-        )}>
-          <div className='mt-3' onClick={() => (
-            setCachedBlog(content),
-            navigate(`/blog/${id}`)
-          )}>
+        <Link to={`/blog/${id}`}>
+          <div className='mt-3'>
             {/* Title */}
             <h1 className='text-lg font-semibold text-dark-grey line-clamp-2 mb-2 hover:underline'>
               {title}
@@ -280,15 +271,12 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
               </div>
             )}
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Banner Image */}
       {banner && (
-        <div onClick={() => (
-          setCachedBlog(content),
-          navigate(`/blog/${id}`)
-        )}>
+        <Link to={`/blog/${id}`}>
           <div className='w-full'>
             <img
               src={banner}
@@ -296,7 +284,7 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
               className='w-full max-h-[400px] object-cover hover:brightness-95 transition'
             />
           </div>
-        </div>
+        </Link>
       )}
 
       {/* Engagement Stats */}
@@ -328,17 +316,14 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
       <div className='border-t border-grey px-2 py-1'>
         <div className='flex items-center justify-around'>
           {/* Comment */}
-          <div className='flex-1' onClick={() => (
-            setCachedBlog(content),
-            navigate(`/blog/${id}`)
-          )}>
+          <Link to={`/blog/${id}`} className='flex-1'>
             <button className='flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg hover:bg-grey/20 transition w-full group'>
               <i className='fi fi-rr-comment-dots text-xl text-gray-500 group-hover:text-blue-500'></i>
               <span className='text-sm font-medium text-gray-500 group-hover:text-blue-500'>
                 Comment
               </span>
             </button>
-          </div>
+          </Link>
 
           {/* Likes */}
           <button

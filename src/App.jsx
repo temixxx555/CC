@@ -34,7 +34,6 @@ import axios from "axios";
 import TweetPage from "./pages/TweetPage";
 import TweetView from "./pages/TweetView";
 import LostAndFoundSection from "./pages/LostAndFound";
-import { CachedBlogProvider } from "./contexts/globalContext";
 
 export const userContext = createContext({});
 export const ThemeContext = createContext({});
@@ -100,7 +99,6 @@ const App = () => {
       <Toaster position='top-right' reverseOrder={false} />
       <ThemeContext.Provider value={{ theme, setTheme }}>
         <userContext.Provider value={{ userAuth, setUserAuth }}>
-          <CachedBlogProvider>
           {/* because i think it is the parent provider */}
           {/* socketProvider to connect with the socket io in the backend */}
           <SocketProvider>
@@ -108,7 +106,6 @@ const App = () => {
               <Route path='/editor' element={<Editor />} />
               <Route path='/tweet' element={<TweetPage />} />
               <Route path='/editor/:blog_id' element={<Editor />} />
-              <Route path='tweet/:blog_id' element={<TweetView />} />
               <Route path='/' element={<Navbar />}>
                 {/* index means render the parent path which is / */}
                 <Route index element={<Home />} />
@@ -152,12 +149,12 @@ const App = () => {
                 <Route path='/anonymous/:id' element={<ViewMessage />} />
                 <Route path='user/:id' element={<ProfilePage />} />
                 <Route path='blog/:blog_id' element={<BlogPage />} />
+                <Route path='tweet/:blog_id' element={<TweetView />} />
                 <Route path='test' element={<TestPage />} />
                 <Route path='*' element={<PageNotFound />} />
               </Route>
             </Routes>
           </SocketProvider>
-          </CachedBlogProvider>
         </userContext.Provider>
       </ThemeContext.Provider>
     </>

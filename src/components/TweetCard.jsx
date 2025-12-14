@@ -5,8 +5,6 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { userContext } from "../App";
 import toast from "react-hot-toast";
-import TweetView from "../pages/TweetView";
-import { useNavigate } from "react-router-dom";
 
 const TweetCard = ({ tweet, author, id }) => {
   const {
@@ -139,13 +137,14 @@ const TweetCard = ({ tweet, author, id }) => {
       });
   };
 
-  const [isFollowing, setIsFollowing] = useState(false);
+    const isFollowing = userAuth?.following?.includes(id);
 
-  useEffect(() => {
-    if (userAuth?.following && id) {
-      setIsFollowing(userAuth.following.includes(id));
-    }
-  }, [userAuth, id]);
+
+  // useEffect(() => {
+  //   if (userAuth?.following && id) {
+  //     setIsFollowing(userAuth.following.includes(id));
+  //   }
+  // }, [userAuth, id]);
 
   const handleFollow = async () => {
     if (!access_token) {
@@ -156,7 +155,7 @@ const TweetCard = ({ tweet, author, id }) => {
     const newState = !isFollowing;
 
     // optimistic UI
-    setIsFollowing(newState);
+    // setIsFollowing(newState);
 
     try {
       const { data } = await axios.post(
@@ -204,8 +203,6 @@ const TweetCard = ({ tweet, author, id }) => {
     });
   };
 
-  const navigate = useNavigate();
-
   return (
     <>
       <div className='bg-white border border-grey rounded-lg mb-4 shadow-sm hover:shadow-md transition-shadow'>
@@ -238,7 +235,7 @@ const TweetCard = ({ tweet, author, id }) => {
                     <img
                       src={verifiedBadge}
                       alt='verified'
-                      className='w-4 h-4'
+                      className='w-6 h-6 mb-3'
                     />
                   )}
                 </div>
@@ -291,20 +288,6 @@ const TweetCard = ({ tweet, author, id }) => {
               dangerouslySetInnerHTML={{ __html: linkifyText(des) }}
             ></p>
           </Link>
-          {/* <Link to={`/tweet/${blog_id}`}>
-            <p className='text-dark text-[15px] mt-3 whitespace-pre-wrap break-words leading-relaxed'>
-              {des}
-            </p>
-          </Link> */}
-            <p className='text-dark text-[15px] mt-3 whitespace-pre-wrap break-words leading-relaxed' onClick={() => navigate(
-              `/tweet/${blog_id}`,
-              {
-                state: {tweet, author}
-              }
-            )}>
-              {des}
-            </p>
-
         </div>
 
         {/* Media Section */}
