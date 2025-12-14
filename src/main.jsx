@@ -18,3 +18,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </BrowserRouter>
   // {/* </React.StrictMode>, */}
 )
+// just commented this so i can push the code
