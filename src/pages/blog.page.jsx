@@ -140,6 +140,10 @@ const BlogPage = () => {
     setSimilarBlogLoading(true);
   };
 
+  useEffect(() => {
+    scrollTo(0,0);
+  }, []);
+
   return (
     <AnimationWrapper>
       {loading ? (
