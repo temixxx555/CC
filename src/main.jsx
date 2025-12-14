@@ -11,7 +11,7 @@ import { Analytics } from '@vercel/analytics/react';
 ReactDOM.createRoot(document.getElementById('root')).render(
   // <React.StrictMode> 
     <BrowserRouter>
-    {/* <ScrollToTop /> */}
+    <ScrollToTop />
     {/* ScrollToTop component to reset scroll position on route change */}
     <App />
     <Analytics />

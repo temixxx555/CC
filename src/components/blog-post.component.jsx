@@ -1,12 +1,11 @@
 import { getDay } from "../common/date";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import verifiedBadge from "../imgs/verified.png";
 import BlogContent from "./blog-content.component";
 import { useContext, useEffect, useState } from "react";
 import { userContext } from "../App";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useCachedBlog } from "../contexts/globalContext";
 
 const BlogPostCard = ({ content, contents, author, id: _ids }) => {
   const {
@@ -19,7 +18,6 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
     tags,
     activity: { total_likes, total_comments, total_reads },
   } = content;
-  // console.log('Content: ', content);
 
   const { fullname, profile_img, username, isVerified } = author;
 
@@ -36,8 +34,6 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
 
   const [isLikedByUser, setLikedByUser] = useState(false);
   const [likes, setLikes] = useState(total_likes);
-  const navigate = useNavigate();
-  const {setCachedBlog} = useCachedBlog();
 
   // useEffect(() => {
   //   if (userAuth?.following && _ids) {
@@ -197,6 +193,9 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
                   <p className='font-semibold text-dark-grey text-[15px]'>
                     {fullname}
                   </p>
+                  <p className='font-semibold text-gray-500 text-[11px]'>
+                    student - Bowen{" "}
+                  </p>
                 </Link>
 
                 {isVerified && (
@@ -224,7 +223,7 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
                     }`}
                   >
                     <i className='fi fi-rr-user-add'></i>
-                    {isFollowing ? "Connected" : "Follow"}
+                    {isFollowing ? "Connected" : "Connect"}
                   </button>
                 )
               ) : null}
@@ -240,15 +239,8 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
         </div>
 
         {/* Blog Content */}
-
-        <div onClick={() => (
-          setCachedBlog(content),
-          navigate(`/blog/${id}`)
-        )}>
-          <div className='mt-3' onClick={() => (
-            setCachedBlog(content),
-            navigate(`/blog/${id}`)
-          )}>
+        <Link to={`/blog/${id}`}>
+          <div className='mt-3'>
             {/* Title */}
             <h1 className='text-lg font-semibold text-dark-grey line-clamp-2 mb-2 hover:underline'>
               {title}
@@ -279,15 +271,12 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
               </div>
             )}
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Banner Image */}
       {banner && (
-        <div onClick={() => (
-          setCachedBlog(content),
-          navigate(`/blog/${id}`)
-        )}>
+        <Link to={`/blog/${id}`}>
           <div className='w-full'>
             <img
               src={banner}
@@ -295,7 +284,7 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
               className='w-full max-h-[400px] object-cover hover:brightness-95 transition'
             />
           </div>
-        </div>
+        </Link>
       )}
 
       {/* Engagement Stats */}
@@ -327,17 +316,14 @@ const BlogPostCard = ({ content, contents, author, id: _ids }) => {
       <div className='border-t border-grey px-2 py-1'>
         <div className='flex items-center justify-around'>
           {/* Comment */}
-          <div className='flex-1' onClick={() => (
-            setCachedBlog(content),
-            navigate(`/blog/${id}`)
-          )}>
+          <Link to={`/blog/${id}`} className='flex-1'>
             <button className='flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg hover:bg-grey/20 transition w-full group'>
               <i className='fi fi-rr-comment-dots text-xl text-gray-500 group-hover:text-blue-500'></i>
               <span className='text-sm font-medium text-gray-500 group-hover:text-blue-500'>
                 Comment
               </span>
             </button>
-          </div>
+          </Link>
 
           {/* Likes */}
           <button
