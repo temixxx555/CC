@@ -232,14 +232,14 @@ const Home = () => {
                         <TweetCard
                           tweet={blog}
                           author={blog.author?.personal_info}
-                          id={blog.author._id}
+                          id={blog.author?._id}
                         />
                       ) : (
                         <BlogPostCard
                           content={blog}
                           contents={blog.content}
                           author={blog.author?.personal_info}
-                          id={blog.author._id}
+                          id={blog.author?._id}
                         />
                       )}
                     </AnimationWrapper>
@@ -296,14 +296,14 @@ const Home = () => {
                         <TweetCard
                           tweet={blog}
                           author={blog.author?.personal_info}
-                          id={blog.author._id}
+                          id={blog.author?._id}
                         />
                       ) : (
                         <BlogPostCard
                           content={blog}
                           contents={blog.content}
                           author={blog.author?.personal_info}
-                          id={blog.author._id}
+                          id={blog.author?._id}
                         />
                       )}
                     </AnimationWrapper>
