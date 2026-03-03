@@ -8,6 +8,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const BlogPostCard = ({ content, contents, author, id: _ids }) => {
+  if (!content || !author) return null;
   const {
     _id,
     blog_id: id,
