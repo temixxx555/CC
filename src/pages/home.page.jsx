@@ -231,14 +231,14 @@ const Home = () => {
                       {blog.type == "tweet" ? (
                         <TweetCard
                           tweet={blog}
-                          author={blog.author.personal_info}
+                          author={blog.author?.personal_info}
                           id={blog.author._id}
                         />
                       ) : (
                         <BlogPostCard
                           content={blog}
                           contents={blog.content}
-                          author={blog.author.personal_info}
+                          author={blog.author?.personal_info}
                           id={blog.author._id}
                         />
                       )}
@@ -295,14 +295,14 @@ const Home = () => {
                       {blog.type == "tweet" ? (
                         <TweetCard
                           tweet={blog}
-                          author={blog.author.personal_info}
+                          author={blog.author?.personal_info}
                           id={blog.author._id}
                         />
                       ) : (
                         <BlogPostCard
                           content={blog}
                           contents={blog.content}
-                          author={blog.author.personal_info}
+                          author={blog.author?.personal_info}
                           id={blog.author._id}
                         />
                       )}
