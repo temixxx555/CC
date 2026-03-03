@@ -7,6 +7,7 @@ import { userContext } from "../App";
 import toast from "react-hot-toast";
 
 const TweetCard = ({ tweet, author, id }) => {
+  if (!tweet || !author) return null;
   const {
     _id,
     blog_id,
